@@ -1,6 +1,10 @@
+
 # Noita Together
 Play alone together
 [click here to downloads](https://github.com/soler91/noita-together/releases)
+
+## WIP. Still looking over the code. Feel free to open up a discussion to go over how you think this should be structured :) -Skye
+### I make no guarantees at the moment if I will maintain this. I am however accepting help from others to contributing to this
 
 ## What is Noita Together?
 Noita Together is an attempt to bring a slight multiplayer aspect to the game, think of it more like everyone is in different dimensions yet you can still see other players and somewhat interact with each other you can not directly affect other player's worlds
@@ -11,4 +15,4 @@ mod uses [pollws](https://github.com/probable-basilisk/pollws/) made by probable
 ### **How to install [(click here)](https://github.com/soler91/noita-together/wiki/Installation)**
 ### **How to use [(click here)](https://github.com/soler91/noita-together/wiki/Usage)**
 ### **FAQ [(click here)](https://github.com/soler91/noita-together/wiki/FAQ)**
-### **[Discord server](https://discord.gg/ex3XFkXCgM)**
+
