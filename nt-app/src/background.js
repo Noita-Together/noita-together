@@ -103,7 +103,8 @@ async function createWindow() {
         */
         // Load the index.html when not in development
         mainWindow.loadURL('app://./index.html')
-        autoUpdater.checkForUpdatesAndNotify()
+        if(!isDevelopment)
+            autoUpdater.checkForUpdatesAndNotify()
     }
 
 

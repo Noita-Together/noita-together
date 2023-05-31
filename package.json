@@ -1,0 +1,14 @@
+{
+  "name": "noita-together",
+  "private": true,
+  "version": "0.9.40",
+  "packageManager": "yarn@3.5.1",
+  "workspaces": [
+    "nt-app/",
+    "nt-backend/"
+  ],
+  "scripts": {
+    "client": "yarn workspace nt-app electron:serve",
+    "server": "yarn workspace nt-backend start"
+  }
+}
