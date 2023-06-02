@@ -54,8 +54,9 @@ We do NOT version the .env file, so we need to create one :)
 
 Create a .env file at `nt-app/`
 ```env
-TWITCH_API_KEY=deadbeef
-CALLBACK_URI=localhost
+TWITCH_API_KEY=
+TWITCH_CLIENT_ID=
+OAUTH_REDIRECT_URI=http://localhost:3000/api/authenticate
 ```
 
 TODO github actions setup

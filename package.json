@@ -5,10 +5,13 @@
   "packageManager": "yarn@3.5.1",
   "workspaces": [
     "nt-app/",
-    "nt-backend/"
+    "nt-web-app/"
   ],
   "scripts": {
     "client": "yarn workspace nt-app electron:serve",
-    "server": "yarn workspace nt-backend start"
+    "server": "yarn workspace nt-web-app serve"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
   }
 }

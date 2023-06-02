@@ -4,6 +4,7 @@ const path = require("path")
 const fs = require("fs")
 import { autoUpdater } from "electron-updater"
 import { app, protocol, BrowserWindow, dialog, ipcMain } from 'electron'
+import jwt from 'jsonwebtoken';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { updateMod } from "./update.js"
@@ -32,24 +33,24 @@ if (isDevelopment && process.platform === 'win32') {
 */
 const loginserv = http.createServer(function (req, res) {
     let url = new URL("noitatogether:/" + req.url)
-    let display_name = url.searchParams.get("display_name")
     let token = url.searchParams.get("token")
     let refreshToken = url.searchParams.get("refresh")
-    let id = url.searchParams.get("id")
     let extra = url.searchParams.get("e")
-    if (!display_name) {
+
+    const {preferred_username, sub} = jwt.decode(token)
+    if (!preferred_username) {
         res.writeHead(404, { 'Content-Type': 'text/html' })
         res.end('nothing here.')
         return
     }
     if (rememberUser) {
-        keytar.setPassword("Noita Together", display_name, refreshToken)
+        keytar.setPassword("Noita Together", preferred_username, refreshToken)
     }
     appEvent("USER_EXTRA", extra)
     wsClient({
-        display_name,
+        display_name: preferred_username,
         token,
-        id
+        id: sub
     })
 
     if (mainWindow) {
