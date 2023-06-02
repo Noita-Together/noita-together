@@ -7,7 +7,7 @@
 	></UIInfoComponent>
 
     <InteractableComponent
-        ui_text="REEEEE $0"
+        ui_text="read $0"
     >
     </InteractableComponent>
 	<ItemComponent

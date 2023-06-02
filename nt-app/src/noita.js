@@ -397,7 +397,7 @@ class NoitaGame extends EventEmitter {
     sRespawnPenalty(payload) {
         const player = payload.userId == this.user.userId ? this.user : this.players[payload.userId]
         if (player) {
-            sysMsg(`${player.name} had to respawn against his will.`)
+            sysMsg(`${player.name} had to respawn against their will.`)
             if (this.isHost && this.onDeathKick && this.user.userId != payload.userId) {
                 this.emit("death_kick", payload.userId)
             }

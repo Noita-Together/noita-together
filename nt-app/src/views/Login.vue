@@ -8,7 +8,7 @@
       <span class="twitch-login-text">Login with Twitch.tv</span>
     </div>
     <div class="remember-login">
-      <input type="checkbox" id="remember-user" name="remember-user" v-model="reeemember" />
+      <input type="checkbox" id="remember-user" name="remember-user" v-model="remember" />
       <label for="remember-user">Remember me</label>
     </div>
 
@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       loginUrl: `https://${process.env.VUE_APP_HOSTNAME}/auth/login`,
-      reeemember: false,
+      remember: false,
       clicked: false,
     }
   },
@@ -59,7 +59,7 @@ export default {
     },
   },
   watch: {
-    reeemember(oldVal, newVal) {
+    remember(oldVal, newVal) {
       ipcRenderer.send("remember_user", !newVal)
     },
   },
