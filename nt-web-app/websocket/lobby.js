@@ -68,7 +68,7 @@ class User {
             return
         }
         */
-        this.socket._sender.sendFrame(data)//why no worky reee
+        this.socket._sender.sendFrame(data)//why no worky
     }
     /*
     Queue() {
