@@ -1,8 +1,8 @@
 <template>
     <div class="footer">
         <span id="app-version">v{{version}}</span>
-        <div class="donate" @click="OpenKofi">
-            <span>Support me on ko-fi <i slot="icon" class="fas fa-heart"></i></span>
+        <div class="donate" @click="OpenContributors">
+            <span title="Github">Click to see contributors <i slot="icon" class="fas fa-wrench"></i></span>
         </div>
     </div>
 </template>
@@ -16,13 +16,13 @@ export default {
     },
     data() {
         return {
-            kofiUrl: "https://ko-fi.com/soler91",
+            contributorUrl: "https://github.com/SkyeOfBreeze/noita-together/",
             version: "0"
         }
     },
     methods: {
-        OpenKofi() {
-            shell.openExternal(this.kofiUrl);
+        OpenContributors() {
+            shell.openExternal(this.contributorUrl);
         },
     }
 };
