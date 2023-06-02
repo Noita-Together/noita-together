@@ -6,6 +6,8 @@
 
 # local env files
 .env.local
+nt-backend/.env
+nt-app/.env
 .env.*.local
 
 # Log files

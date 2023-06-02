@@ -27,6 +27,19 @@ yarn install
 yarn client
 ```
 
+#### Configuring your environment
+
+We do NOT version the .env file, so we need to create one :)
+
+Create a .env file at `nt-app/`
+```env
+VUE_APP_HOSTNAME=example.com
+VUE_APP_WS_PORT=:5466
+```
+
+TODO github actions setup
+
+
 ### Backend 
 
 TODO
@@ -34,6 +47,18 @@ TODO
 yarn install
 yarn server
 ```
+
+#### Configuring your environment
+
+We do NOT version the .env file, so we need to create one :)
+
+Create a .env file at `nt-app/`
+```env
+TWITCH_API_KEY=deadbeef
+CALLBACK_URI=localhost
+```
+
+TODO github actions setup
 
 ### Core mod
 
