@@ -33,8 +33,9 @@ We do NOT version the .env file, so we need to create one :)
 
 Create a .env file at `nt-app/`
 ```env
-VUE_APP_HOSTNAME=example.com
+VUE_APP_HOSTNAME=http://localhost:3000/api
 VUE_APP_WS_PORT=:5466
+VUE_APP_HOSTNAME_WS=localhost
 ```
 
 TODO github actions setup

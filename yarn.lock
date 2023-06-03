@@ -9605,6 +9605,7 @@ __metadata:
     "@types/react-dom": 18.2.4
     eslint: 8.41.0
     eslint-config-next: 13.4.4
+    jsonwebtoken: ^9.0.0
     keytar: ^7.2.0
     next: 13.4.4
     protobufjs: ^6.10.2

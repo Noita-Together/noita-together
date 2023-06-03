@@ -1,8 +1,8 @@
 'use-strict'
 const uuidv4 = require("uuid").v4
 const validator = require("validator")
-const { decode, encodeGameMsg, encodeLobbyMsg } = require("./handlers/messageHandler")
-const { setStats } = require("./controllers/statsController.js")
+const { decode, encodeGameMsg, encodeLobbyMsg } = require("./messageHandler")
+// const { setStats } = require("./controllers/statsController.js")
 const WebSocket = require("ws")
 const THRESHOLD = 1024 * 16
 function MakeFrame(data) {
@@ -255,7 +255,7 @@ class Room {
         })
 
         if (this.gamemode === 0) {//Coop
-            setStats(this.id, this.stats)
+            // setStats(this.id, this.stats) //TODO re-enable
             this.SysMsg(`Stats for the run: https://DOMAIN/stats/room/${this.id} (WIP feature)`)//TODO use run id instead of room id
         }
         else {

@@ -4,6 +4,6 @@ const wsserver = http.createServer()
 
 const ws = require("./ws")(wsserver)
 
-wsserver.listen(1337, () => {
+wsserver.listen(5466, () => {
     console.log("Running.")
 })

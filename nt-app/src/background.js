@@ -34,10 +34,16 @@ if (isDevelopment && process.platform === 'win32') {
 const loginserv = http.createServer(function (req, res) {
     let url = new URL("noitatogether:/" + req.url)
     let token = url.searchParams.get("token")
+    if(!token) {
+        res.writeHead(400)
+        res.end('Missing required param "token"')
+        return
+    }
     let refreshToken = url.searchParams.get("refresh")
     let extra = url.searchParams.get("e")
 
-    const {preferred_username, sub} = jwt.decode(token)
+    const jwtDecoded = jwt.decode(token)
+    const {preferred_username, sub} = jwtDecoded
     if (!preferred_username) {
         res.writeHead(404, { 'Content-Type': 'text/html' })
         res.end('nothing here.')
