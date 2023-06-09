@@ -42,9 +42,8 @@ function FindGameFolder() {
             })
         }
         else if (process.platform === "linux") {
-            console.log("linux")
             const linuxPaths = [
-                path.join(app.getPath("home"), ".steam/steamapps/common/Noita"), //steam deck and newer form?
+                path.join(app.getPath("home"), "/.steam/steam/steamapps/common/Noita"), //steam deck and newer form?
                 path.join(app.getPath("home"), "/.local/share/Steam/steamapps/common/Noita/") //somewhat older form under .local/share
                 //TODO is there a likely default for GOG installs?
             ]
