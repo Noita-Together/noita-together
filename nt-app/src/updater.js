@@ -13,27 +13,62 @@ function FindGameFolder() {
         if (fs.existsSync(userDataPath)) {
             try {
                 const gamePath = JSON.parse(fs.readFileSync(userDataPath))
-                res(gamePath)
-            } catch (error) { }
+                if(fs.existsSync(gamePath)) {
+                    res(gamePath)
+                    return //don't fall through to autodetection
+                }
+            } catch (error) {}
         }
-        const gamePaths = []
-        const child = spawn("powershell.exe", [
-            `
-            (Get-Item "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 881100").GetValue("InstallLocation")
-            (Get-Item "HKLM:\\SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1310457090").GetValue("path")
-            `
-        ]);
-        child.stdout.on("data", function (data) {
-            gamePaths.push(data.toString())
-        });
-        child.stdin.end()
-        child.on("error", () => { }) // do nothing on error and let it default to blank on close
-        child.on("close", () => {
-            let gamePath = gamePaths.shift() || ""
-            if (gamePath) { gamePath = gamePath.replace("\r\n", "") }
-            fs.writeFileSync(userDataPath, JSON.stringify(gamePath))
-            res(gamePath)
-        })
+
+        //auto-detect the game path
+        if (process.platform === "win32") {
+            const gamePaths = []
+            const child = spawn("powershell.exe", [
+                `
+                (Get-Item "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 881100").GetValue("InstallLocation")
+                (Get-Item "HKLM:\\SOFTWARE\\WOW6432Node\\GOG.com\\Games\\1310457090").GetValue("path")
+                `
+            ]);
+            child.stdout.on("data", function (data) {
+                gamePaths.push(data.toString())
+            });
+            child.stdin.end()
+            child.on("error", () => {}) // do nothing on error and let it default to blank on close
+            child.on("close", () => {
+                let gamePath = gamePaths.shift() || ""
+                if (gamePath) { gamePath = gamePath.replace("\r\n", "") }
+                fs.writeFileSync(userDataPath, JSON.stringify(gamePath))
+                res(gamePath)
+            })
+        }
+        else if (process.platform === "linux") {
+            const linuxPaths = [
+                path.join(app.getPath("home"), "/.steam/steam/steamapps/common/Noita"), //steam deck and newer form?
+                path.join(app.getPath("home"), "/.local/share/Steam/steamapps/common/Noita/") //somewhat older form under .local/share
+                //TODO is there a likely default for GOG installs?
+            ]
+
+            let foundNoita = false
+            linuxPaths.every(p => {
+                if(fs.existsSync(p)) {
+                    foundNoita = true
+                    fs.writeFileSync(userDataPath, JSON.stringify(p));
+                    res(p)
+                    return false;
+                }
+                return true;
+            })
+
+            //didnt find it in those locations
+            if(!foundNoita) {
+                res("")
+            }
+        }
+        //other/unknown platform fallback
+        else
+        {
+            res("")
+        }
     })
 }
 // Constants
