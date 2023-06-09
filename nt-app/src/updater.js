@@ -37,7 +37,7 @@ function FindGameFolder() {
             child.on("close", () => {
                 let gamePath = gamePaths.shift() || ""
                 if (gamePath) { gamePath = gamePath.replace("\r\n", "") }
-                fs.writeFileSync(userDataPath, JSON.stringify(gamePath))
+                fs.writeFileSync(userDataPath, JSON.stringify(gamePath), 'utf-8')
                 res(gamePath)
             })
         }
@@ -52,7 +52,7 @@ function FindGameFolder() {
             linuxPaths.every(p => {
                 if(fs.existsSync(p)) {
                     foundNoita = true
-                    fs.writeFileSync(userDataPath, JSON.stringify(p));
+                    fs.writeFileSync(userDataPath, JSON.stringify(p), 'utf-8');
                     res(p)
                     return false;
                 }
