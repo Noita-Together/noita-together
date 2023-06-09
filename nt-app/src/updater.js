@@ -12,7 +12,7 @@ function FindGameFolder() {
         const userDataPath = path.join(app.getPath("userData"), "/gamePath.json")
         if (fs.existsSync(userDataPath)) {
             try {
-                const gamePath = JSON.parse(fs.readFileSync(userDataPath))
+                const gamePath = JSON.parse(fs.readFileSync(userDataPath, 'utf-8'))
                 if(fs.existsSync(gamePath)) {
                     res(gamePath)
                     return //don't fall through to autodetection
@@ -72,7 +72,7 @@ function FindGameFolder() {
     })
 }
 // Constants
-const AutoUpdateServers = ['https://raw.githubusercontent.com/soler91/noita-together/'];
+const AutoUpdateServers = ['https://raw.githubusercontent.com/SkyeOfBreeze/noita-together/'];
 
 // Implementation
 function forcedirSync(dir) {
