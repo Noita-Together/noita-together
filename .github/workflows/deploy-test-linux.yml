@@ -21,14 +21,14 @@ jobs:
       - name: Set package.json version
         run: |
           cd ./nt-app
-          npm version ${ { steps.get_tag_version.outputs.version/ }#app-}
+          npm version ${ { steps.get_tag_version.outputs.version }#app-}
         working-directory: ./nt-app
       - run: yarn install
       - run: yarn workspace nt-app electron:build --publish never
       - run: ls ./nt-app/dist_electron/
       - run: |
-          cp "./nt-app/dist_electron/Noita Together-${{ steps.get_tag_version.outputs.version/ }}.AppImage" "./build/Noita-Together-${{ steps.get_tag_version.outputs.version/ }}.AppImage"
-          cp "./nt-app/dist_electron/nt-app_${{ steps.get_tag_version.outputs.version/ }}_amd64.snap" "./build/nt-app_${{ steps.get_tag_version.outputs.version/ }}_amd64.snap"
+          cp "./nt-app/dist_electron/Noita Together-${{ steps.get_tag_version.outputs.version }}.AppImage" "./build/Noita-Together-${{ steps.get_tag_version.outputs.version }}.AppImage"
+          cp "./nt-app/dist_electron/nt-app_${{ steps.get_tag_version.outputs.version }}_amd64.snap" "./build/nt-app_${{ steps.get_tag_version.outputs.version }}_amd64.snap"
           cp "./nt-app/dist_electron/latest-linux.yml" "./build/latest-linux.yml"
       - name: Upload files to release
         uses: svenstaro/upload-release-action@v2
