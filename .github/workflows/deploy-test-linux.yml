@@ -1,6 +1,9 @@
-name: Deploy Linux testing
+name: Deploy Linux
 
-on: [push]
+on:
+  push:
+    tags:
+      - 'app-*'
 
 jobs:
   build:
@@ -12,5 +15,25 @@ jobs:
         with:
           node-version: 16
       - run: yarn install
+      - name: Get version from tag
+        id: get_tag_version
+        run: echo ::set-output name=version::${{ github.ref/#app- }}
+      - name: Set package.json version
+        run: |
+          npm version ${{ steps.get_tag_version.outputs.version }}
+        working-directory: ./nt-app
+      - run: yarn install
       - run: yarn workspace nt-app electron:build --publish never
       - run: ls ./nt-app/dist_electron/
+      - run: |
+          cp "./nt-app/dist_electron/Noita Together-${{ steps.get_tag_version.outputs.version }}.AppImage" "./build/Noita-Together-${{ steps.get_tag_version.outputs.version }}.AppImage"
+          cp "./nt-app/dist_electron/nt-app_${{ steps.get_tag_version.outputs.version }}_amd64.snap" "./build/nt-app_${{ steps.get_tag_version.outputs.version }}_amd64.snap"
+          cp "./nt-app/dist_electron/latest-linux.yml" "./build/latest-linux.yml"
+      - name: Upload files to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./build/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
