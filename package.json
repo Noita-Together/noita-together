@@ -16,7 +16,7 @@
   },
   "build": {
     "publish": [{
-      "provider": "generic"
+      "provider": "none"
     }]
   }
 }

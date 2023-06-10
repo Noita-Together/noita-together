@@ -1,4 +1,4 @@
-name: Deploy testing
+name: Deploy Linux testing
 
 on: [push]
 
