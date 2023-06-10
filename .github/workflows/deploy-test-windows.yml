@@ -20,9 +20,8 @@ jobs:
         run: echo ::set-output name=version::${{ github.ref }}
       - name: Set package.json version
         run: |
-          cd ./nt-app
           npm version ${ { steps.get_tag_version.outputs.version }#app-}
-        working-directory: nt-app/
+        working-directory: ./nt-app
       - run: yarn install
       - run: yarn workspace nt-app electron:build --publish never
       - run: ls ./nt-app/dist_electron/
