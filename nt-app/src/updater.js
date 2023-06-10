@@ -100,7 +100,9 @@ class Updater extends EventEmitter {
         const p = path.join(this.gamePath, relpath)
         return p;
     }
-    buildURL(serverIndex, relpath) { return `${AutoUpdateServers[serverIndex]}${this.branch}/${relpath}`; }
+    buildURL(serverIndex, relpath) {
+        return `${AutoUpdateServers[serverIndex]}main/${this.branch}/${relpath}`;
+    }
     async downloadRaw(serverIndex, relpath) {
         const url = this.buildURL(serverIndex, relpath)
         return await got(url).buffer();
