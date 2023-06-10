@@ -13,5 +13,10 @@
   },
   "dependencies": {
     "axios": "^1.4.0"
+  },
+  "build": {
+    "publish": [{
+      "provider": "generic"
+    }]
   }
 }
