@@ -172,7 +172,7 @@ class Updater extends EventEmitter {
         }
         if (fs.existsSync(path.join(this.gamePath, "/noita.exe"))) {
             let folder = "noita-together"
-            if (this.branch == "nemesis") { folder = "noita-nemesis" }
+            if (this.branch == "noita_mod/nemesis") { folder = "noita-nemesis" }
             this.gamePath = path.join(this.gamePath, "/mods/" + folder + "/")
             return true
         }
