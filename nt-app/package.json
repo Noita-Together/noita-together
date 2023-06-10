@@ -41,11 +41,6 @@
         "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
         "vue-template-compiler": "^2.6.11"
     },
-    "build": {
-        "win": {
-            "publish": []
-        }
-    },
     "installConfig": {
         "hoistingLimits": "workspaces"
     }
