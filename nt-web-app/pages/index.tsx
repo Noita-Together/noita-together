@@ -59,29 +59,29 @@ export default function Home() {
               </p>
             </a>
 
-            <a
-                href="/"
-                className={styles.card}
-            >
-              <h2>
-                Stats (TODO) <span>-&gt;</span>
-              </h2>
-              <p>
-                Look up statistics for previous runs
-              </p>
-            </a>
+            {/*<a*/}
+            {/*    href="/"*/}
+            {/*    className={styles.card}*/}
+            {/*>*/}
+            {/*  <h2>*/}
+            {/*    Stats (TODO) <span>-&gt;</span>*/}
+            {/*  </h2>*/}
+            {/*  <p>*/}
+            {/*    Look up statistics for previous runs*/}
+            {/*  </p>*/}
+            {/*</a>*/}
 
-            <a
-                href="/"
-                className={styles.card}
-            >
-              <h2>
-                Lobbies (TODO) <span>-&gt;</span>
-              </h2>
-              <p>
-                Find information on current games in progress
-              </p>
-            </a>
+            {/*<a*/}
+            {/*    href="/"*/}
+            {/*    className={styles.card}*/}
+            {/*>*/}
+            {/*  <h2>*/}
+            {/*    Lobbies (TODO) <span>-&gt;</span>*/}
+            {/*  </h2>*/}
+            {/*  <p>*/}
+            {/*    Find information on current games in progress*/}
+            {/*  </p>*/}
+            {/*</a>*/}
           </div>
           <p className={styles.disclaimer}>
             Nolla games and Noita are
@@ -93,4 +93,13 @@ export default function Home() {
       </main>
     </>
   )
+}
+
+// This gets called on every request
+export async function getServerSideProps() {
+  // Fetch data from external API
+
+
+  // Pass data to the page via props
+  return { props: {  } }
 }
