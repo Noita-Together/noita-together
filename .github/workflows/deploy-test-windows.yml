@@ -1,6 +1,9 @@
-name: Deploy Windows testing
+name: Deploy Windows
 
-on: [push]
+on:
+  push:
+    tags:
+      - 'app-*'
 
 jobs:
   build:
@@ -12,5 +15,26 @@ jobs:
         with:
           node-version: 16
       - run: yarn install
+      - name: Get version from tag
+        id: get_tag_version
+        run: echo ::set-output name=version::${{ github.ref }}
+      - name: Set package.json version
+        run: |
+          cd ./nt-app
+          npm version ${ { steps.get_tag_version.outputs.version/ }#app-}
+        working-directory: ./nt-app
+      - run: yarn install
       - run: yarn workspace nt-app electron:build --publish never
       - run: ls ./nt-app/dist_electron/
+      - run: |
+          cp "./nt-app/dist_electron/latest.yml" ./build/latest.yml
+          cp "./nt-app/dist_electron/Noita Together Setup ${{ steps.get_tag_version.outputs.version/ }}.exe" ./build/Noita-Together-Setup-${{ steps.get_tag_version.outputs.version/ }}.exe
+          cp "./nt-app/dist_electron/Noita Together Setup ${{ steps.get_tag_version.outputs.version/ }}.exe.blockmap" ./build/Noita-Together-Setup-${{ steps.get_tag_version.outputs.version/ }}.exe.blockmap
+      - name: Upload files to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./build/
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
