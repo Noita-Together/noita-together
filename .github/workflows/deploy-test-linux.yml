@@ -1,7 +1,9 @@
 name: Deploy Linux
 
 on:
-  push
+  push:
+    tags:
+      - 'app-*'
 
 jobs:
   build:
