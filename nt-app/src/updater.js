@@ -100,7 +100,9 @@ class Updater extends EventEmitter {
         const p = path.join(this.gamePath, relpath)
         return p;
     }
-    buildURL(serverIndex, relpath) { return `${AutoUpdateServers[serverIndex]}${this.branch}/${relpath}`; }
+    buildURL(serverIndex, relpath) {
+        return `${AutoUpdateServers[serverIndex]}main/${this.branch}/${relpath}`;
+    }
     async downloadRaw(serverIndex, relpath) {
         const url = this.buildURL(serverIndex, relpath)
         return await got(url).buffer();
@@ -170,7 +172,7 @@ class Updater extends EventEmitter {
         }
         if (fs.existsSync(path.join(this.gamePath, "/noita.exe"))) {
             let folder = "noita-together"
-            if (this.branch == "nemesis") { folder = "noita-nemesis" }
+            if (this.branch == "noita_mod/nemesis") { folder = "noita-nemesis" }
             this.gamePath = path.join(this.gamePath, "/mods/" + folder + "/")
             return true
         }

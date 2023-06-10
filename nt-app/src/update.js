@@ -47,12 +47,11 @@ function updaterSetup(branch, gamePath) {
 }
 
 exports.updateMod = async (gamePath) => {
-    // i wan die
     let error = false
     let coopReady = false
     let memesisReady = false
-    const coop = updaterSetup("mod", gamePath)
-    const memesis = updaterSetup("nemesis", gamePath)
+    const coop = updaterSetup("noita_mod/core", gamePath)
+    const memesis = updaterSetup("noita_mod/nemesis", gamePath)
     coop.on('download_error', () => { error = true })
     coop.on('install_error', () => { error = true })
     coop.on('run_finish', () => {
