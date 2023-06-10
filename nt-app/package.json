@@ -18,7 +18,7 @@
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@popperjs/core": "^2.6.0",
         "electron": "9.0.0",
-        "electron-updater": "5.0.6",
+        "electron-updater": "6.0.1",
         "got": "^11.8.1",
         "jsonwebtoken": "^9.0.0",
         "keytar": "^7.2.0",
@@ -40,6 +40,11 @@
         "eslint-plugin-vue": "^6.2.2",
         "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
         "vue-template-compiler": "^2.6.11"
+    },
+    "build": {
+        "win": {
+            "publish": []
+        }
     },
     "installConfig": {
         "hoistingLimits": "workspaces"

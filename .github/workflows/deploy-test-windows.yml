@@ -12,5 +12,5 @@ jobs:
         with:
           node-version: 16
       - run: yarn install
-      - run: yarn workspace nt-app electron:build
+      - run: yarn workspace nt-app electron:build --publish never
       - run: ls ./nt-app/dist_electron/
