@@ -1,21 +1,39 @@
 .main {
+  background: linear-gradient(#F7CF65, #CF4F52); /*TODO maybe this is too bright...*/
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 6rem;
   min-height: 100vh;
 }
 
+.inner{
+  background: #1d1d1daa;
+  border-radius: 25px;
+  max-width: 95%;
+  padding: 6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.disclaimer{
+  font-size: 12px;
+}
+
 .description {
-  display: inherit;
-  justify-content: inherit;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  gap: 64px;
   align-items: inherit;
   font-size: 0.85rem;
   max-width: var(--max-width);
   width: 100%;
   z-index: 2;
   font-family: var(--font-mono);
+  margin-bottom: 64px;
 }
 
 .description a {
