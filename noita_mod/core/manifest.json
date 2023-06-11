@@ -37,7 +37,7 @@
     "files/entities/playerghost_target.xml": "39d81049295191228b7e76bf6394fd57da0e59b4ab383d691aa9afd9710e9c99",
     "files/entities/poi/poi.lua": "4c5c86bfabee0242305e618f9ef55c1af8a90ab99a7b5b698f478dc7baa347c7",
     "files/entities/poi/poi.png": "0cc7675cd13f64fcf2972b3a6a484417eb174bfd49d8ed9a8a98c0331c08a94f",
-    "files/entities/poi/poi.xml": "1710e2bebfdc407e3d67e09c635b6f23fb5409c1a1cb9a2008c520e82c3b1425",
+    "files/entities/poi/poi.xml": "10dfab5372a1ac8f356fd4b3477c0aa0aa434a4bc3c7a22adcb36dbd2cf41ecc",
     "files/entities/poi/poi_emitter.png": "e62b1f378e74822ba03970a2e3fb1afd027105f77bbd9846df72a5eb6ff236ff",
     "files/entities/poi/poi_removal.lua": "88fe187f9f6e13fd7fa688b870363d8f6c1d2b4e4c7801ea6d62727cdcbc2f2c",
     "files/entities/sampo/disabled_sampo.png": "c4c80d6cc593d8907ad9d97dacadca23033b13a5408e6ef79c489425d1d8b4f0",
@@ -144,15 +144,19 @@
     "files/ui/buttons/torch.png": "7ba108f3b3092efabfeceea5bae1e3aa1020f46aed57adc86f203ac48ec0d54a",
     "files/ui/buttons/x_ray.png": "673af8ca8736e5715921089cdffec8689ac37bd3fd6dec813643001753d9656a",
     "files/ui/cancel.png": "b84c9747928552cc58b8bb8f9ccd261a347d0e3286ced9cda9e2b672fdc82aad",
+    "files/ui/cancel.png~": "ee1377043caad55a29f8884cf061760937bdc1e45f1a0509f97ec2f221eff64e",
     "files/ui/close.png": "fe32da273aa8d676789c097bbc4d9dbdf57ddaceeb97e67a2c196dc2cd1a3516",
+    "files/ui/close.png~": "1984f5e3679393eeec3cc9bccfa547935228736d937a7c27cd5a27b026256fd3",
     "files/ui/deselected.png": "cffd3aa089a9a72d35e2a0a50d999c7b0c2d8c137d5c8db676b7b7ba2f2e898c",
     "files/ui/hpbar_empty.png": "2ed5863aa2d31b3a781e3e3781831425a841fb746a6ff3280dfd60f7ea93c9d5",
     "files/ui/hpbar_full.png": "eb55c00c3d50c3bbf7731d9ce585f81d369f3fe82086399332af525051e6efdc",
+    "files/ui/hpbar_full.png~": "2ed5863aa2d31b3a781e3e3781831425a841fb746a6ff3280dfd60f7ea93c9d5",
     "files/ui/inner.png": "feb82e59719a88897ee87a0e1eaae9f9a8f881d83c90673f89876cefb3dd57c7",
     "files/ui/inner_darker.png": "050aeabbe43904fedf03b776c68bd22c28d6e69f0a6bc7956ed027706ce02680",
     "files/ui/items.png": "df238b383db53d55a30b460e8e513fc801144b0e2c65dd7e3ad8c3d4cbfa34d9",
     "files/ui/middle.png": "5bf2eae9f709bc49dffa0222f377c053f996d5a5d4916fbae7b7070b19716842",
     "files/ui/next_page.png": "9335dc36581f2ac28ae9ccc32e117359f78a0f7f35579f7cb0b6f2250cbd7f9a",
+    "files/ui/next_page.png~": "49d9d856f95592c15095e611fa308922343dbb031343195782c2a5f6fa627ab4",
     "files/ui/outer.png": "21d977188064a04361c0b0b13f946ab83e97accd075f144bab51dac4afe43e03",
     "files/ui/player_ghost.png": "28b1748c73cdccf184fb4d7df60f0af82319bff9b4aabfe3c5cead3abd3ef69c",
     "files/ui/player_radar.png": "40724a43bd120892aceff725073534e9c2a78352796c8e556300e7c04655551e",
@@ -179,5 +183,5 @@
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "48c75c25ea5b9aaa89442bc88d2c0b3a61d71676afb96643f201d92e7825f140"
   },
-  "buildDate": "2023-06-11T02:12:18.037Z"
+  "buildDate": "2023-06-11T02:30:18.592Z"
 }

@@ -7,7 +7,7 @@
 	></UIInfoComponent>
 
     <InteractableComponent
-        ui_text="read $0"
+        ui_text="dismiss $0"
     >
     </InteractableComponent>
 	<ItemComponent
