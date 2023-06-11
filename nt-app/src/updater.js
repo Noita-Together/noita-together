@@ -2,6 +2,7 @@
 const got = require("got")
 const crypto = require('crypto');
 const fs = require('fs');
+const fse = require('fs-extra');
 const path = require('path');
 const EventEmitter = require('events');
 const { spawn } = require("child_process")
@@ -188,6 +189,35 @@ class Updater extends EventEmitter {
             this.emit('gamepath_error')
             return
         }
+
+        const isDevelopment = process.env.NODE_ENV !== 'production'
+        if(isDevelopment){
+            this.emit('prepare_start');
+            this.emit('execute_start');
+            switch (this.branch){
+                case 'noita_mod/core':
+                    this.emit('download_start', 'Copy mods', 'noita_mod/core');
+                    fse.copySync(path.join(__dirname, '../../', 'noita_mod/core'), this.gamePath, {
+                        recursive: true,
+                        errorOnExist: false,
+                        overwrite: true
+                    })
+                    this.emit('download_finish', 'Copy mods', 'noita_mod/core');
+                    break;
+                case 'noita_mod/nemesis':
+                    this.emit('download_start', 'Copy mods', 'noita_mod/nemesis');
+                    fse.copySync(path.join(__dirname, '../../', 'noita_mod/nemesis'), this.gamePath, {
+                        recursive: true,
+                        errorOnExist: false,
+                        overwrite: true
+                    })
+                    this.emit('download_finish', 'Copy mods', 'noita_mod/nemesis');
+                    break;
+            }
+            this.emit('run_finish', true);
+            return
+        }
+
         if (!checkResult)
             checkResult = await this.check();
 
