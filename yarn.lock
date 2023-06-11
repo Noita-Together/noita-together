@@ -6080,6 +6080,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fs-extra@npm:^11.1.1":
+  version: 11.1.1
+  resolution: "fs-extra@npm:11.1.1"
+  dependencies:
+    graceful-fs: ^4.2.0
+    jsonfile: ^6.0.1
+    universalify: ^2.0.0
+  checksum: fb883c68245b2d777fbc1f2082c9efb084eaa2bbf9fddaa366130d196c03608eebef7fb490541276429ee1ca99f317e2d73e96f5ca0999eefedf5a624ae1edfd
+  languageName: node
+  linkType: hard
+
 "fs-extra@npm:^7.0.1":
   version: 7.0.1
   resolution: "fs-extra@npm:7.0.1"
@@ -9590,6 +9601,7 @@ __metadata:
     electron-updater: 5.0.6
     eslint: ^6.7.2
     eslint-plugin-vue: ^6.2.2
+    fs-extra: ^11.1.1
     got: ^11.8.1
     jsonwebtoken: ^9.0.0
     keytar: ^7.2.0
