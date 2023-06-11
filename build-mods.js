@@ -35,7 +35,7 @@ function buildManifest(workingDirectory){
         buildDate: new Date().toISOString()
     }
     walkDir(workingDirectory, function(filePath) {
-        const fileContents = fs.readFileSync(filePath, 'utf8');
+        const fileContents = fs.readFileSync(filePath);
         const relPath = filePath.slice(workingDirectory.length+1).replaceAll('\\', '/')
         if(ignoreFiles.includes(relPath)) return
 
