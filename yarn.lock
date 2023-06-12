@@ -9606,6 +9606,7 @@ __metadata:
     jsonwebtoken: ^9.0.0
     keytar: ^7.2.0
     protobufjs: ^6.10.2
+    sudo-prompt: ^9.2.1
     uuid: ^8.3.2
     validator: ^13.5.1
     vue: ^2.6.11
@@ -12821,6 +12822,13 @@ __metadata:
     postcss: ^7.0.0
     postcss-selector-parser: ^3.0.0
   checksum: 8acf28ea609bee6d7ba40121bcf53af8d899c1ec04f2c08de9349b8292b84b8aa7f82e14c623ae6956decf5b7a7eeea5472ab8e48de7bdcdb6d76640444f6753
+  languageName: node
+  linkType: hard
+
+"sudo-prompt@npm:^9.2.1":
+  version: 9.2.1
+  resolution: "sudo-prompt@npm:9.2.1"
+  checksum: 50a29eec2f264f2b78d891452a64112d839a30bffbff4ec065dba4af691a35b23cdb8f9107d413e25c1a9f1925644a19994c00602495cab033d53f585fdfd665
   languageName: node
   linkType: hard
 
