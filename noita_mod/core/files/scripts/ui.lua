@@ -190,9 +190,14 @@ if not initialized then
 
     local function change_bank_offset(num, pages)
         local offset = bank_offset + num
-        if (offset >= 0 and offset <= pages) then
-            bank_offset = offset
+        --clamp to min/max pages of bank
+        if (offset > pages) then
+            offset = pages
+        elseif (offset < 0) then
+            offset = 0
         end
+
+        bank_offset = offset
     end
 
     local function get_wand_sprite(filename)
