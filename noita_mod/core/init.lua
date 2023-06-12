@@ -193,6 +193,13 @@ function OnPlayerSpawned(player_entity)
         ComponentSetValue2(controls_component, "enabled", false)
     end
 
+    --Prevent players from polymorphing before the run begins
+    --But don't add if we already have poly immunity from some other source (resumed run / reconnect while poly immune?)
+    if (not EntityHasTag(player_entity, "polymorphable_NOT")) then
+        EntityAddTag(player_entity, "polymorphable_NOT")
+        GameAddFlagRun("NT_added_poly_immune_prerun")
+    end
+
     if (ModSettingGet("noita-together.NT_HINTS")) then
         EntityLoad("mods/noita-together/files/entities/start_run_hint.xml", res_x - 45, res_y + 30)
     end

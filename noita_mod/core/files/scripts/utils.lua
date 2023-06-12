@@ -861,6 +861,16 @@ function StartRun()
             end
             ComponentSetValue2(controls_component, "enabled", true)
         end
+
+        --Remove polymorph immunity if we granted it pre-run-start
+        --So players cant polymorph and move around before run start
+        if (GameHasFlagRun("NT_added_poly_immune_prerun")) then
+            if(EntityHasTag(player, "polymorphable_NOT")) then
+                EntityRemoveTag(player, "polymorphable_NOT")
+            end
+            GameRemoveFlagRun("NT_added_poly_immune_prerun")
+        end
+
         local cosmetics = CosmeticFlags()
         SendWsEvent({event="CustomModEvent", payload={name="PlayerCosmeticFlags", flags=cosmetics}})
         GameAddFlagRun("NT_unlocked_controls")
