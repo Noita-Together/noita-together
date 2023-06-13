@@ -77,7 +77,7 @@
                 <tr v-for="mod in modList" :key="mod.name">
                   <td>{{mod.name}}</td>
                   <td>
-                    {{mod.users.length}}
+                    <vModTooltip :mod="mod.name"></vModTooltip>
                   </td>
                 </tr>
               </tbody>
@@ -110,12 +110,14 @@ import vRoomFlags from "@/components/vRoomFlags.vue"
 import vLeaveRoom from "@/components/vLeaveRoom.vue"
 //import vTooltip from "@/components/vTooltip.vue"
 import vUserTooltip from "@/components/vUserTooltip.vue"
+import vModTooltip from "@/components/vModTooltip.vue"
 export default {
     components: {
         vButton,
         vRoomFlags,
         //vTooltip,
         vUserTooltip,
+        vModTooltip,
         vLeaveRoom
     },
     data() {
