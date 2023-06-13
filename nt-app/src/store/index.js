@@ -166,6 +166,10 @@ export default new Vuex.Store({
             "1": "Race",
             "2": "Nemesis"
         },
+        tabs: {
+            "0": 'Users',
+            "1": 'Mods'
+        },
         user: {
             name: "",
             id: 0,
@@ -174,6 +178,7 @@ export default new Vuex.Store({
         savedUser: false,
         savedUserName: "",
         lobbies: [],
+        roomTab: "0",
         room: {
             id: "",
             name: "",
@@ -186,11 +191,9 @@ export default new Vuex.Store({
                     userId: String,
                     name: String,
                     owner: Boolean,
-                    readyState: {
-                        ready: Boolean,
-                        seed: String,
-                        mods: [String]
-                    }
+                    ready: Boolean,
+                    seed: String,
+                    mods: [String]
                 }*/
             ]
         },
@@ -263,6 +266,9 @@ export default new Vuex.Store({
         },
         setLoading: (state, value) => {
             state.loading = value
+        },
+        setTab: (state, value)=>{
+            state.roomTab = value
         },
         joinState: (state, payload) => {
             state.joining = payload
@@ -387,6 +393,9 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        updateTab: async ({commit}, payload)=>{
+            commit('setTab', payload)
+        },
         continueSavedUser: ({ state, commit, dispatch }) => {
             commit("setLoading", true)
             ipcRenderer.send("TRY_LOGIN", state.savedUserName)

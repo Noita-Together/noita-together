@@ -2,6 +2,7 @@
     <div class="content" id="room">
         <vRoomFlags v-if="showRoomFlags" @applyFlags="sendFlags" @close="closeRoomFlags" />
         <vLeaveRoom v-if="showLeaveModal" @close="closeLeaveModal" />
+
         <div class="room-header">
             <vButton @click="openLeaveRoom">
                 <i class="fas fa-arrow-left" slot="icon"></i>
@@ -20,38 +21,68 @@
                 </vButton>
             </div>
         </div>
-        <!-- <div class="row-wrapper"> -->
         <div class="users-wrapper">
+          <div class="tab-switcher" >
+            <div v-for="(value, key) in tabs"
+                 @click="openTab(key)"
+                 v-bind:key="key"
+                 class="tab"
+                 :class="{ activeTab: tab===key, [tab]: true }"
+            >
+              {{value}}
+            </div>
+          </div>
+          <!-- <div class="row-wrapper"> -->
+          <div v-if="tab === '0' || !tab"> <!--Users tab-->
             <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>State</th>
-                        <th v-if="isHost">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="user in users" :key="user.userId">
-                        <td>{{ user.name }}</td>
-                        <td>
-                            <vUserTooltip :userId="user.userId"></vUserTooltip>
-                        </td>
-                        <td v-if="isHost && user.userId != userId">
-                            <vButton @click="kick(user.userId)" size="btn-small">
-                                <i class="fas fa-times" slot="icon"></i>
-                                kick
-                            </vButton>
-                            <vButton @click="ban(user.userId)" size="btn-small">
-                                <i class="fas fa-ban" slot="icon"></i>
-                                ban
-                            </vButton>
-                        </td>
-                        <td v-else-if="isHost">
-                            <vButton @click="startRun(false)" size="btn-small">Start Run</vButton>
-                        </td>
-                    </tr>
-                </tbody>
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>State</th>
+                <th v-if="isHost">Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="user in users" :key="user.userId">
+                <td>{{ user.name }}</td>
+                <td>
+                  <vUserTooltip :userId="user.userId"></vUserTooltip>
+                </td>
+                <td v-if="isHost && user.userId !== userId">
+                  <vButton @click="kick(user.userId)" size="btn-small">
+                    <i class="fas fa-times" slot="icon"></i>
+                    kick
+                  </vButton>
+                  <vButton @click="ban(user.userId)" size="btn-small">
+                    <i class="fas fa-ban" slot="icon"></i>
+                    ban
+                  </vButton>
+                </td>
+                <td v-else-if="isHost">
+                  <vButton @click="startRun(false)" size="btn-small">Start Run</vButton>
+                </td>
+              </tr>
+              </tbody>
             </table>
+          </div>
+          <div v-if="tab === '1'"> <!--Mods tab-->
+            <table>
+              <thead>
+              <tr>
+                <th>Mod Name</th>
+                <th>Users</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr v-for="mod in modList" :key="mod.name">
+                  <td>{{mod.name}}</td>
+                  <td>
+                    {{mod.users.length}}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="chat-wrapper">
@@ -138,10 +169,45 @@ export default {
         users() {
             return this.$store.state.room.users
         },
+        modList(){
+            const mods = {}
+            this.$store.state.room.users.forEach(user=>{
+              console.log(user)
+              const userMods = user.mods ? user.mods : []
+              userMods.forEach(mod=>{
+                if(!Object.keys(mods).includes(mod))
+                  mods[mod] = []
+                mods[mod].push(user.name)
+              })
+            })
+
+            const modNames = Object.keys(mods)
+            return modNames.map((modName)=>({
+              name: modName,
+              users: mods[modName]
+            })).sort((a,b)=>{
+              const aUsers = a.users.length
+              const bUsers = b.users.length
+
+              if(aUsers === bUsers){
+                return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+              }
+              return aUsers > bUsers ? -1 : 1
+            })
+        },
+        tab(){
+            return this.$store.state.roomTab
+        },
+        tabs(){
+            return this.$store.state.tabs
+        }
     },
     methods: {
         lockRoom() {
             this.$store.dispatch("updateRoom", { locked: !this.room.locked })
+        },
+        setTab(tab) {
+            this.$store.dispatch("updateTab", tab)
         },
         sendChat(e) {
             if (e.key != "Enter" || !this.chatMsg.trim()) {
@@ -168,6 +234,9 @@ export default {
         },
         openLeaveRoom() {
             this.showLeaveModal = true
+        },
+        openTab(tab){
+            this.setTab(tab)
         },
         closeLeaveModal() {
             this.showLeaveModal = false
@@ -198,6 +267,24 @@ export default {
     margin-bottom: 1em;
     overflow: auto;
     overflow-x: hidden;
+}
+
+.tab-switcher{
+  display: flex;
+}
+
+.tab{
+  margin-right: 8px;
+  background: #808080;
+  padding: 4px 8px 4px;
+}
+
+.tab:hover{
+  background: #666666;
+}
+
+.activeTab{
+  background: #2e2e2e !important;
 }
 
 .room-header > h1 {
