@@ -69,15 +69,34 @@
             <table>
               <thead>
               <tr>
-                <th>Mod Name</th>
-                <th>Users</th>
+                <th class="modlist-row">
+                  <div class="modlist-arrow-spacing"/>
+                  <div class="modlist-col">Mod Name</div>
+                  <div class="modlist-col-smol">Users</div>
+                </th>
               </tr>
               </thead>
               <tbody>
                 <tr v-for="mod in modList" :key="mod.name">
-                  <td>{{mod.name}}</td>
                   <td>
-                    <vModTooltip :mod="mod.name"></vModTooltip>
+                    <div class="modlist-row" @click="toggleCollapse(mod.name)">
+                      <i title="click to see users"
+                          class="fas"
+                          slot="icon"
+                          :class="expandedModItem === mod.name ? 'fa-chevron-up modlist-arrow-up' : 'fa-chevron-down modlist-arrow-down'"
+                      />
+                      <div class="modlist-col">{{`${mod.name.substring(0, 600)}${mod.name.length>600?'...':''}`}}</div>
+                      <div class="modlist-col-smol">{{mod.users.length}}</div>
+                    </div>
+                    <div v-if="expandedModItem === mod.name">
+                      <table class="modlist-users-table">
+                        <tbody>
+                        <tr v-for="user in mod.users" :key="user">
+                          <td>{{ user }}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -110,20 +129,19 @@ import vRoomFlags from "@/components/vRoomFlags.vue"
 import vLeaveRoom from "@/components/vLeaveRoom.vue"
 //import vTooltip from "@/components/vTooltip.vue"
 import vUserTooltip from "@/components/vUserTooltip.vue"
-import vModTooltip from "@/components/vModTooltip.vue"
 export default {
     components: {
         vButton,
         vRoomFlags,
         //vTooltip,
         vUserTooltip,
-        vModTooltip,
         vLeaveRoom
     },
     data() {
         return {
             showRoomFlags: false,
             showLeaveModal: false,
+            expandedContent: "",
             chatMsg: "",
             lastMsg: Date.now(),
             locked: false
@@ -170,6 +188,9 @@ export default {
         },
         users() {
             return this.$store.state.room.users
+        },
+        expandedModItem(){
+          return this.expandedContent
         },
         modList(){
             const mods = {}
@@ -237,6 +258,9 @@ export default {
         openLeaveRoom() {
             this.showLeaveModal = true
         },
+        toggleCollapse(modName){
+            this.expandedContent = this.expandedContent === modName ? "" : modName
+        },
         openTab(tab){
             this.setTab(tab)
         },
@@ -287,6 +311,41 @@ export default {
 
 .activeTab{
   background: #2e2e2e !important;
+}
+
+.modlist-row{
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+}
+
+.modlist-col{
+  flex-grow: 1;
+}
+
+.modlist-col-smol{
+  width: 300px;
+  justify-content: center;
+  text-align: center;
+}
+
+.modlist-users-table{
+  border: 1px solid #2E2E2E;
+  width: 60%;
+  margin-top: 8px;
+  margin-left: 32px;
+}
+
+.modlist-arrow-spacing{
+  width: 20px;
+}
+
+.modlist-arrow-down{
+  margin-right: 8px;
+}
+
+.modlist-arrow-up{
+  margin-right: 8px;
 }
 
 .room-header > h1 {
