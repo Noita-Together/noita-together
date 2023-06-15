@@ -70,7 +70,7 @@ export default {
             const users = this.$store.state.room.users;
             let found = undefined
             for (const user of users) {
-                if (user.userId == this.userId) {
+                if (user.userId === this.userId) {
                     found = user
                 }
             }
@@ -86,7 +86,7 @@ export default {
             const flags = this.$store.getters.flags
             let seed = 0
             for (const flag of flags) {
-                if (flag.id == "sync_world_seed") {
+                if (flag.id === "sync_world_seed") {
                     seed = flag.value
                 }
             }
@@ -116,20 +116,20 @@ export default {
             const messages = [];
             const msg = this.isHost ? "hostMsg" : "userMsg";
             for (const key in this.matches) {
-                if (key == "seed") { continue }
-                if (this.user[key] != this.host[key]) {
+                if (key === "seed") { continue }
+                if (this.user[key] !== this.host[key]) {
                     messages.push(this.matches[key][msg]);
                 }
             }
-            if (this.seed > 0 && this.host.seed != this.user.seed) {
+            if (this.seed > 0 && this.host.seed !== this.user.seed) {
                 messages.push(this.matches.seed[msg])
             }
-            if (this.mode == 2) {
+            if (this.mode === 2) {
                 let found = false
                 let order = false
                 for (const mod of this.mods) {
-                    if (mod == "noita-nemesis") { found = true }
-                    if (found && mod == "noita-together") {
+                    if (mod === "noita-nemesis") { found = true }
+                    if (found && mod === "noita-together") {
                         order = true
                     }
                 }
