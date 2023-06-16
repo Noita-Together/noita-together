@@ -238,4 +238,5 @@ function OnModPreInit()
     end
 end
 
+dofile_once("mods/noita-together/files/scripts/heart_mage_trick_fix.lua")
 dofile("mods/noita-together/files/ws/ws.lua")
