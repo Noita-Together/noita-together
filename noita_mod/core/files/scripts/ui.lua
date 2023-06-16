@@ -29,6 +29,12 @@ if not initialized then
     local selected_player = ""
     local numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"}
     local alphabet = {"q","w","e","r","t","y","u","i","o","p","a","s","d","f","g","h","j","k","l","z","x","c","v","b","n","m"}
+
+    local is_hovering_message_input = false --flag if hovering over message input textbox
+    local is_hovering_bank_filter = false --flag if hovering over bank filter textbox
+    local is_hovering_bank_gold = false --flag if hovering over bank gold textbox
+    local was_hovering_textbox = false --flag if we disabled controls while hovering a textbox
+
     local _wand_tooltip = {
         "$inventory_shuffle",
         "$inventory_actionspercast",
@@ -140,6 +146,31 @@ if not initialized then
         if right_click == 1 then right_click = true; elseif right_click == 0 then right_click = false; end
         if hover == 1 then hover = true; elseif hover == 0 then hover = false; end
         return left_click,right_click,hover,x,y,width,height,draw_x,draw_y,draw_width,draw_height;
+    end
+
+    --TODO Move me to some common file, refactor other things that lock/unlock controls (run start?)
+    local function LockPlayer()
+        local player = GetPlayer()
+        if (player == nil) then
+            return
+        end
+
+        local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
+        if(controls ~= nil) then
+            ComponentSetValue2(controls, "enabled", false)
+        end
+    end
+
+    local function UnlockPlayer()
+        local player = GetPlayer()
+        if (player == nil) then
+            return
+        end
+
+        local controls = EntityGetFirstComponentIncludingDisabled(player, "ControlsComponent")
+        if(controls ~= nil) then
+            ComponentSetValue2(controls, "enabled", true)
+        end
     end
 
     local function follow_player( userId, name )
@@ -501,6 +532,11 @@ if not initialized then
         GuiText(gui, pos_x + 119, pos_y + 5, "filter")
         GuiZSetForNextWidget(gui, 9)
         bankfilter = GuiTextInput(gui, next_id(), pos_x + 140, pos_y + 5, bankfilter, 100, 32)
+
+        --store hover state
+        local _, _, _hover = GuiGetPreviousWidgetInfo(gui)
+        is_hovering_bank_filter = _hover
+
         if (bankfilter == " ") then bankfilter = "" end
         filterItems()
         local pages = math.floor(#filteredItems / 40)
@@ -597,6 +633,9 @@ if not initialized then
         GuiZSetForNextWidget(gui, 9)
         gold_amount = GuiTextInput(gui, next_id(), pos_x, pos_y + 25, gold_amount, 120, 10, "0123456789")
         
+        --store hover state
+        local _, _, _hover = GuiGetPreviousWidgetInfo(gui)
+        is_hovering_bank_gold = _hover
         
         GuiZSetForNextWidget(gui, 9)
         GuiImageNinePiece(gui, next_id(), pos_x + 10, pos_y + 54, 30, 5, 1, "mods/noita-together/files/ui/inner_darker.png")
@@ -643,6 +682,11 @@ if not initialized then
         end
         GuiZSetForNextWidget(gui, 8)
         player_msg = GuiTextInput(gui, next_id(), pos_x, pos_y, player_msg, 150, 99, "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789 ")
+
+        --store hover state
+        local _, _, _hover = GuiGetPreviousWidgetInfo(gui)
+        is_hovering_message_input = _hover
+
         for _, num in pairs(numbers) do
             if (GuiButton(gui, next_id(), pos_x + offx, pos_y + offy, "["..num.."]")) then
                 player_msg = player_msg .. num
@@ -790,6 +834,9 @@ if not initialized then
 
         if (show_message) then
             draw_player_message()
+        else
+            --clear textbox hovering flag - in case hovering while message view closed
+            is_hovering_message_input = false
         end
 
         if (show_player_list) then
@@ -801,6 +848,24 @@ if not initialized then
             if(GameHasFlagRun("send_gold")) then
                 draw_gold_bank()
             end
+        else
+            --clear textbox hovering flags - in case hovering while bank view closed
+            is_hovering_bank_filter = false
+            is_hovering_bank_gold = false
+        end
+
+        --check if we are currently hovering any textinputs and lock/unlock player controls as needed
+        --don't need to do this unless the run is actually started
+        if (NT.run_started) then 
+            local is_hovering_textbox = is_hovering_bank_filter or is_hovering_bank_gold or is_hovering_message_input
+
+            if (is_hovering_textbox and not was_hovering_textbox) then
+                LockPlayer()
+            elseif ( not is_hovering_textbox and was_hovering_textbox) then
+                UnlockPlayer()
+            end
+
+            was_hovering_textbox = is_hovering_textbox
         end
         
         local seed = ModSettingGet( "noita_together.seed" )
