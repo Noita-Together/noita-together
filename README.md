@@ -33,9 +33,11 @@ We do NOT version the .env file, so we need to create one :)
 
 Create a .env file at `nt-app/`
 ```env
-VUE_APP_HOSTNAME=http://localhost:3000/api
-VUE_APP_WS_PORT=:5466
-VUE_APP_HOSTNAME_WS=localhost
+VUE_APP_HOSTNAME_PUBLIC=http://localhost:3000
+VUE_APP_HOSTNAME_WS_PUBLIC=localhost
+VUE_APP_WS_PORT_PUBLIC=:5466
+#DEBUG_NO_LOCALHOST_CHECK=true
+#DEBUG_DONT_UPDATE=true
 ```
 
 TODO github actions setup
@@ -53,7 +55,7 @@ yarn server
 
 We do NOT version the .env file, so we need to create one :)
 
-Create a .env file at `nt-app/`
+Create a .env file at `nt-web-app/`
 ```env
 TWITCH_API_KEY=
 TWITCH_CLIENT_ID=

@@ -1,4 +1,6 @@
 'use strict'
+import {globalAPI} from "./util/ApiUtil";
+
 const NT_SCHEME = "noitatogether"
 const path = require("path")
 const fs = require("fs")
@@ -138,7 +140,7 @@ ipcMain.on("remember_user", (event, val) => {
 ipcMain.on("TRY_LOGIN", async (event, account) => {
     try {
         const token = await keytar.getPassword("Noita Together", account)
-        const { body } = await got.post(`https://${process.env.VUE_APP_HOSTNAME}/auth/refresh`, {
+        const { body } = await got.post(`https://${globalAPI.getApiUrl()}/auth/refresh`, {
             json: {
                 ticket: token
             },
@@ -155,6 +157,10 @@ ipcMain.on("TRY_LOGIN", async (event, account) => {
         console.error(error)
         appEvent("TRY_LOGIN_FAILED", "")
     }
+})
+
+app.on('open-status-page', ()=>{
+
 })
 
 // Quit when all windows are closed.

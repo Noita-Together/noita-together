@@ -2,6 +2,9 @@
 /node_modules
 /dist
 /build
+/vite-plugin-electron.log
+/electron/main/proto/messages.js
+/release
 
 
 # local env files

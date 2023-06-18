@@ -7,11 +7,18 @@ const Lobby = require("./lobby")
 const axios = require("axios");
 let cachedJWKS = undefined
 
+const timeStart = Date.now()
+
 module.exports = (server) => {
     server.on('upgrade', async (req, socket, head) => {
         try {
             const url = URL.parse(req.url)
             const token = decodeURIComponent(path.basename(url.path))
+            if(token === 'uptime'){
+                socket.write(`HTTP/1.1 200 ${new Date(timeStart).toISOString()}\r\n\r\n`)
+                socket.destroy()
+                return
+            }
             const user = await getUser(token)//Get user from token
             if (!user) {
                 socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')

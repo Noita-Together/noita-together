@@ -1,9 +1,9 @@
 <template>
   <div class="content">
-    <div class="server-status" title="click to toggle offline mode" @click="ToggleOfflineMode">
+    <div class="server-status" title="double click to toggle offline mode" @click="OpenStatusPage" @dblclick="ToggleOfflineMode">
       <div class="server-status-text">Server Status</div>
-      <i v-if="isOnline !== null" class="fas fa-cloud" :class="{online: isOnline === true, offline: isOnline === false}"/>
-      <i v-if="isOnline === null" class="fas fa-spin fa-spinner"/>
+<!--      <i v-if="isOnline !== null" class="fas fa-cloud" :class="{online: isOnline === true, offline: isOnline === false}"/>-->
+      <i v-if="isOnline === null" class="fas fa-external-link"/>
     </div>
     <div v-if="!renderOffline" class="twitch-login" :class="{ hax: !savedUser }" @click="OpenLoginPage">
       <div class="twitch-logo">
@@ -37,10 +37,12 @@
 
 <script>
 import { shell, ipcRenderer } from "electron"
+import {ApiUtil, globalAPI} from "@/util/ApiUtil";
 export default {
   data() {
     return {
-      loginUrl: `${process.env.VUE_APP_HOSTNAME}/auth/login`,
+      loginUrl: `${globalAPI.getApiUrl()}/auth/login`,
+      statusUrl: `${globalAPI.getWebpageUrl()}/status-page`,
       remember: false,
       clicked: false,
       renderOffline: false
@@ -68,6 +70,11 @@ export default {
     },
   },
   methods: {
+    OpenStatusPage(){
+      const api = new ApiUtil() //We always want to open production link here
+      api.setEnvironment("production")
+      shell.openExternal(`${api.getWebpageUrl()}`)
+    },
     ToggleOfflineMode() {
       this.renderOffline = !this.renderOffline
     },
