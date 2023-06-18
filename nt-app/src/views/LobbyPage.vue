@@ -73,7 +73,7 @@
 
 <script>
 import vButton from "../components/vButton.vue";
-import vInput from "@/components/vInput.vue";
+import vInput from "../components/vInput.vue";
 import vRoomCreation from "../components/vRoomCreation.vue";
 import vRoomPassword from "../components/vRoomPassword.vue";
 export default {

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "composite": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "types": ["vite/client"]
+  },
+  "include": [
+    "../../../Users/Brendon/Downloads/noita-together-feat-vue3/vite.config.ts", "package.json", "electron/**/*", "shared/**/*"]
+}

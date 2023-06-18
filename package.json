@@ -10,7 +10,7 @@
     "shared-lib/"
   ],
   "scripts": {
-    "client": "yarn workspace nt-app electron:serve",
+    "client": "yarn workspace nt-app dev",
     "server": "yarn workspace nt-web-app serve"
   },
   "dependencies": {
