@@ -396,6 +396,9 @@ export default new Vuex.Store({
         updateTab: async ({commit}, payload)=>{
             commit('setTab', payload)
         },
+        startStandaloneServer: () => {
+            ipcRenderer.send("enable-server")
+        },
         continueSavedUser: ({ state, commit, dispatch }) => {
             commit("setLoading", true)
             ipcRenderer.send("TRY_LOGIN", state.savedUserName)

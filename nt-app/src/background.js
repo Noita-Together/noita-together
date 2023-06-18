@@ -172,6 +172,10 @@ app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
+app.on('enable-server', ()=>{
+    const WebsocketRunner = require('nt-server')
+})
+
 if (!primaryInstance) {
     app.quit()
 }

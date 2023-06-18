@@ -9605,6 +9605,7 @@ __metadata:
     got: ^11.8.1
     jsonwebtoken: ^9.0.0
     keytar: ^7.2.0
+    nt-server: 1.0.0
     protobufjs: ^6.10.2
     sudo-prompt: ^9.2.1
     uuid: ^8.3.2
