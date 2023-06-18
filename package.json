@@ -5,7 +5,9 @@
   "packageManager": "yarn@3.5.1",
   "workspaces": [
     "nt-app/",
-    "nt-web-app/"
+    "nt-web-app/",
+    "nt-server/",
+    "shared-lib/"
   ],
   "scripts": {
     "client": "yarn workspace nt-app electron:serve",

@@ -20,6 +20,7 @@
     "jwk-to-pem": "^2.0.5",
     "keytar": "^7.2.0",
     "next": "13.4.4",
+    "nt-server": "1.0.0",
     "protobufjs": "^6.10.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
