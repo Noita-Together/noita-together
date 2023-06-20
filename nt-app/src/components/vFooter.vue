@@ -8,11 +8,16 @@
 </template>
 
 <script>
-import { shell, remote } from "electron";
+import { shell, ipcRenderer } from "electron";
+import { ref } from "vue";
+
+const version = ref("");
+ipcRenderer.invoke("get-version").then((v) => (version.value = v));
+
 export default {
     name: "vFooter",
     beforeMount() {
-        this.version = remote.app.getVersion()
+        this.version = version
     },
     data() {
         return {

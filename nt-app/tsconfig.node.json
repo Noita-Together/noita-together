@@ -11,5 +11,6 @@
     "types": ["vite/client"]
   },
   "include": [
-    "../../../Users/Brendon/Downloads/noita-together-feat-vue3/vite.config.ts", "package.json", "electron/**/*", "shared/**/*"]
+    "vite.config.ts", "package.json", "electron/**/*", "shared/**/*"
+  ]
 }

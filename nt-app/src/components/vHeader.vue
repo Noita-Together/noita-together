@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { remote } from "electron";
+import { ipcRenderer } from "electron";
 export default {
     name: "vHeader",
     props: {
@@ -22,8 +22,7 @@ export default {
     },
     methods: {
         minimizeApp() {
-            let w = remote.getCurrentWindow();
-            w.minimize();
+            ipcRenderer.send("minimize-window");
         },
         closeApp() {
             window.close();

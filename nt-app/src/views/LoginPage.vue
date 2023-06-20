@@ -13,7 +13,7 @@
       <span class="twitch-login-text">Login with Twitch.tv</span>
     </div>
     <div v-if="!renderOffline" class="remember-login">
-      <input type="checkbox" id="remember-user" name="remember-user" v-model="remember" />
+      <input type="checkbox" id="remember-user" name="remember-user" v-model="rememberUser" />
       <label for="remember-user">Remember me</label>
     </div>
     <div class="offline-buttons" v-if="renderOffline">
@@ -36,64 +36,61 @@
 </template>
 
 <script>
-import { shell, ipcRenderer } from "electron"
-import {ApiUtil, globalAPI} from "@/util/ApiUtil";
-export default {
-  data() {
-    return {
-      loginUrl: `${globalAPI.getApiUrl()}/auth/login`,
-      statusUrl: `${globalAPI.getWebpageUrl()}/status-page`,
-      remember: false,
-      clicked: false,
-      renderOffline: false
-    }
-  },
-  beforeCreate() {
-    const unsub = this.$store.subscribe((mutation, state) => {
-      if (mutation.type == "setUser" && state.user.id > 0) {
-        unsub()
-        this.clicked = false
-        this.$router.replace({ path: "/lobby" })
-        this.$store.commit("setLoading", false)
+import { ipcRenderer, shell } from "electron";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
+import { useRouter } from "vue-router";
+import {ApiUtil, globalAPI} from "../util/ApiUtil";
+import useStore from "../store";
+const router = useRouter();
+const store = useStore();
+const loginUrl = ref(`${globalAPI.getApiUrl()}/auth/login`)
+const statusUrl = ref(`${globalAPI.getWebpageUrl()}/status-page`)
+
+export const rememberUser = ref(false);
+export const clicked = ref(false);
+export const renderOffline = ref(false)
+
+export const savedUser = computed(() => {
+  return store.state.savedUser;
+});
+export const savedUserName = computed(() => {
+  return store.state.savedUserName;
+});
+export const isOnline = computed(() => {
+  return null;
+});
+
+watch(
+    () => store.state.user.id,
+    (id) => {
+      if (id > 0) {
+        clicked.value = false;
+        router.replace({ path: "/lobby" });
+        store.commit("setLoading", false);
       }
-    })
-  },
-  computed: {
-    savedUser() {
-      return this.$store.state.savedUser
-    },
-    isOnline(){
-      return null
-    },
-    savedUserName() {
-      return this.$store.state.savedUserName
-    },
-  },
-  methods: {
-    OpenStatusPage(){
-      const api = new ApiUtil() //We always want to open production link here
-      api.setEnvironment("production")
-      shell.openExternal(`${api.getWebpageUrl()}`)
-    },
-    ToggleOfflineMode() {
-      this.renderOffline = !this.renderOffline
-    },
-    OpenLoginPage() {
-      this.clicked = true
-      shell.openExternal(this.loginUrl)
-    },
-    ContinueSavedUser() {
-      this.$store.dispatch("continueSavedUser")
-    },
-    StartStandaloneServer() {
-      this.$store.dispatch("startStandaloneServer")
-    },
-  },
-  watch: {
-    remember(oldVal, newVal) {
-      ipcRenderer.send("remember_user", !newVal)
-    },
-  },
+    }
+);
+watch(rememberUser, (newVal) => {
+  ipcRenderer.send("remember_user", newVal);
+});
+
+export function ContinueSavedUser() {
+  store.dispatch("continueSavedUser", undefined);
+}
+export function OpenStatusPage(){
+  const api = new ApiUtil() //We always want to open production link here
+  api.setEnvironment("production")
+  shell.openExternal(`${api.getWebpageUrl()}`)
+}
+export function ToggleOfflineMode() {
+  this.renderOffline = !this.renderOffline
+}
+export function OpenLoginPage() {
+  this.clicked = true
+  shell.openExternal(loginUrl.value)
+}
+export function StartStandaloneServer() {
+  store.dispatch("startStandaloneServer")
 }
 </script>
 
