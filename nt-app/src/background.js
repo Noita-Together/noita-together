@@ -10,6 +10,7 @@ import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { updateMod } from "./update.js"
 const appEvent = require("./appEvent")
 const wsClient = require("./ws.js")
+const cmdLineArgs = require("./cmdLineArgs");
 const keytar = require("keytar")
 const got = require("got")
 const http = require("http")
@@ -118,6 +119,12 @@ async function createWindow() {
 }
 
 ipcMain.on("update_mod", (event, gamePath) => {
+    if(cmdLineArgs.isNoUpdate())
+    {
+        appEvent("skip_update", true)
+        return
+    }
+
     keytar.findCredentials("Noita Together").then(credentials => {
         if (credentials.length > 0) {
             const username = credentials[0].account
