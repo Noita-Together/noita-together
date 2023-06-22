@@ -3,6 +3,7 @@ const path = require("path")
 const ws = require("ws")
 const { v4: uuidv4 } = require("uuid")
 const appEvent = require("./appEvent")
+const cmdLineArgs = require("./cmdLineArgs");
 const { ipcMain } = require("electron")
 function sysMsg(message) {
     appEvent("sChat", {
@@ -54,7 +55,7 @@ class NoitaGame extends EventEmitter {
 
     isConnectionLocalhost(ws) {
         const addr = ws._socket.remoteAddress
-        return (addr == "::1") || (addr == "127.0.0.1") || (addr == "localhost") || (addr == "::ffff:127.0.0.1") || process.env.DEBUG_NO_LOCALHOST_CHECK
+        return (addr == "::1") || (addr == "127.0.0.1") || (addr == "localhost") || (addr == "::ffff:127.0.0.1") || cmdLineArgs.isAllowRemoteNoita()
     }
 
     gameListen() {

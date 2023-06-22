@@ -35,6 +35,10 @@ export default {
         ipcRenderer.on("GAME_PATH_NOT_FOUND", () => {
             this.showPathModal = true
         })
+
+        ipcRenderer.on("skip_update", () => {
+            this.$router.replace({ path: "/login" })
+        })
     },
     created() {
         ipcRenderer.send("update_mod")
