@@ -1,7 +1,12 @@
 <template>
     <div class="content" id="room">
-        <vRoomFlags v-if="showRoomFlags" @applyFlags="sendFlags" @close="closeRoomFlags" />
-        <vLeaveRoom v-if="showLeaveModal" @close="closeLeaveModal" />
+        <vRoomFlags
+            v-if="showRoomFlags"
+            @applyFlags="sendFlags"
+            @close="closeRoomFlags" />
+        <vLeaveRoom
+            v-if="showLeaveModal"
+            @close="closeLeaveModal" />
 
         <div class="room-header">
             <vButton @click="openLeaveRoom">
@@ -14,26 +19,24 @@
                     <i class="fas fa-lock-open" slot="icon" v-else></i>
                 </vButton>
                 <vButton @click="openRoomFlags">
-                    <template>
-                        <i class="fas fa-edit" slot="icon" v-if="isHost"></i>
-                        <i class="far fa-question-circle" slot="icon" v-else></i>
-                    </template>
+                  <i class="fas fa-edit" slot="icon" v-if="isHost"></i>
+                  <i class="far fa-question-circle" slot="icon" v-else></i>
                 </vButton>
             </div>
         </div>
         <div class="users-wrapper">
           <div class="tab-switcher" >
-            <div v-for="(value, key) in tabs"
-                 @click="openTab(key)"
-                 v-bind:key="key"
+            <div v-for="value in tabs"
+                 @click="openTab(RoomTabToId[value])"
+                 v-bind:key="RoomTabToId[value]"
                  class="tab"
-                 :class="{ activeTab: tab===key, [tab]: true }"
+                 :class="{ activeTab: tab===RoomTabToId[value], [tab]: true }"
             >
               {{value}}
             </div>
           </div>
           <!-- <div class="row-wrapper"> -->
-          <div v-if="tab === '0' || !tab"> <!--Users tab-->
+          <div v-if="tab === 0 || !tab"> <!--Users tab-->
             <table>
               <thead>
               <tr>
@@ -65,7 +68,7 @@
               </tbody>
             </table>
           </div>
-          <div v-if="tab === '1'"> <!--Mods tab-->
+          <div v-if="tab === 1"> <!--Mods tab-->
             <table>
               <thead>
               <tr>
@@ -83,12 +86,12 @@
                       <i title="click to see users"
                           class="fas"
                           slot="icon"
-                          :class="expandedModItem === mod.name ? 'fa-chevron-up modlist-arrow-up' : 'fa-chevron-down modlist-arrow-down'"
+                          :class="expandedContent === mod.name ? 'fa-chevron-up modlist-arrow-up' : 'fa-chevron-down modlist-arrow-down'"
                       />
                       <div class="modlist-col">{{`${mod.name.substring(0, 600)}${mod.name.length>600?'...':''}`}}</div>
                       <div class="modlist-col-smol">{{mod.users.length}}</div>
                     </div>
-                    <div v-if="expandedModItem === mod.name">
+                    <div v-if="expandedContent === mod.name">
                       <table class="modlist-users-table">
                         <tbody>
                         <tr v-for="user in mod.users" :key="user">
@@ -122,161 +125,156 @@
     </div>
 </template>
 
-<script>
-import { ipcRenderer } from "electron"
-import vButton from "@/components/vButton.vue"
-import vRoomFlags from "@/components/vRoomFlags.vue"
-import vLeaveRoom from "@/components/vLeaveRoom.vue"
-//import vTooltip from "@/components/vTooltip.vue"
-import vUserTooltip from "@/components/vUserTooltip.vue"
-export default {
-    components: {
-        vButton,
-        vRoomFlags,
-        //vTooltip,
-        vUserTooltip,
-        vLeaveRoom
-    },
-    data() {
-        return {
-            showRoomFlags: false,
-            showLeaveModal: false,
-            expandedContent: "",
-            chatMsg: "",
-            lastMsg: Date.now(),
-            locked: false
-        }
-    },
-    beforeCreate() {
-        const unsub = this.$store.subscribe((mutation) => {
-            if (mutation.type == "resetRoom") {
-                unsub()
-                this.$router.replace({ path: "/lobby" })
-            }
-        })
-    },
-    created() {
-        ipcRenderer.send("game_listen")
-    },
-    watch: {
-        chat() {
-            this.$nextTick(() => {
-                const container = this.$refs.chat
-                if (container) {
-                    if (container.scrollHeight - container.scrollTop < 700) {
-                        container.scrollTop = container.scrollHeight
-                    }
-                }
-            })
-        },
-    },
-    computed: {
-        room() {
-            return this.$store.state.room
-        },
-        flags() {
-            return this.$store.state.roomFlags
-        },
-        chat() {
-            return this.$store.state.roomChat
-        },
-        userId() {
-            return this.$store.getters.userId
-        },
-        isHost() {
-            return this.$store.getters.isHost
-        },
-        users() {
-            return this.$store.state.room.users
-        },
-        expandedModItem(){
-          return this.expandedContent
-        },
-        modList(){
-            const mods = {}
-            this.$store.state.room.users.forEach(user=>{
-              console.log(user)
-              const userMods = user.mods ? user.mods : []
-              userMods.forEach(mod=>{
-                if(!Object.keys(mods).includes(mod))
-                  mods[mod] = []
-                mods[mod].push(user.name)
-              })
-            })
+<script setup lang="ts">
+import { ipcRenderer } from "electron";
+import vButton from "../components/vButton.vue";
+import vRoomFlags from "../components/vRoomFlags.vue";
+import vLeaveRoom from "../components/vLeaveRoom.vue";
+import vUserTooltip from "../components/vUserTooltip.vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
+import { useRouter } from "vue-router";
+import useStore, {GameFlag, RoomTabToId} from "../store";
+import { ipc } from "../ipc-renderer";
+const router = useRouter();
+const store = useStore();
 
-            const modNames = Object.keys(mods)
-            return modNames.map((modName)=>({
-              name: modName,
-              users: mods[modName]
-            })).sort((a,b)=>{
-              const aUsers = a.users.length
-              const bUsers = b.users.length
+const showRoomFlags = ref(false);
+const showLeaveModal = ref(false);
+const expandedContent = ref('')
+const chatMsg = ref("");
+const lastMsg = ref(Date.now());
+const tab = ref(RoomTabToId.users)
 
-              if(aUsers === bUsers){
-                return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
-              }
-              return aUsers > bUsers ? -1 : 1
-            })
-        },
-        tab(){
-            return this.$store.state.roomTab
-        },
-        tabs(){
-            return this.$store.state.tabs
-        }
-    },
-    methods: {
-        lockRoom() {
-            this.$store.dispatch("updateRoom", { locked: !this.room.locked })
-        },
-        setTab(tab) {
-            this.$store.dispatch("updateTab", tab)
-        },
-        sendChat(e) {
-            if (e.key != "Enter" || !this.chatMsg.trim()) {
-                return
-            }
-            if (Date.now() - this.lastMsg < 400) {
-                console.log("TOO FAST MANG")
-                return
-            }
-            this.$store.dispatch("sendChat", { message: this.chatMsg.trim() })
-            this.lastMsg = Date.now()
-            this.chatMsg = ""
-        },
-        sendFlags(payload) {
-            this.$store.commit("roomFlagsUpdated", payload)
-            this.$store.dispatch("sendFlags")
-            this.closeRoomFlags()
-        },
-        openRoomFlags() {
-            this.showRoomFlags = true
-        },
-        closeRoomFlags() {
-            this.showRoomFlags = false
-        },
-        openLeaveRoom() {
-            this.showLeaveModal = true
-        },
-        toggleCollapse(modName){
-            this.expandedContent = this.expandedContent === modName ? "" : modName
-        },
-        openTab(tab){
-            this.setTab(tab)
-        },
-        closeLeaveModal() {
-            this.showLeaveModal = false
-        },
-        kick(userId) {
-            this.$store.dispatch("kickUser", { userId })
-        },
-        ban(userId) {
-            this.$store.dispatch("banUser", { userId })
-        },
-        startRun(forced) {
-            this.$store.dispatch("startRun", { forced })
-        }
-    },
+watch(
+    () => store.state.room.id,
+    (id) => {
+      if (!id) {
+        router.replace({ path: "/lobby" });
+      }
+    }
+);
+onMounted(() => {
+  ipcRenderer.send("game_listen");
+});
+
+const room = computed(() => {
+  return store.state.room;
+});
+const chat = computed(() => {
+  return store.state.roomChat;
+});
+const userId = computed(() => {
+  return store.getters.userId;
+});
+const isHost = computed(() => {
+  return store.getters.isHost;
+});
+const users = computed(() => {
+  return store.state.room.users;
+});
+const tabs = computed(():string[]=>{
+  return Object.keys(RoomTabToId)
+})
+const modList = computed(()=>{
+  const mods = {} as {[key: string]: any}
+  store.state.room.users.forEach((user:any)=>{
+    console.log(user)
+    const userMods = user.mods ? user.mods : []
+    userMods.forEach((mod :string)=>{
+      if(!Object.keys(mods).includes(mod))
+        mods[mod] = []
+      mods[mod].push(user.name)
+    })
+  })
+
+  const modNames = Object.keys(mods)
+  return modNames.map((modName)=>({
+    name: modName,
+    users: mods[modName]
+  })).sort((a,b)=>{
+    const aUsers = a.users.length
+    const bUsers = b.users.length
+
+    if(aUsers === bUsers){
+      return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+    }
+    return aUsers > bUsers ? -1 : 1
+  })
+})
+
+const chatElement = ref();
+watch(chat, (chat) => {
+  nextTick(() => {
+    if (chatElement.value) {
+      if (chatElement.value.scrollHeight - chatElement.value.scrollTop < 700) {
+        chatElement.value.scrollTop = chatElement.value.scrollHeight;
+      }
+    }
+  });
+});
+function lockRoom() {
+  store.actions.updateRoom({
+    locked: !room.value.locked,
+  });
+}
+async function saveGame() {
+  const gameSave = await ipc.callMain("saveGame")();
+  if (gameSave.success) {
+    store.dispatch("sendChat", { message: "Game saved" });
+  } else {
+    store.dispatch("sendChat", { message: "Game save failed" });
+  }
+}
+function sendChat(e: KeyboardEvent) {
+  if (e.key != "Enter" || !chatMsg.value.trim()) {
+    return;
+  }
+  if (Date.now() - lastMsg.value < 400) {
+    console.log("TOO FAST MANG");
+    return;
+  }
+  store.dispatch("sendChat", { message: chatMsg.value.trim() });
+  lastMsg.value = Date.now();
+  chatMsg.value = "";
+}
+function toggleCollapse(modName: string){
+  expandedContent.value = expandedContent.value === modName ? "" : modName
+}
+function openTab(id:number) {
+  tab.value = id
+}
+
+function sendFlags(payload: GameFlag[]) {
+  store.actions.updateRoomFlags(payload);
+  store.actions.sendFlags();
+  closeRoomFlags();
+}
+function openRoomFlags() {
+  showRoomFlags.value = true;
+}
+function closeRoomFlags() {
+  showRoomFlags.value = false;
+}
+function openLeaveRoom() {
+  showLeaveModal.value = true;
+}
+function closeLeaveModal() {
+  showLeaveModal.value = false;
+}
+function kick(userId: string) {
+  store.actions.kickUser({
+    userId,
+  });
+}
+function ban(userId: string) {
+  store.actions.banUser({
+    userId,
+  });
+}
+function startRun(forced: boolean) {
+  store.actions.startRun({
+    forced,
+  });
 }
 </script>
 

@@ -7,9 +7,8 @@ import { appEvent } from "./appEvent";
 import noita from "./noita";
 import { NT } from "./proto/messages";
 import { getDb } from "./database";
-const host = `ws://${process.env.VITE_APP_HOSTNAME}${
-  process.env.VITE_APP_WS_PORT ? ":" + process.env.VITE_APP_WS_PORT : ""
-}/`;
+import {globalAPI} from "../../src/util/ApiUtil";
+const host = globalAPI.getWSUrl();
 
 export default (data) => {
   const user = { userId: data.id, name: data.display_name };
@@ -25,11 +24,11 @@ export default (data) => {
       if (isHost) {
         const bank = noita.getBank();
         const msg = messageHandler.encodeGameMsg("cHostItemBank", {
-          wands: bank.wands,
-          spells: bank.spells,
-          items: bank.flasks,
-          objects: bank.objects,
-          gold: bank.gold,
+          wands: bank?.wands,
+          spells: bank?.spells,
+          items: bank?.flasks,
+          objects: bank?.objects,
+          gold: bank?.gold,
         });
         sendMsg(msg);
       }

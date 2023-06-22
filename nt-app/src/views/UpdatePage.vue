@@ -1,64 +1,63 @@
 <template>
-    <div class="content">
-        <vGamePath v-if="showPathModal" @setPath="setPathAndUpdate"></vGamePath>
-        <div class="update-log">
-            <div>
-                <p v-for="(msg, index) in logs" :key="index">{{ msg }}</p>
-            </div>
-        </div>
-        <vButton :disabled="!success" @click="ContinueLogin">Continue</vButton>
+  <div class="content">
+    <vGamePath v-if="showPathModal" @setPath="setPathAndUpdate"/>
+    <div class="update-log">
+      <div>
+        <p v-for="(msg, index) in logs" :key="index">{{ msg }}</p>
+      </div>
     </div>
+    <vButton :disabled="!success" @click="continueLogin">Continue</vButton>
+  </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ipcRenderer } from "electron";
-import vButton from "@/components/vButton.vue";
-import vGamePath from "@/components/vGamePath.vue";
-export default {
-    components: { vButton, vGamePath},
-    data() {
-        return {
-            logs: [],
-            success: false,
-            showPathModal: false
-        };
-    },
-    beforeCreate() {
-        ipcRenderer.on("update_log", (event, data) => {
-            this.logs.push(data);
-        });
+import { ipc } from "../ipc-renderer";
+import vButton from "../components/vButton.vue";
+import vGamePath from "../components/vGamePath.vue";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
-        ipcRenderer.once("update_done", (event, data) => {
-            this.success = data;
-        });
+const router = useRouter();
 
-        ipcRenderer.on("GAME_PATH_NOT_FOUND", () => {
-            this.showPathModal = true
-        })
-    },
-    created() {
-        ipcRenderer.send("update_mod")
-    },
-    methods: {
-        ContinueLogin() {
-            this.$router.replace({ path: "/login" });
-        },
-        setPathAndUpdate(path) {
-            this.showPathModal = false
-            ipcRenderer.send("update_mod", path)
-        }
-    },
-};
+const logs = ref<string[]>([]);
+const success = ref(false);
+const showPathModal = ref(false);
+
+ipcRenderer.on("update_log", (event, data) => {
+  logs.value.push(data);
+});
+
+ipcRenderer.once("update_done", (event, data) => {
+  success.value = data;
+});
+
+ipcRenderer.on("GAME_PATH_NOT_FOUND", () => {
+  showPathModal.value = true;
+});
+
+onMounted(() => {
+  ipcRenderer.send("update_mod");
+});
+
+function continueLogin() {
+  router.replace({ path: "/login" });
+}
+async function setPathAndUpdate(path: string) {
+  showPathModal.value = false;
+  await ipc.callMain("setGamePath")(path);
+  ipcRenderer.send("update_mod");
+}
 </script>
 
 <style>
 .update-log {
-    min-height: 90%;
-    max-height: 90%;
-    overflow: auto;
-    overflow-x: hidden;
+  min-height: 90%;
+  max-height: 90%;
+  overflow: auto;
+  overflow-x: hidden;
 }
 .update-log > p {
-    margin: 0.4em 0;
+  margin: 0.4em 0;
 }
 </style>

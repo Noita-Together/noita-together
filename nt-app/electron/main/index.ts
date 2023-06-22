@@ -11,12 +11,13 @@ import http from "http";
 import { getDb } from "./database";
 import { ipc } from "./ipc-main";
 import jwt from 'jsonwebtoken';
+import {createPinia} from "pinia";
 
 let rememberUser = false;
 
-if (!process.env.VITE_APP_HOSTNAME_PUBLIC || !process.env.VITE_APP_WS_PORT_PUBLIC || !process.env.VITE_APP_HOSTNAME_WS_PUBLIC) {
+if (!process.env.VITE_APP_HOSTNAME_PUBLIC || !process.env.VITE_APP_WS_PORT_PUBLIC) {
   console.error(
-    "Please set the VITE_APP_HOSTNAME_PUBLIC, VITE_APP_WS_PORT_PUBLIC and the VITE_APP_HOSTNAME_WS_PUBLIC environment variables"
+    "Please set the VITE_APP_HOSTNAME_PUBLIC, VITE_APP_WS_PORT_PUBLIC environment variables"
   );
 }
 

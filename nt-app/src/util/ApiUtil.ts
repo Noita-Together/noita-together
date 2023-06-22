@@ -5,6 +5,7 @@ class ApiUtil{
     lanIP: string|null = null
 
     getWSUrl(){
+        console.log(`getWSUrl: ${this.getUrls().ws}`)
         return this.getUrls().ws
     }
 
@@ -28,9 +29,9 @@ class ApiUtil{
         switch (this.environment){
             case "production":
                 return {
-                    ws: `ws://${process.env.VUE_APP_HOSTNAME_WS_PUBLIC}${process.env.VUE_APP_WS_PORT_PUBLIC}/`,
-                    website: process.env.VUE_APP_HOSTNAME_PUBLIC,
-                    api: `${process.env.VUE_APP_HOSTNAME_PUBLIC}/api`
+                    ws: `ws://${process.env.VITE_APP_HOSTNAME_PUBLIC}${process.env.VITE_APP_WS_PORT_PUBLIC}/`,
+                    website: `https://${process.env.VITE_APP_HOSTNAME_PUBLIC}`,
+                    api: `https://${process.env.VITE_APP_HOSTNAME_PUBLIC}/api`
                 }
             case "dev":
                 return {

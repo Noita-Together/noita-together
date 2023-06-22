@@ -18,5 +18,6 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/no-explicit-any": "off",
     "linebreak-style": "off",
+    "no-mixed-spaces-and-tabs": "warn"
   },
 };

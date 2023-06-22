@@ -35,9 +35,9 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import { ipcRenderer, shell } from "electron";
-import { ref, computed, onMounted, watch, nextTick } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import {ApiUtil, globalAPI} from "../util/ApiUtil";
 import useStore from "../store";
@@ -46,17 +46,17 @@ const store = useStore();
 const loginUrl = ref(`${globalAPI.getApiUrl()}/auth/login`)
 const statusUrl = ref(`${globalAPI.getWebpageUrl()}/status-page`)
 
-export const rememberUser = ref(false);
-export const clicked = ref(false);
-export const renderOffline = ref(false)
+const rememberUser = ref(false);
+const clicked = ref(false);
+const renderOffline = ref(false)
 
-export const savedUser = computed(() => {
+const savedUser = computed(() => {
   return store.state.savedUser;
 });
-export const savedUserName = computed(() => {
+const savedUserName = computed(() => {
   return store.state.savedUserName;
 });
-export const isOnline = computed(() => {
+const isOnline = computed(() => {
   return null;
 });
 
@@ -74,23 +74,23 @@ watch(rememberUser, (newVal) => {
   ipcRenderer.send("remember_user", newVal);
 });
 
-export function ContinueSavedUser() {
+function ContinueSavedUser() {
   store.dispatch("continueSavedUser", undefined);
 }
-export function OpenStatusPage(){
+function OpenStatusPage(){
   const api = new ApiUtil() //We always want to open production link here
   api.setEnvironment("production")
   shell.openExternal(`${api.getWebpageUrl()}`)
 }
-export function ToggleOfflineMode() {
-  this.renderOffline = !this.renderOffline
+function ToggleOfflineMode() {
+  renderOffline.value = !renderOffline.value
 }
-export function OpenLoginPage() {
-  this.clicked = true
+function OpenLoginPage() {
+  clicked.value = true
   shell.openExternal(loginUrl.value)
 }
-export function StartStandaloneServer() {
-  store.dispatch("startStandaloneServer")
+function StartStandaloneServer() {
+  store.dispatch("startStandaloneServer", undefined)
 }
 </script>
 
