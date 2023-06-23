@@ -55,18 +55,21 @@ function removeFromArray<T>(array: T[], shouldRemove: (element: T) => boolean) {
   return removed;
 }
 
+export type BankType = 'wands'|'spells'|'flasks'|'objects'
+export interface Bank{
+  wands: NT.IWand[];
+  spells: NT.ISpell[];
+  flasks: NT.IItem[];
+  objects: NT.IEntityItem[];
+}
+
 class RunningGame {
   gameId: string;
   name = ""; // TODO: Save the game name
   gamemode: Gamemode = "coop"; // TODO: Save the game gamemode
   // TODO: consider using a map, since that's supported now
   flags: NT.ClientRoomFlagsUpdate.IGameFlag[] = [];
-  bank: {
-    wands: NT.IWand[];
-    spells: NT.ISpell[];
-    flasks: NT.IItem[];
-    objects: NT.IEntityItem[];
-  } = {
+  bank: Bank = {
     wands: [],
     spells: [],
     flasks: [],
@@ -99,7 +102,7 @@ class NoitaGame extends EventEmitter {
 
   rejectConnections = true;
   user = { userId: "", name: "", host: false };
-  players = {};
+  players: {[key: string]: any} = {};
   #game: RunningGame | null = null;
   #gameActionHandler: {
     [key in keyof NT.IGameAction]: (
@@ -127,21 +130,25 @@ class NoitaGame extends EventEmitter {
             return;
           }
           const frames = [];
+          if(!payload.frames) {
+            console.error('sPlayerMove: We received no frames in payload!')
+            return
+          }
           for (const [index, current] of payload.frames.entries()) {
             frames.push(current);
             const next = payload.frames[index + 1];
-            if (typeof next !== "undefined") {
-              const med = {
-                x: lerp(current.x, next.x, 0.869),
-                y: lerp(current.y, next.y, 0.869),
-                armR: rotLerp(current.armR, next.armR, 0.869),
-                armScaleY: current.armScaleY,
-                scaleX: next.scaleX,
-                anim: next.anim,
-                held: next.held,
-              };
-              frames.push(med);
-            }
+            if (!current.x || !current.y || !current.armR) continue
+            if (!next.x || !next.y || !next.armR) continue
+            const med = {
+              x: lerp(current.x, next.x, 0.869),
+              y: lerp(current.y, next.y, 0.869),
+              armR: rotLerp(current.armR, next.armR, 0.869),
+              armScaleY: current.armScaleY,
+              scaleX: next.scaleX,
+              anim: next.anim,
+              held: next.held,
+            };
+            frames.push(med);
           }
           const jank = frames
             .map((current) => {
@@ -260,7 +267,8 @@ class NoitaGame extends EventEmitter {
         }
         if (!this.#game) return;
         for (const key in this.#game.bank) {
-          for (const item of this.#game.bank[key]) {
+          const bankElement = this.#game.bank[key as BankType];
+          for (const item of bankElement) {
             if (item.id == payload.id) {
               this.emit("HostTake", {
                 userId: payload.userId,
@@ -278,8 +286,9 @@ class NoitaGame extends EventEmitter {
         });
       },
       sPlayerPickup: async (payload) => {
+        if(!payload.userId) return
         const player =
-          payload.userId == this.user.userId
+          payload.userId === this.user.userId
             ? this.user
             : this.players[payload.userId];
         if (player) {
@@ -328,7 +337,9 @@ class NoitaGame extends EventEmitter {
             userId: payload.userId,
             ...JSON.parse(payload.payload),
           });
-        } catch (error) {}
+        } catch (error) {
+          console.error(error)
+        }
       },
       sRespawnPenalty: async (payload, game) => {
         const player =
@@ -448,7 +459,7 @@ class NoitaGame extends EventEmitter {
   }
   // event and ping
   // {event: "", payload: {}}
-  gameMessage(data, socket: WebSocket) {
+  gameMessage(data: any, socket: WebSocket) {
     let dataJSON = null;
     if (data.slice(0, 1) == ">") {
       if (data == ">RES> [no value]") {
@@ -490,11 +501,11 @@ class NoitaGame extends EventEmitter {
     return this.user.host;
   }
 
-  setUser(user) {
+  setUser(user: any) {
     this.user = user;
   }
 
-  setHost(val) {
+  setHost(val: boolean) {
     this.user.host = val;
   }
 
@@ -569,7 +580,7 @@ class NoitaGame extends EventEmitter {
     this.sendEvt("UpdateFlags", data);
   }
 
-  addPlayer(data) {
+  addPlayer(data: any) {
     this.players[data.userId] = data;
     if (!this.client) {
       return;
@@ -577,7 +588,7 @@ class NoitaGame extends EventEmitter {
     this.sendEvt("AddPlayer", data);
   }
 
-  removePlayer(data) {
+  removePlayer(data: any) {
     delete this.players[data.userId];
     this.sendEvt("RemovePlayer", data);
   }
@@ -604,7 +615,7 @@ class NoitaGame extends EventEmitter {
   }
 
   sendPlayerList() {
-    for (let player in this.players) {
+    for (const player in this.players) {
       this.sendEvt("AddPlayer", this.players[player]);
     }
   }
@@ -697,6 +708,7 @@ class NoitaGame extends EventEmitter {
     const { key, value } = protoKeyValue(gameAction);
     if (!this.#game) {
       console.error("No game existing during handleGameAction, key was ", key);
+      return
     }
     return this.#gameActionHandler[key]?.(value as any, this.#game);
   }

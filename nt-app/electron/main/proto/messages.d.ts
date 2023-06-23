@@ -6502,7 +6502,7 @@ export namespace NT {
 
     /** Properties of a LobbyAction. */
     interface ILobbyAction {
-
+        [index: string]:any
         /** LobbyAction cRoomCreate */
         cRoomCreate?: (NT.IClientRoomCreate|null);
 

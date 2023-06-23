@@ -27,6 +27,19 @@ function hash(data: crypto.BinaryLike) {
     .toUpperCase();
 }
 
+export interface DownloadOperation {
+  data?: any,
+  type: string
+  hash: string
+  relpath: string
+  abspath: string
+}
+
+export interface DownloadCheck{
+  serverIndex: number,
+  operations: DownloadOperation[]
+}
+
 export type UpdateBranch = "mod" | "nemesis";
 
 class Updater extends EventEmitter {
@@ -51,18 +64,18 @@ class Updater extends EventEmitter {
     const url = this.buildURL(serverIndex, relpath);
     return await got(url).buffer();
   }
-  async downloadJSON(serverIndex: number, relpath: string) {
+  async downloadJSON(serverIndex: number, relpath: string): Promise<any> {
     const url = this.buildURL(serverIndex, relpath);
-    return await got(url).json();
+    return got(url).json();
   }
 
-  async check(serverIndex = 0) {
+  async check(serverIndex = 0): Promise<DownloadCheck|null> {
     this.emit("check_start", serverIndex);
 
     try {
       const manifest = await this.downloadJSON(serverIndex, "manifest.json");
 
-      let operations = [];
+      const operations: DownloadOperation[] = [];
       Object.keys(manifest.files).forEach((relpath) => {
         const filedata = manifest.files[relpath];
         const filepath = this.buildPath(relpath);
@@ -142,31 +155,32 @@ class Updater extends EventEmitter {
       return;
     }
 
-    if (!checkResult) checkResult = await this.check();
+    let checkResultTyped: DownloadCheck|null = checkResult
+    if (!checkResultTyped) checkResultTyped = await this.check();
 
     let success;
-    if (checkResult) {
+    if (checkResultTyped) {
       success = true;
 
-      if (checkResult.operations.length > 0) {
+      if (checkResultTyped.operations.length > 0) {
         this.emit("prepare_start");
 
         // Prepare and validate operations
-        for (let operation of checkResult.operations) {
+        for (const operation of checkResultTyped.operations) {
           if (operation.type === "update") {
             this.emit(
               "download_start",
-              checkResult.serverIndex,
+              checkResultTyped.serverIndex,
               operation.relpath
             );
             operation.data = await this.downloadRaw(
-              checkResult.serverIndex,
+                checkResultTyped.serverIndex,
               operation.relpath
             );
             if (operation.hash === hash(operation.data)) {
               this.emit(
                 "download_finish",
-                checkResult.serverIndex,
+                  checkResultTyped.serverIndex,
                 operation.relpath
               );
             } else {
@@ -188,7 +202,7 @@ class Updater extends EventEmitter {
           this.emit("execute_start");
 
           // All operations have been prepared and validated, so execute them now
-          for (let operation of checkResult.operations) {
+          for (const operation of checkResultTyped.operations) {
             switch (operation.type) {
               case "update": {
                 this.emit("install_start", operation.relpath);
@@ -214,9 +228,9 @@ class Updater extends EventEmitter {
 
     this.emit("run_finish", success);
     return (
-      checkResult &&
-      checkResult.operations &&
-      checkResult.operations.length !== 0
+        checkResultTyped &&
+        checkResultTyped.operations &&
+        checkResultTyped.operations.length !== 0
     );
   }
 }

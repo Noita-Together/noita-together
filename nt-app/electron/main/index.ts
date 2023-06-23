@@ -11,7 +11,6 @@ import http from "http";
 import { getDb } from "./database";
 import { ipc } from "./ipc-main";
 import jwt from 'jsonwebtoken';
-import {createPinia} from "pinia";
 
 let rememberUser = false;
 
@@ -38,6 +37,11 @@ if (process.platform === "win32") app.setAppUserModelId(app.getName());
 // Browser window
 let win: BrowserWindow | null = null;
 
+export interface TwitchDecodedToken {
+  preferred_username: string,
+  sub: string
+}
+
 const loginServer = http.createServer((req, res) => {
   const url = new URL("noitatogether:/" + req.url);
   const token = url.searchParams.get("token");
@@ -49,7 +53,7 @@ const loginServer = http.createServer((req, res) => {
   const refreshToken = url.searchParams.get("refresh")
   const extra = url.searchParams.get("e")
 
-  const jwtDecoded = jwt.decode(token)
+  const jwtDecoded = jwt.decode(token) as TwitchDecodedToken
   const {preferred_username, sub} = jwtDecoded
   if (!preferred_username) {
     res.writeHead(404, { 'Content-Type': 'text/html' })
@@ -57,6 +61,11 @@ const loginServer = http.createServer((req, res) => {
     return
   }
   if (rememberUser) {
+    if(!refreshToken){
+      res.writeHead(400, { 'Content-Type': 'text/html' })
+      res.end('Remember User call should contain refresh token!')
+      return
+    }
     keytar.setPassword("Noita Together", preferred_username, refreshToken)
   }
   appEvent("USER_EXTRA", extra)

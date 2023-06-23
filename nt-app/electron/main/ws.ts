@@ -10,7 +10,7 @@ import { getDb } from "./database";
 import {globalAPI} from "../../src/util/ApiUtil";
 const host = globalAPI.getWSUrl();
 
-export default (data) => {
+export default (data: any) => {
   const user = { userId: data.id, name: data.display_name };
   noita.setUser({ userId: user.userId, name: user.name, host: false });
   let isHost = false; // TODO: Use noita.isHost() instead
@@ -61,6 +61,10 @@ export default (data) => {
     sJoinRoomSuccess: (payload) => {
       noita.rejectConnections = false;
       noita.startGame(uuidv4());
+      if(!payload.users) {
+        console.error('sJoinRoomSuccess: No users!')
+        return
+      }
       for (const player of payload.users) {
         if (player.userId == user.userId) {
           continue;
@@ -69,7 +73,7 @@ export default (data) => {
       }
     },
     sRoomFlagsUpdated: (payload) => {
-      noita.updateFlags(payload.flags);
+      if(payload.flags) noita.updateFlags(payload.flags);
     },
     sRoomCreated: (payload) => {
       if (!payload) {
@@ -91,7 +95,7 @@ export default (data) => {
   });
 
   client.on("close", () => {
-    appEvent("CONNECTION_LOST");
+    appEvent("CONNECTION_LOST", null);
     client?.terminate();
     client = null;
   });
@@ -101,11 +105,12 @@ export default (data) => {
     try {
       const { gameAction, lobbyAction } = messageHandler.decode(data);
       let payload;
-      let key;
+      let key: string|undefined;
       if (gameAction) {
         noita.handleGameAction(gameAction);
       } else if (lobbyAction) {
         key = Object.keys(lobbyAction).shift();
+        if(key === undefined) return
         payload = lobbyAction[key];
         if (key && payload) {
           if (typeof lobby[key] == "function") {
@@ -231,7 +236,12 @@ export default (data) => {
   });
 
   noita.on("SendItems", (event) => {
-    const payload = {};
+    const payload: {
+      spells?: {list:any}
+      flasks?: {list:any}
+      wands?: {list:any}
+      objects?: {list:any}
+    } = {};
     if (event.spells) {
       const spells = event.spells.map(mapSpells);
       payload.spells = { list: spells };
@@ -270,7 +280,7 @@ export default (data) => {
     sendMsg(msg);
   });
 
-  function sendMsg(msg) {
+  function sendMsg(msg: any) {
     if (client != null) {
       client.send(msg);
     }
@@ -285,7 +295,7 @@ export default (data) => {
     sendMsg(msg);
   }
 
-  function mapWands(wand) {
+  function mapWands(wand:any) { //TODO define wand
     return {
       id: uuidv4(),
       stats: keysToCamel(wand.stats),
@@ -297,7 +307,7 @@ export default (data) => {
     };
   }
 
-  function mapSpells(spell) {
+  function mapSpells(spell: any) { //TODO define spell
     return {
       id: uuidv4(),
       gameId: spell.id,
@@ -306,7 +316,7 @@ export default (data) => {
     };
   }
 
-  function mapFlasks(val) {
+  function mapFlasks(val: any) { //TODO define flask
     return {
       id: uuidv4(),
       isChest: val.isChest,
@@ -320,7 +330,7 @@ export default (data) => {
     };
   }
 
-  function mapObjects(val) {
+  function mapObjects(val: any) { //TODO define object
     return {
       id: uuidv4(),
       path: val.path,

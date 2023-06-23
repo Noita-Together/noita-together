@@ -7,7 +7,7 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vue-tsc --noEmit -p tsconfig.node.json --composite false && vue-tsc --noEmit --composite false && vite build && electron-builder --config .electron-builder.config.js",
+        "build": "vue-tsc --noEmit --noUnusedParameters --noUnusedLocals -p tsconfig.node.json --composite false && vue-tsc --noEmit --noUnusedParameters --noUnusedLocals --composite false && vite build && electron-builder --config .electron-builder.config.js",
         "build-force": "vite build && electron-builder --config .electron-builder.config.js",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
         "type-gen": "pbjs -t static-module --wrap es6 --no-comments --no-delimited --out electron/main/proto/messages.js public/messages.proto && pbjs -t static-module --no-delimited public/messages.proto | pbts -o electron/main/proto/messages.d.ts -"
@@ -37,6 +37,7 @@
     },
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^6.1.2",
+        "@types/jsonwebtoken": "^9.0.2",
         "@types/sqlite3": "^3.1.8",
         "@types/uuid": "^8.3.4",
         "@types/ws": "^8.5.3",
