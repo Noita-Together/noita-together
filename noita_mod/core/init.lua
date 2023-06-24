@@ -30,6 +30,12 @@ ModLuaFileAppend("data/scripts/perks/perk_pickup.lua", "mods/noita-together/file
 ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/files/append/perk_reroll.lua")
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
+
+--Append our translations to the game
+local TRANSLATIONS_FILE = "data/translations/common.csv"
+local translations = ModTextFileGetContent(TRANSLATIONS_FILE) .. ModTextFileGetContent("mods/noita-together/files/translations/translations.csv")
+ModTextFileSetContent(TRANSLATIONS_FILE, translations)
+
 HideGhosts = false
 HideChat = false
 PlayerRadar = true

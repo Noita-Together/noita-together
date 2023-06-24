@@ -856,7 +856,7 @@ function StartRun()
         local controls_component = EntityGetFirstComponent(player, "ControlsComponent")
         if (controls_component ~= nil) then
             if (NT ~= nil and NT.run_started == false) then
-                GamePrintImportant("Run Started", "Have fun")
+                GamePrintImportant("$noitatogether_run_started_title", "$noitatogether_run_started_subtitle")
                 NT.run_started = true
             end
             ComponentSetValue2(controls_component, "enabled", true)
