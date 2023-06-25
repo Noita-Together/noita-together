@@ -2,6 +2,7 @@
 noitatogether_died_respawning,You died and will be sent to your last checkpoint soon.,,,,,,,,,,,,the large message that appears when you die with respawning enabled,
 noitatogether_died_respawning_2,If host has kick on death active you are already out of the run but will continue to see ghosts and unable to interact.,,,,,,,,,,,,2nd part of the large message,
 noitatogether_host_changed_seed,Host changed world seed! Start a new game,,,,,,,,,,,,host changed world seed message,
+noitatogether_wait_for_start,Waiting for host to start the run,,,,,,,,,,,,message while locked waiting for host to start run,
 noitatogether_run_started_title,Run Started,,,,,,,,,,,,title of run started important message,
 noitatogether_run_started_subtitle,Have fun,,,,,,,,,,,,subtitle of run started important message,
 noitatogether_mountain,Mountain,,,,,,,,,,,,name of Mountain used as catchall location,
