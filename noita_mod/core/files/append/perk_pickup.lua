@@ -24,7 +24,7 @@ function item_pickup( entity_item, entity_who_picked, item_name )
             local queue = json.decode(NT.wsQueue)
             table.insert(queue, {event="CustomModEvent", payload={name="TeamPerk", id=perk_id}})
             NT.wsQueue = json.encode(queue)
-            GamePrint("Your team also receives this perk")
+            GamePrint("$noitatogether_teamperk_was_shared")
         end
     end
 	_item_pickup( entity_item, entity_who_picked, item_name )

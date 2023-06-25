@@ -181,10 +181,10 @@ if not initialized then
             if (user_id == userId) then
                 if (EntityHasTag(ghost, "nt_follow")) then
                     EntityRemoveTag(ghost, "nt_follow")
-                    GamePrint("No longer following " .. (name or ""))
+                    GamePrint(GameTextGet("$noitatogether_stop_follow_player", (name or "")))
                 else
                     EntityAddTag(ghost, "nt_follow")
-                    GamePrint("Following " .. (name or ""))
+                    GamePrint(GameTextGet("$noitatogether_follow_player", (name or "")))
                 end
             end
         end
