@@ -23,7 +23,7 @@
     ui_is_parent="0" 
     update_transform="1" 
     update_transform_rotation="0" 
-    text="You died and will be sent to your last checkpoint soon."
+    text="$noitatogether_died_respawning"
     visible="1" 
     z_index="-9000"
      >
@@ -44,12 +44,19 @@
     ui_is_parent="0" 
     update_transform="1" 
     update_transform_rotation="0" 
-    text="if host has kick on death active you are already out of the run but will continue to see ghosts and unable to interact."
+    text="$noitatogether_died_respawning_2"
     visible="1" 
     z_index="-9000"
      >
   </SpriteComponent>
 
+  <LuaComponent 
+    _enabled="1"
+    execute_on_added="1"
+    execute_every_n_frame="-1"
+    script_source_file="mods/noita-together/files/scripts/entity_translations.lua" 
+    >
+  </LuaComponent>
   <LuaComponent
     script_source_file="mods/noita-together/files/scripts/death_cam.lua"
     execute_every_n_frame="1"
