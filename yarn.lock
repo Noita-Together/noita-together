@@ -588,6 +588,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/jwk-to-pem@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@types/jwk-to-pem@npm:2.0.1"
+  checksum: 4fb0e1918c55bd2b794b2a497c14fd898028ae0b9f21f73b4400167358f4767df898d032875ca3655ea4e49234480cf9d21524374913664007e4e9011b2f28e8
+  languageName: node
+  linkType: hard
+
 "@types/keyv@npm:^3.1.1":
   version: 3.1.4
   resolution: "@types/keyv@npm:3.1.4"
@@ -5618,6 +5625,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nt-server@workspace:nt-server"
   dependencies:
+    "@types/jsonwebtoken": ^9.0.2
+    "@types/jwk-to-pem": ^2.0.1
     "@types/node": 20.2.5
     eslint: 8.41.0
     eslint-config-next: 13.4.4

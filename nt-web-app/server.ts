@@ -1,6 +1,8 @@
-const { createServer } = require('http');
-const { parse } = require('url');
-const next = require('next');
+import * as http from 'http';
+import next from "next";
+
+import {NoitaTogetherWebsocket} from 'nt-server';
+import {parse} from "url";
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
@@ -8,15 +10,16 @@ const port = 3000;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
-const WebsocketRunner = require('nt-server')
-
 app.prepare().then(() => {
-    createServer(async (req, res) => {
+    const websocket = new NoitaTogetherWebsocket()
+    websocket.startServer()
+    http.createServer(async (req, res) => {
         try {
+            if(!req.url) return
             // Be sure to pass `true` as the second argument to `url.parse`.
             // This tells it to parse the query portion of the URL.
             const parsedUrl = parse(req.url, true);
-            const { pathname, query } = parsedUrl;
+            // const { pathname, query } = parsedUrl;
 
             await handle(req, res, parsedUrl);
         } catch (err) {
