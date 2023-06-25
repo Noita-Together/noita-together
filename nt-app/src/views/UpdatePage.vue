@@ -40,6 +40,10 @@ onMounted(() => {
   ipcRenderer.send("update_mod");
 });
 
+ipcRenderer.on("skip_update", () => {
+  continueLogin()
+})
+
 function continueLogin() {
   router.replace({ path: "/login" });
 }

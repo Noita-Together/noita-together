@@ -11,6 +11,7 @@ import http from "http";
 import { getDb } from "./database";
 import { ipc } from "./ipc-main";
 import jwt from 'jsonwebtoken';
+import cmdLineArgs from "./cmdLineArgs";
 
 let rememberUser = false;
 
@@ -145,6 +146,11 @@ ipc.answerRenderer("getGameSaves", async () => {
 });
 
 ipcMain.on("update_mod", (event) => {
+  if(cmdLineArgs.isNoUpdate())
+  {
+    appEvent("skip_update", true)
+    return
+  }
   keytar.findCredentials("Noita Together").then((credentials) => {
     if (credentials.length > 0) {
       const username = credentials[0].account;

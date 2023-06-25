@@ -9,6 +9,8 @@ import { BankItem, Game, Gamemode, getDb, RoomFlag } from "./database";
 // TODO: Check out  https://github.com/timostamm/protobuf-ts
 // Or check out https://github.com/stephenh/ts-proto plus https://github.com/timostamm/protobuf-ts/tree/master/packages/protoc
 
+import cmdLineArgs from "./cmdLineArgs";
+
 function sysMsg(message: string) {
   appEvent("sChat", {
     id: uuidv4(),
@@ -388,7 +390,8 @@ class NoitaGame extends EventEmitter {
       addr == "::1" ||
       addr == "127.0.0.1" ||
       addr == "localhost" ||
-      addr == "::ffff:127.0.0.1"
+      addr == "::ffff:127.0.0.1" ||
+      cmdLineArgs.isAllowRemoteNoita()
     );
   }
 
