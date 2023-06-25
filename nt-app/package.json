@@ -7,7 +7,7 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vue-tsc --noEmit --noUnusedParameters --noUnusedLocals -p tsconfig.node.json --composite false && vue-tsc --noEmit --noUnusedParameters --noUnusedLocals --composite false && vite build && electron-builder --config .electron-builder.config.js",
+        "build": "vite build && electron-builder --config .electron-builder.config.js",
         "build-force": "vite build && electron-builder --config .electron-builder.config.js",
         "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
         "type-gen": "pbjs -t static-module --wrap es6 --no-comments --no-delimited --out electron/main/proto/messages.js public/messages.proto && pbjs -t static-module --no-delimited public/messages.proto | pbts -o electron/main/proto/messages.d.ts -"
@@ -16,7 +16,6 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.1.2",
         "@popperjs/core": "^2.6.0",
-        "electron": "9.0.0",
         "electron-better-ipc": "^2.0.1",
         "electron-updater": "5.0.6",
         "fs-extra": "^11.1.1",
