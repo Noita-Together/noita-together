@@ -68,4 +68,6 @@ noitatogether_hourglass_buff_damage_name,DAMAGE,,,,,,,,,,,,name of berserk hourg
 noitatogether_hourglass_buff_damage_desc,$0 thinks you are too weak,,,,,,,,,,,,description of berserk hourglass effect,
 noitatogether_hourglass_buff_speed_name,SPEED,,,,,,,,,,,,name of speed hourglass effect,
 noitatogether_hourglass_buff_speed_desc,$0 thinks you are too slow,,,,,,,,,,,,description of speed hourglass effect,
+noitatogether_spawncamp_buff_name,Respawn Protection,,,,,,,,,,,,name of invulnerability buff applied after respawning,
+noitatogether_spawncamp_buff_desc,You are being protected against campers,,,,,,,,,,,,name of invulnerability buff applied after respawning,
 noitatogether_x,x,,,,,,,,,,,,notes,

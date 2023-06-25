@@ -626,7 +626,7 @@ if not initialized then
         GuiZSetForNextWidget(gui, 10)
         GuiImageNinePiece(gui, next_id(), pos_x, pos_y, 120, 65, 1, "mods/noita-together/files/ui/outer.png")
         GuiZSetForNextWidget(gui, 9)
-        GuiText(gui, pos_x, pos_y, "Gold: " .. tostring(BankGold))
+        GuiText(gui, pos_x, pos_y, GameTextGet("$noitatogether_bank_gold", tostring(BankGold)))
 
         GuiZSetForNextWidget(gui, 9)
         GuiText(gui, pos_x, pos_y+15, "$noitatogether_bank_gold_xfer_qty")

@@ -509,8 +509,8 @@ function PlayerRespawn(entity_id, poly, weak)
         ComponentSetValue2(effect_comp, "frames", 60*40)
         EntityAddComponent2(effect_entity, "UIIconComponent", {
             icon_sprite_file = "data/ui_gfx/status_indicators/protection_all.png",
-            name = "Respawn Protection",
-            description = "You are being protected against campers.",
+            name = GameTextGet("$noitatogether_spawncamp_buff_name"),
+            description = GameTextGet("$noitatogether_spawncamp_buff_desc"),
             display_above_head = true,
             display_in_hud = true,
             is_perk = false
