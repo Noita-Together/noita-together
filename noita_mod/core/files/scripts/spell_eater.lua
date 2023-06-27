@@ -121,6 +121,9 @@ if (#wands > 0 and GameHasFlagRun("send_wands")) then
                     local action_id = ComponentGetValue2(item_component, "action_id")
                     if (is_always_cast) then
                         table.insert(always_cast, {id=action_id, usesRemaining=-1})
+                        --deck_capacity includes always casts, but for serialization *dont* count them
+                        --otherwise the wand gains slots when its deserialized and the ACs are added
+                        serialized.deck_capacity = serialized.deck_capacity - 1
                     else
                         table.insert(deck, {id=action_id, usesRemaining=uses_remaining})
                     end
