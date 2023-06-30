@@ -3,7 +3,11 @@
   "description": "package to host server code for both the twitch and standalone implementations of NT",
   "version": "1.0.0",
   "private": true,
-  "main": "src/index.ts",
+  "main": "./src/index.ts",
+  "scripts": {
+    "type-gen2": "pbjs -t static-module --ts --no-comments --no-delimited --out src/messages.ts src/messages.proto",
+    "type-gen": "pbjs -t static-module --wrap es6 --no-comments --no-delimited --out src/messages.js src/messages.proto && pbjs -t static-module --no-delimited src/messages.proto | pbts -o src/messages.d.ts -"
+  },
   "dependencies": {
     "jsonwebtoken": "^9.0.0",
     "jwk-to-pem": "^2.0.5",
@@ -18,6 +22,7 @@
     "@types/jwk-to-pem": "^2.0.1",
     "@types/node": "20.2.5",
     "eslint": "8.41.0",
-    "eslint-config-next": "13.4.4"
+    "eslint-config-next": "13.4.4",
+    "pbjs": "^0.0.14"
   }
 }

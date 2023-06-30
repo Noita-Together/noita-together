@@ -1,9 +1,14 @@
-'use-strict'
-const uuidv4 = require("uuid").v4
-const validator = require("validator")
-const { decode, encodeGameMsg, encodeLobbyMsg } = require("./messageHandler")
+"use strict";
+
 // const { setStats } = require("./controllers/statsController.js")
-const WebSocket = require("ws")
+import WebSocket from "ws";
+
+import {decode, encodeGameMsg, encodeLobbyMsg} from "./messageHandler";
+
+import {v4 as uuidv4} from "uuid";
+
+import validator from "validator";
+
 const THRESHOLD = 1024 * 16
 function MakeFrame(data) {
     let readOnly = true
@@ -906,4 +911,5 @@ class Lobby {
 
 }
 
-module.exports = new Lobby()
+const lobby = new Lobby()
+export default lobby

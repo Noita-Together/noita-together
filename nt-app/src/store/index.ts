@@ -4,6 +4,7 @@ import { ipcRenderer } from "electron";
 import { reactive, computed, ref, readonly } from "vue";
 import type NT from "../messages";
 import type { Gamemode } from "../../electron/main/database";
+import {generateUniqueCode} from "../../shared/generateCode";
 
 const colors = [
     "#698935",
@@ -415,6 +416,7 @@ const useStore = defineStore("store", () => {
         savedUserName: "",
         lobbies: [],
         roomTab: RoomTabToId.users,
+        offlineRoomCode: undefined,
         room: {
             id: "",
             name: "",
@@ -491,6 +493,9 @@ const useStore = defineStore("store", () => {
         },
         setTab: (value)=>{
             state.roomTab = value
+        },
+        setRoomCode: (payload)=>{
+            state.offlineRoomCode = payload
         },
         joinState: (payload) => {
             state.joining = payload;
@@ -608,7 +613,12 @@ const useStore = defineStore("store", () => {
             commit('setTab', payload)
         },
         startStandaloneServer: () => {
-            ipcRenderer.send("enable-server")
+            const code = generateUniqueCode()
+            commit('setRoomCode',code)
+            ipcRenderer.send("enable-server", code)
+        },
+        joinStandaloneServer: ({host,username,code} : {code: string, username: string, host: string})=>{
+            ipcRenderer.send('join-hosted-server', code, username, host)
         },
         continueSavedUser: () => {
             commit("setLoading", true);

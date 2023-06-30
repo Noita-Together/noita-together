@@ -4,8 +4,10 @@ import {Server} from "http";
 import {verifyJwt} from "./websocket-util"
 import {TwitchDecodedToken} from "../../nt-app/electron/main";
 
-const Lobby = require("./lobby")
-const axios = require("axios");
+import Lobby from "./lobby";
+
+import axios from "axios";
+
 let cachedJWKS: string|undefined = undefined
 
 const timeStart = Date.now()
@@ -21,7 +23,7 @@ class NoitaTogetherWebsocket{
      * @param offlineCode The code for the user to input to join the lobby of a private instance. If not provided,
      *  socket defaults to twitch authentication mode
      */
-    constructor(port = 5466, offlineCode = undefined) {
+    constructor(port = 5466, offlineCode?: string) {
         this.port = port
         this.offlineCode = offlineCode
     }

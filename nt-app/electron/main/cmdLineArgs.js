@@ -7,9 +7,9 @@ class CmdLineArgs {
         this.noUpdate = false
         this.allowRemoteNoita = false
 
-        this.offline = app.commandLine.hasSwitch("nt-offline")
-        this.noUpdate = app.commandLine.hasSwitch("nt-noupdate")
-        this.allowRemoteNoita = app.commandLine.hasSwitch("nt-allow-remote-noita")
+        this.offline = app.commandLine.hasSwitch("nt-offline") || process.env.NT_OFFLINE
+        this.noUpdate = app.commandLine.hasSwitch("nt-noupdate") || process.env.NT_NOUPDATE
+        this.allowRemoteNoita = app.commandLine.hasSwitch("nt-allow-remote-noita") || process.env.NT_ALLOW_REMOTE_NOITA
     }
 
     isOfflineMode() {

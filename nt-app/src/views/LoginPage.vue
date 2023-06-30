@@ -20,7 +20,7 @@
       <div class="host-lan-session" @click="StartStandaloneServer">
         <span class="lan-text">Host a LAN session</span>
       </div>
-      <div class="join-lan-session">
+      <div class="join-lan-session" @click="JoinStandaloneServer">
         <span class="lan-text">Join a LAN session</span>
       </div>
     </div>
@@ -41,6 +41,7 @@ import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import {ApiUtil, globalAPI} from "../util/ApiUtil";
 import useStore from "../store";
+import cmdArgs from "../../electron/main/cmdLineArgs";
 const router = useRouter();
 const store = useStore();
 const loginUrl = ref(`${globalAPI.getApiUrl()}/auth/login`)
@@ -48,7 +49,10 @@ const statusUrl = ref(`${globalAPI.getWebpageUrl()}/status-page`)
 
 const rememberUser = ref(false);
 const clicked = ref(false);
-const renderOffline = ref(false)
+const renderOffline = computed(()=>{
+  return false
+  //TODO get flag from IPC
+})
 
 const savedUser = computed(() => {
   return store.state.savedUser;
@@ -91,6 +95,14 @@ function OpenLoginPage() {
 }
 function StartStandaloneServer() {
   store.dispatch("startStandaloneServer", undefined)
+}
+
+function JoinStandaloneServer(){
+  store.dispatch("joinStandaloneServer", {
+    code: 'uguu',
+    username: 'Skye',
+    host: 'localhost'
+  })
 }
 </script>
 

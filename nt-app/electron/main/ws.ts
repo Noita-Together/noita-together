@@ -2,19 +2,28 @@ import { v4 as uuidv4 } from "uuid";
 import { ipcMain } from "electron";
 import { ipc } from "./ipc-main";
 import ws from "ws";
-import messageHandler from "./proto/messageHandler";
 import { appEvent } from "./appEvent";
 import noita from "./noita";
-import { NT } from "./proto/messages";
 import { getDb } from "./database";
 import {globalAPI} from "../../src/util/ApiUtil";
+import messageHandler from "nt-server/src/messageHandler";
+import {NT} from "nt-server/src/messages";
 const host = globalAPI.getWSUrl();
 
-export default (data: any) => {
+export interface OfflineOptions{
+  code: string
+  username: string
+}
+
+export interface WsOptions{
+  offline?: OfflineOptions
+}
+
+export default (data: any, options: WsOptions) => {
   const user = { userId: data.id, name: data.display_name };
   noita.setUser({ userId: user.userId, name: user.name, host: false });
   let isHost = false; // TODO: Use noita.isHost() instead
-  let client: ws | null = new ws(`${host}${data.token}`);
+  let client: ws | null = new ws(options.offline ? `${host}offline/${options.offline.code}/${options.offline.username}` : `${host}${data.token}`);
   const lobby: {
     [key in keyof NT.ILobbyAction]: (
       payload: NonNullable<NT.ILobbyAction[key]> // TODO: Change protobuf stuff so that this NonNullable is not necessary

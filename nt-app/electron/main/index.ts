@@ -5,15 +5,18 @@ import { autoUpdater } from "electron-updater";
 import { updateMod } from "./update";
 import { appEvent } from "./appEvent";
 import wsClient from "./ws";
-import keytar from "keytar"; // TODO: This could be replaced with Electron's safeStorage https://freek.dev/2103-replacing-keytar-with-electrons-safestorage-in-ray
+// import keytar from "keytar"; // TODO: This could be replaced with Electron's safeStorage https://freek.dev/2103-replacing-keytar-with-electrons-safestorage-in-ray
 import got from "got";
 import http from "http";
 import { getDb } from "./database";
 import { ipc } from "./ipc-main";
 import jwt from 'jsonwebtoken';
 import cmdLineArgs from "./cmdLineArgs";
+import {NoitaTogetherWebsocket} from "../../../nt-server";
+import {globalAPI} from "../../src/util/ApiUtil";
 
 let rememberUser = false;
+let noitaServer: NoitaTogetherWebsocket|null;
 
 if (!process.env.VITE_APP_HOSTNAME_PUBLIC || !process.env.VITE_APP_WS_PORT_PUBLIC) {
   console.error(
@@ -67,14 +70,14 @@ const loginServer = http.createServer((req, res) => {
       res.end('Remember User call should contain refresh token!')
       return
     }
-    keytar.setPassword("Noita Together", preferred_username, refreshToken)
+    // keytar.setPassword("Noita Together", preferred_username, refreshToken)
   }
   appEvent("USER_EXTRA", extra)
   wsClient({
     display_name: preferred_username,
     token,
     id: sub
-  })
+  }, {})
 
   if (win) {
     if (win.isMinimized()) {
@@ -151,12 +154,12 @@ ipcMain.on("update_mod", (event) => {
     appEvent("skip_update", true)
     return
   }
-  keytar.findCredentials("Noita Together").then((credentials) => {
-    if (credentials.length > 0) {
-      const username = credentials[0].account;
-      appEvent("SAVED_USER", username);
-    }
-  });
+  // keytar.findCredentials("Noita Together").then((credentials) => {
+  //   if (credentials.length > 0) {
+  //     const username = credentials[0].account;
+  //     appEvent("SAVED_USER", username);
+  //   }
+  // });
   updateMod();
 });
 
@@ -164,29 +167,62 @@ ipcMain.on("remember_user", (event, val) => {
   rememberUser = val;
 });
 
+ipcMain.on("enable-server", (event, val) => {
+  noitaServer = new NoitaTogetherWebsocket(5466, val)
+  noitaServer.startServer()
+  appEvent("USER_EXTRA", {})
+  globalAPI.lanIP = 'localhost'
+  wsClient({
+    display_name: 'host',
+    token: undefined,
+    id: Math.random()
+  }, {offline: {
+      code: 'uguu',
+      username: 'Host'
+    }})
+})
+
+ipcMain.on('join-hosted-server', (event, code, username, host)=>{
+  globalAPI.lanIP = host
+  wsClient({
+    display_name: 'host',
+    token: undefined,
+    id: Math.random()
+  }, {offline: {
+      code: code,
+      username: username
+    }})
+})
+
+ipcMain.on("disable-server", ()=>{
+  noitaServer?.stopServer()
+  noitaServer = null
+})
+
 ipcMain.on("TRY_LOGIN", async (event, account) => {
-  try {
-    const token = await keytar.getPassword("Noita Together", account);
-    const { body } = await got.post(
-      `https://${process.env.VITE_APP_HOSTNAME}/auth/refresh`,
-      {
-        json: {
-          ticket: token,
-        },
-        responseType: "json",
-      }
-    );
-    const { display_name, ticket, id, e } = body as any;
-    appEvent("USER_EXTRA", e);
-    wsClient({
-      display_name,
-      token: ticket,
-      id,
-    });
-  } catch (error) {
-    console.error(error);
-    appEvent("TRY_LOGIN_FAILED", "");
-  }
+  appEvent("TRY_LOGIN_FAILED", "");
+  // try {
+  //   const token = await keytar.getPassword("Noita Together", account);
+  //   const { body } = await got.post(
+  //     `https://${process.env.VITE_APP_HOSTNAME}/auth/refresh`,
+  //     {
+  //       json: {
+  //         ticket: token,
+  //       },
+  //       responseType: "json",
+  //     }
+  //   );
+  //   const { display_name, ticket, id, e } = body as any;
+  //   appEvent("USER_EXTRA", e);
+  //   wsClient({
+  //     display_name,
+  //     token: ticket,
+  //     id,
+  //   }, {});
+  // } catch (error) {
+  //   console.error(error);
+  //   appEvent("TRY_LOGIN_FAILED", "");
+  // }
 });
 
 ipcMain.on("minimize-window", () => {
