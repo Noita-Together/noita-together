@@ -1,3 +1,5 @@
+import {contextBridge, ipcRenderer} from "electron";
+
 function domReady(
   condition: DocumentReadyState[] = ["complete", "interactive"]
 ) {
@@ -92,3 +94,10 @@ window.onmessage = (ev: { data?: { payload?: string } }) => {
 };
 
 setTimeout(removeLoading, 4999);
+
+// contextBridge.exposeInMainWorld('electronApi', {
+//   getOfflineMode: (): Promise<boolean> => ipcRenderer.invoke('launcherflags:getofflinemode')
+// })
+window.electronApi = {
+  getOfflineMode: (): Promise<boolean> => ipcRenderer.invoke('launcherflags:getofflinemode')
+}

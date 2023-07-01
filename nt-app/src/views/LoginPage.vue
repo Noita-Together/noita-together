@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <div class="server-status" title="double click to toggle offline mode" @click="OpenStatusPage" @dblclick="ToggleOfflineMode">
+    <div class="server-status" title="double click to toggle offline mode" @click="OpenStatusPage">
       <div class="server-status-text">Server Status</div>
 <!--      <i v-if="isOnline !== null" class="fas fa-cloud" :class="{online: isOnline === true, offline: isOnline === false}"/>-->
       <i v-if="isOnline === null" class="fas fa-external-link"/>
@@ -36,12 +36,12 @@
 </template>
 
 <script setup lang="ts">
-import { ipcRenderer, shell } from "electron";
-import { ref, computed, watch } from "vue";
-import { useRouter } from "vue-router";
+import {ipcRenderer, shell} from "electron";
+import {computed, ref, watch, watchEffect} from "vue";
+import {useRouter} from "vue-router";
 import {ApiUtil, globalAPI} from "../util/ApiUtil";
 import useStore from "../store";
-import cmdArgs from "../../electron/main/cmdLineArgs";
+
 const router = useRouter();
 const store = useStore();
 const loginUrl = ref(`${globalAPI.getApiUrl()}/auth/login`)
@@ -49,10 +49,7 @@ const statusUrl = ref(`${globalAPI.getWebpageUrl()}/status-page`)
 
 const rememberUser = ref(false);
 const clicked = ref(false);
-const renderOffline = computed(()=>{
-  return false
-  //TODO get flag from IPC
-})
+const renderOffline = ref(null as null|boolean)
 
 const savedUser = computed(() => {
   return store.state.savedUser;
@@ -60,9 +57,11 @@ const savedUser = computed(() => {
 const savedUserName = computed(() => {
   return store.state.savedUserName;
 });
-const isOnline = computed(() => {
-  return null;
-});
+
+watchEffect(async () => {
+  renderOffline.value = await window.electronApi.getOfflineMode()
+  console.log(`Rendering offline? ${renderOffline.value}`)
+})
 
 watch(
     () => store.state.user.id,
@@ -85,9 +84,6 @@ function OpenStatusPage(){
   const api = new ApiUtil() //We always want to open production link here
   api.setEnvironment("production")
   shell.openExternal(`${api.getWebpageUrl()}`)
-}
-function ToggleOfflineMode() {
-  renderOffline.value = !renderOffline.value
 }
 function OpenLoginPage() {
   clicked.value = true

@@ -246,8 +246,15 @@ autoUpdater.on("update-downloaded", () => {
   appEvent("UPDATE_DOWNLOADED", "");
 });
 
+const getOfflineMode = () => {
+  return cmdLineArgs.isOfflineMode()
+}
+
 app
   .whenReady()
+  .then(()=>{
+    ipcMain.handle('launcherflags:getofflinemode', getOfflineMode)
+  })
   .then(showOrCreateWindow)
   .catch((e) => console.error("Failed create window:", e));
 
