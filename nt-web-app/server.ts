@@ -11,7 +11,7 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 app.prepare().then(() => {
-    const websocket = new NoitaTogetherWebsocket(5466, 'uguu')
+    const websocket = new NoitaTogetherWebsocket()
     websocket.startServer()
     http.createServer(async (req, res) => {
         try {

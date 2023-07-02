@@ -10,10 +10,10 @@
     "shared-lib/"
   ],
   "scripts": {
-    "client": "yarn workspace nt-app dev",
+    "client": "yarn workspace nt-app electron:serve",
     "server": "yarn workspace nt-web-app serve",
     "serverDev": "yarn workspace nt-web-app serveDev",
-    "buildClient": "yarn workspace nt-app build",
+    "buildClient": "yarn workspace nt-app electron:build",
     "regenerate-proto": "yarn workspace nt-server type-gen"
   },
   "dependencies": {
