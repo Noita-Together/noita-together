@@ -132,33 +132,33 @@ export default new Vuex.Store({
     state: {
         defaultFlags: {
             0: [
-                { id: "sync_perks", name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them.", type: "boolean", value: false },
-                { id: "team_perks", name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them.", type: "boolean", value: true },
-                { id: "sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone.", type: "boolean", value: true },
-                { id: "sync_hearts", name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too.", type: "boolean", value: true },
-                { id: "sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too.", type: "boolean", value: true },
-                { id: "sync_shift", name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies.", type: "boolean", value: true },
-                { id: "send_wands", name: "Send Wands", tooltip: "Allow players to deposit/take wands.", type: "boolean", value: true },
-                { id: "send_flasks", name: "Send Flasks", tooltip: "Allow players to deposit/take flasks.", type: "boolean", value: true },
-                { id: "send_gold", name: "Send Gold", tooltip: "Allow players to deposit/take gold.", type: "boolean", value: true },
-                { id: "send_items", name: "Send Items", tooltip: "Allow players to deposit/take items.", type: "boolean", value: true },
-                { id: "world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot.", type: "boolean", value: true },
-                { id: "sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed.", type: "number", value: 0 },
-                { id: "death_penalty_end", name: "End run", tooltip: "Run ends for all players when someone dies.", type: "boolean", value: true },
-                { id: "death_penalty_weak_respawn", name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone.", type: "boolean", value: true },
-                { id: "death_penalty_full_respawn", name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties.", type: "boolean", value: true },
-                { id: "_ondeath_kick", name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™.", type: "boolean", value: false }
+                { id: "NT_sync_perks", name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them.", type: "boolean", value: false },
+                { id: "NT_team_perks", name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them.", type: "boolean", value: true },
+                { id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone.", type: "boolean", value: true },
+                { id: "NT_sync_hearts", name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too.", type: "boolean", value: true },
+                { id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too.", type: "boolean", value: true },
+                { id: "NT_sync_shift", name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies.", type: "boolean", value: true },
+                { id: "NT_send_wands", name: "Send Wands", tooltip: "Allow players to deposit/take wands.", type: "boolean", value: true },
+                { id: "NT_send_flasks", name: "Send Flasks", tooltip: "Allow players to deposit/take flasks.", type: "boolean", value: true },
+                { id: "NT_send_gold", name: "Send Gold", tooltip: "Allow players to deposit/take gold.", type: "boolean", value: true },
+                { id: "NT_send_items", name: "Send Items", tooltip: "Allow players to deposit/take items.", type: "boolean", value: true },
+                { id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot.", type: "boolean", value: true },
+                { id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed.", type: "number", value: 0 },
+                { id: "NT_death_penalty_end", name: "End run", tooltip: "Run ends for all players when someone dies.", type: "boolean", value: true },
+                { id: "NT_death_penalty_weak_respawn", name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone.", type: "boolean", value: true },
+                { id: "NT_death_penalty_full_respawn", name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties.", type: "boolean", value: true },
+                { id: "NT_ondeath_kick", name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™.", type: "boolean", value: false }
             ],
             2: [
-                { id: "ban_ambrosia", name: "Ban Ambrosia", tooltip: "will shift ambrosia away.", type: "boolean", value: true },
-                { id: "ban_invis", name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk.", type: "boolean", value: true },
-                { id: "nemesis_abilities", name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost.", type: "boolean", value: true },
-                { id: "sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone.", type: "boolean", value: false },
-                { id: "sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too.", type: "boolean", value: false },
-                { id: "world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot.", type: "boolean", value: true },
-                { id: "sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed.", type: "number", value: 0 },
-                { id: "death_penalty_weak_respawn", name: "Last noita standing.", tooltip: "Run ends when there's only one player left.", type: "boolean", value: true },
-                { id: "_ondeath_kick", name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™.", type: "boolean", value: true }
+                { id: "NT_NEMESIS_ban_ambrosia", name: "Ban Ambrosia", tooltip: "will shift ambrosia away.", type: "boolean", value: true },
+                { id: "NT_NEMESIS_ban_invis", name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk.", type: "boolean", value: true },
+                { id: "NT_NEMESIS_nemesis_abilities", name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost.", type: "boolean", value: true },
+                { id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone.", type: "boolean", value: false },
+                { id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too.", type: "boolean", value: false },
+                { id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot.", type: "boolean", value: true },
+                { id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed.", type: "number", value: 0 },
+                { id: "NT_death_penalty_weak_respawn", name: "Last noita standing.", tooltip: "Run ends when there's only one player left.", type: "boolean", value: true },
+                { id: "NT_ondeath_kick", name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™.", type: "boolean", value: true }
             ]
         },
         gamemodes: {

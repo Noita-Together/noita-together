@@ -3,7 +3,7 @@ dofile_once("mods/noita-together/files/scripts/json.lua")
 _item_pickup = _item_pickup or item_pickup
 
 function item_pickup(entity_item, entity_who_picked, name)
-    if (GameHasFlagRun("sync_orbs") and EntityHasTag(entity_item, "fake_orb") == false) then
+    if (GameHasFlagRun("NT_sync_orbs") and EntityHasTag(entity_item, "fake_orb") == false) then
         local orbcomp = EntityGetFirstComponent(entity_item, "OrbComponent")
         local orb_id = -1
         orb_id = ComponentGetValue2(orbcomp, "orb_id")

@@ -845,7 +845,7 @@ if not initialized then
 
         if (show_bank) then
             draw_item_bank()
-            if(GameHasFlagRun("send_gold")) then
+            if(GameHasFlagRun("NT_send_gold")) then
                 draw_gold_bank()
             end
         else

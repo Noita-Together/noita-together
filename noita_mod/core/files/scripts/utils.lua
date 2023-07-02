@@ -167,7 +167,7 @@ function PlayerHeartPickup(perk, userId)
             local cur_hp = ComponentGetValue2(damagemodel, "hp")
             local max_hp = ComponentGetValue2(damagemodel, "max_hp")
             local added = 1 * multiplier
-            if (GameHasFlagRun("sync_hearts")) then
+            if (GameHasFlagRun("NT_sync_hearts")) then
                 added = math.max(0.16 ,(1 / (playercount)) * multiplier)
             end
             max_hp = max_hp + added
@@ -424,7 +424,7 @@ end
 
 function RespawnPenalty(userId)
     local player_name = PlayerList[userId].name
-    if (GameHasFlagRun("death_penalty_full_respawn")) then
+    if (GameHasFlagRun("NT_death_penalty_full_respawn")) then
         GamePrintImportant(player_name .. " died")
         return
     end
@@ -460,7 +460,7 @@ function PlayerRespawn(entity_id, poly, weak)
         
         EntityLoad("mods/noita-together/files/entities/death_cam.xml", cx, cy)
         Respawning = true
-        if (not weak and GameHasFlagRun("death_penalty_full_respawn") and GameGetFrameNum() > LastRespawn + 30) then
+        if (not weak and GameHasFlagRun("NT_death_penalty_full_respawn") and GameGetFrameNum() > LastRespawn + 30) then
             LastRespawn = GameGetFrameNum()
             SendWsEvent({event="RespawnPenalty", payload={deaths=0}})--for now
         end
@@ -551,12 +551,12 @@ function IsPlayerDead()
                 EndRun()
                 return
             end
-            if (GameHasFlagRun("death_penalty_end")) then
+            if (GameHasFlagRun("NT_death_penalty_end")) then
                 EndRun()
                 ComponentSetValue2(damage_models, "kill_now", true)
-            elseif(GameHasFlagRun("death_penalty_weak_respawn")) then
+            elseif(GameHasFlagRun("NT_death_penalty_weak_respawn")) then
                 PlayerRespawn(player, false, true)
-            elseif(GameHasFlagRun("death_penalty_full_respawn")) then
+            elseif(GameHasFlagRun("NT_death_penalty_full_respawn")) then
                 PlayerRespawn(player, false)
             end
         end
@@ -575,12 +575,12 @@ function IsPlayerDead()
                 return
             end
             
-            if (GameHasFlagRun("death_penalty_end")) then
+            if (GameHasFlagRun("NT_death_penalty_end")) then
                 ComponentSetValue2(damage_models, "kill_now", true)
                 EndRun()
-            elseif(GameHasFlagRun("death_penalty_weak_respawn")) then
+            elseif(GameHasFlagRun("NT_death_penalty_weak_respawn")) then
                 PlayerRespawn(entity_id, true, true)
-            elseif(GameHasFlagRun("death_penalty_full_respawn")) then
+            elseif(GameHasFlagRun("NT_death_penalty_full_respawn")) then
                 PlayerRespawn(entity_id, true)
             end
         end
