@@ -180,6 +180,7 @@ class NoitaGame extends EventEmitter {
         const onDeathKick = data.some(entry => entry.flag == "_ondeath_kick")
         if (this.isHost) {
             this.onDeathKick = onDeathKick
+            data.push({ flag: "NT_is_host"})
         }
 
         data.push({ flag: "NT_GAMEMODE_CO_OP" })//hardcode this for now :) <3

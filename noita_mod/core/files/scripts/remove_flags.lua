@@ -1,4 +1,5 @@
 GameRemoveFlagRun("NT_GAMEMODE_CO_OP")
+GameRemoveFlagRun("NT_is_host")
 GameRemoveFlagRun("sync_steve")
 GameRemoveFlagRun("sync_hearts")
 GameRemoveFlagRun("sync_perks")
