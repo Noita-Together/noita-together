@@ -1,25 +1,18 @@
-# Use a Debian base image
+# Use the desired Node.js base image
 FROM node:16.20-bullseye
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-COPY . /app
-# Install dependencies using Yarn
-
+# Install the application dependencies
+COPY package.json ./
 RUN yarn install
 
-# Build the Electron app
-RUN yarn workspace nt-app electron:build
+# Copy the application code into the container
+COPY . .
 
-# ENV OUTPUT_DIR=/out
-# Set the output directory
+# Mount the current directory as a volume
+VOLUME ["/app"]
 
-# Create the output directory
-# RUN mkdir -p $OUTPUT_DIR
-
-# Copy the builded files to the output directory
-# RUN cp -R /app/nt-app/dist_electron/* $OUTPUT_DIR
-
-# Output the build to the specified directory
-CMD ["cp", "-R", "/app/nt-app/dist_electron/*", "/out"]
+# Build the Electron application
+CMD yarn buildClient

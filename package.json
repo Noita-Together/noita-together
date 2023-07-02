@@ -13,6 +13,7 @@
     "client": "yarn workspace nt-app dev",
     "clientOffline": "yarn workspace nt-app devOffline",
     "server": "yarn workspace nt-web-app serve",
+    "serverDev": "yarn workspace nt-web-app serveDev",
     "buildClient": "yarn workspace nt-app build",
     "regenerate-proto": "yarn workspace nt-server type-gen"
   },
