@@ -86,7 +86,7 @@ export default {
             const flags = this.$store.getters.flags
             let seed = 0
             for (const flag of flags) {
-                if (flag.id === "sync_world_seed") {
+                if (flag.id === "NT_sync_world_seed") {
                     seed = flag.value
                 }
             }

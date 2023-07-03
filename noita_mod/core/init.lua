@@ -30,6 +30,12 @@ ModLuaFileAppend("data/scripts/perks/perk_pickup.lua", "mods/noita-together/file
 ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/files/append/perk_reroll.lua")
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
+
+--Append our translations to the game
+local TRANSLATIONS_FILE = "data/translations/common.csv"
+local translations = ModTextFileGetContent(TRANSLATIONS_FILE) .. ModTextFileGetContent("mods/noita-together/files/translations/translations.csv")
+ModTextFileSetContent(TRANSLATIONS_FILE, translations)
+
 HideGhosts = false
 HideChat = false
 PlayerRadar = true
@@ -180,12 +186,12 @@ function OnPlayerSpawned(player_entity)
     if (damage_models ~= nil) then ComponentSetValue2(damage_models, "wait_for_kill_flag_on_death", true) end
     local res_x = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_X")
     local res_y = MagicNumbersGetValue("DESIGN_PLAYER_START_POS_Y")
-    if (not GameHasFlagRun("respawn_checkpoint_added")) then
+    if (not GameHasFlagRun("NT_respawn_checkpoint_added")) then
 		EntityAddComponent2(player_entity, "VariableStorageComponent", {
             name = "respawn_checkpoint",
             value_string = res_x .. "," .. res_y
         })
-        GameAddFlagRun("respawn_checkpoint_added")
+        GameAddFlagRun("NT_respawn_checkpoint_added")
 	end
     
     local controls_component = EntityGetFirstComponent(player_entity, "ControlsComponent")

@@ -30,11 +30,11 @@
             <h2>
                 World seed
                 <vTooltip>
-                    <span>{{ payload.world.sync_world_seed.tooltip }}</span>
+                    <span>{{ payload.world.NT_sync_world_seed.tooltip }}</span>
                 </vTooltip>
             </h2>
             <div class="world-seed">
-                <vInput v-model="payload.world.sync_world_seed.value" ref="seedInput"></vInput>
+                <vInput v-model="payload.world.NT_sync_world_seed.value" ref="seedInput"></vInput>
                 <vButton @click="randomizeSeed">Random</vButton>
             </div>
         </template>
@@ -62,7 +62,7 @@ export default {//braincells where'd ya go
     },
     beforeMount() {
         this.payload = this.flags;
-        const deathFlag = this.storeFlags.find(v => v.id.startsWith("death_penalty") && v.value)
+        const deathFlag = this.storeFlags.find(v => v.id.startsWith("NT_death_penalty") && v.value)
         console.log({ f: this.storeFlags })
         this.deathFlag = deathFlag.name
     },
@@ -85,9 +85,9 @@ export default {//braincells where'd ya go
             const world = {};
             const death = {};
             for (const flag of flags) {
-                if (flag.id.startsWith("death_penalty")) {
+                if (flag.id.startsWith("NT_death_penalty")) {
                     death[flag.id] = flag;
-                } else if (flag.id == "sync_world_seed") {
+                } else if (flag.id == "NT_sync_world_seed") {
                     world[flag.id] = flag;
                 } else {
                     game[flag.id] = flag;

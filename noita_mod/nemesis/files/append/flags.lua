@@ -1,3 +1,3 @@
-GameRemoveFlagRun("ban_ambrosia")
-GameRemoveFlagRun("ban_invis")
-GameRemoveFlagRun("nemesis_abilities")
+GameRemoveFlagRun("NT_NEMESIS_ban_ambrosia")
+GameRemoveFlagRun("NT_NEMESIS_ban_invis")
+GameRemoveFlagRun("NT_NEMESIS_nemesis_abilities")
