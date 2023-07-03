@@ -1,10 +1,22 @@
 import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import {useEffect, useState} from "react";
+import {StatusApiResponse} from "./api/status";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const [serverStatus, setServerStatus] = useState<StatusApiResponse|null|undefined>(undefined)
+  useEffect(()=>{
+     fetch(`api/status`).then((data: Response)=>{
+       return data.json() as Promise<StatusApiResponse>
+     }).catch(e=>null)
+         .then((status)=>{
+           setServerStatus(status)
+         })
+  }, [])
+
   return (
     <>
       <Head>
@@ -23,6 +35,8 @@ export default function Home() {
               Play alone together
             </div>
           </div>
+
+          <div title={`Online since ${serverStatus?.uptime ?? '???'}`}>Server Status: {serverStatus ? 'ONLINE' : serverStatus === undefined ? '...' : 'OFFLINE'}</div>
 
           {/*<div className={styles.center}>
           <div>
