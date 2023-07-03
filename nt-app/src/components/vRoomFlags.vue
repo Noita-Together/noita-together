@@ -85,7 +85,7 @@ export default {//braincells where'd ya go
             const world = {};
             const death = {};
             for (const flag of flags) {
-                if (flag.id.startsWith("death_penalty")) {
+                if (flag.id.startsWith("NT_death_penalty")) {
                     death[flag.id] = flag;
                 } else if (flag.id == "NT_sync_world_seed") {
                     world[flag.id] = flag;
