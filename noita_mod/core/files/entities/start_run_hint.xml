@@ -5,6 +5,14 @@
         script_source_file="mods/noita-together/files/scripts/start_run_hint.lua" 
 	>
     </LuaComponent>
+    
+    <LuaComponent 
+        _enabled="1"
+        execute_on_added="1"
+        execute_every_n_frame="-1"
+        script_source_file="mods/noita-together/files/scripts/entity_translations.lua" 
+    >
+    </LuaComponent>
 	
     <SpriteComponent
             _enabled="1"
@@ -17,7 +25,7 @@
             alpha="1"
             update_transform="1"
             update_transform_rotation="0"
-            text="Waiting for host to start the run."
+            text="$noitatogether_wait_for_start"
             has_special_scale="1"
             special_scale_x="0.8"
             special_scale_y="0.8"

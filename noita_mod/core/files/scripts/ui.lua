@@ -181,10 +181,10 @@ if not initialized then
             if (user_id == userId) then
                 if (EntityHasTag(ghost, "nt_follow")) then
                     EntityRemoveTag(ghost, "nt_follow")
-                    GamePrint("No longer following " .. (name or ""))
+                    GamePrint(GameTextGet("$noitatogether_stop_follow_player", (name or "")))
                 else
                     EntityAddTag(ghost, "nt_follow")
-                    GamePrint("Following " .. (name or ""))
+                    GamePrint(GameTextGet("$noitatogether_follow_player", (name or "")))
                 end
             end
         end
@@ -192,14 +192,14 @@ if not initialized then
 
     local function wand_tooltip(wand)
         local ret = {
-            wand.shuffleDeckWhenEmpty and "Yes" or "No",
+            wand.shuffleDeckWhenEmpty and "$menu_yes" or "$menu_no",
             tostring(wand.actionsPerRound),
             string.format("%.2f",wand.fireRateWait / 60),
             string.format("%.2f",wand.reloadTime / 60),
             string.format("%.0f",wand.manaMax),
             string.format("%.0f",wand.manaChargeSpeed),
             tostring(wand.deckCapacity),
-            string.format("%.2f DEG",wand.spreadDegrees)
+            GameTextGet("$inventory_degrees", string.format("%.2f",wand.spreadDegrees))
         }
         return ret
     end
@@ -257,14 +257,14 @@ if not initialized then
         local left, right, hover = previous_data(gui)
         if (hover or force) then
 
-            local player = PlayerList[item.sentBy] or {name="Me"}
+            local player = PlayerList[item.sentBy] or {name=GameTextGet("$noitatogether_me")}
             local nox, nyx = 5, 0
             GuiZSetForNextWidget(gui, 6)
             GuiImageNinePiece(gui, next_id, nx, ny, 160, 160, 1)
             GuiImage(gui, next_id(), nx + 125, ny + 80, wand.sprite, 1, 2.2, 0, -1.5708)
             GuiZSetForNextWidget(gui, 5)
             if (not force) then
-                GuiText(gui, nx + nox, ny + nyx, "Sent By " .. player.name)
+                GuiText(gui, nx + nox, ny + nyx, GameTextGet("$noitatogether_sent_by_player", player.name))
             end
             nyx = nyx + 15
             
@@ -280,7 +280,7 @@ if not initialized then
             local deck = item.deck or {}
             if (#always_casts > 0) then
                 GuiZSetForNextWidget(gui, 5)
-                GuiText(gui, nx + 5, ny + nyx, "Always casts")
+                GuiText(gui, nx + 5, ny + nyx, "$inventory_alwayscasts")
                 nox = 60
                 for index, value in ipairs(always_casts) do
                     if (value.gameId ~= "0") then
@@ -309,10 +309,10 @@ if not initialized then
     local function draw_item_sprite(item, x,y)
         GuiZSetForNextWidget(gui, 8)
         if (item.gameId ~= nil) then --spell
-            local player = PlayerList[item.sentBy] or {name="Me"}
+            local player = PlayerList[item.sentBy] or {name=GameTextGet("$noitatogether_me")}
             local spell_description = ""
             if (player ~= nil) then
-                spell_description = spell_description .. "\nSent by: " .. player.name
+                spell_description = spell_description .. "\n" .. GameTextGet("$noitatogether_sent_by_player", player.name)
             end
             local spell = SpellSprites[item.gameId]
             GuiImage(gui, next_id(), x +2, y +2,  spell.sprite, 1,1,1)--SpellSprites[item.gameId], 1)
@@ -321,10 +321,10 @@ if not initialized then
             local nx, ny = (screen_width / 2) - 260, (screen_height/2) - 95
             render_wand(item, x, y, nx, ny, true)      
         elseif (item.content ~= nil) then --flask
-            local player = PlayerList[item.sentBy] or {name="Me"}
-            local container_name = item.isChest and "Powder Pouch" or "Flask"
+            local player = PlayerList[item.sentBy] or {name=GameTextGet("$noitatogether_me")}
+            local container_name = item.isChest and GameTextGet("$item_powder_stash") or GameTextGet("$item_potion")
             if (player ~= nil) then
-                container_name = container_name .. "\nSent by: " .. player.name
+                container_name = container_name .. "\n" .. GameTextGet("$noitatogether_sent_by_player", player.name)
             end
             GuiZSetForNextWidget(gui, 7)
             if (item.isChest) then
@@ -335,11 +335,11 @@ if not initialized then
             end
             GuiTooltip(gui, container_name, flask_info(item.content, item.isChest))
         elseif (item.path ~= nil) then
-            local player = PlayerList[item.sentBy] or {name="Me"}
+            local player = PlayerList[item.sentBy] or {name=GameTextGet("$noitatogether_me")}
             local item_name = nt_items[item.path] and nt_items[item.path].name or ""
             item_name = GameTextGetTranslatedOrNot(item_name)
             if (player ~= nil) then
-                item_name = item_name .. "\nSent by: " .. player.name
+                item_name = item_name .. "\n" .. GameTextGet("$noitatogether_sent_by_player", player.name)
             end
             local w, h = GuiGetImageDimensions(gui, item.sprite, 1)
             local ox = ((w - 20) / 2) * -1
@@ -432,6 +432,7 @@ if not initialized then
                     table.insert(ret, item)
                 end
             elseif (item.content ~= nil) then -- flask
+                --TODO will localizing these mess with filtering?
                 local container = item.isChest and "Powder Stash\n" or "Flask\n"
                 container = container .. flask_info(item.content, item.isChest)
                 if (string.find(string.lower(container), string.lower(filterkey))) then
@@ -498,12 +499,12 @@ if not initialized then
             show_bank = not show_bank
         end
         GuiZSetForNextWidget(gui, 9)
-        GuiText(gui, pos_x + 26, pos_y + 5, "BANK")
+        GuiText(gui, pos_x + 26, pos_y + 5, "$noitatogether_bank_title")
         GuiZSetForNextWidget(gui, 9)
         if (GuiImageButton(gui, next_id(), pos_x + 52, pos_y + 5, "", "mods/noita-together/files/ui/sort.png")) then
             sortItems()
         end
-        GuiTooltip(gui, "SORT", "")
+        GuiTooltip(gui, "$noitatogether_bank_sort", "")
         local tabOff = 0
         for _, tab in ipairs(bankTabs) do
             draw_tab(tab.id, tab.icon, pos_x+11, pos_y + 34 + tabOff)
@@ -529,7 +530,7 @@ if not initialized then
         end
         offx = 35
         GuiZSetForNextWidget(gui, 9)
-        GuiText(gui, pos_x + 119, pos_y + 5, "filter")
+        GuiText(gui, pos_x + 119, pos_y + 5, "$noitatogether_bank_filter")
         GuiZSetForNextWidget(gui, 9)
         bankfilter = GuiTextInput(gui, next_id(), pos_x + 140, pos_y + 5, bankfilter, 100, 32)
 
@@ -593,9 +594,8 @@ if not initialized then
         end
         
         local location = GameTextGetTranslatedOrNot(player.location)
-        if (location == nil or location == "_EMPTY_") then location = "Mountain" end
-        location = location .. "\nDepth: " .. string.format("%.0fm", player.y and player.y / 10 or 0)
-        GuiTooltip(gui, player.name, "Hp: " .. tostring(math.floor(player.curHp)) .. " / " .. tostring(math.floor(player.maxHp)) .. "\nLocation: " .. location)
+        if (location == nil or location == "_EMPTY_") then location = "$noitatogether_mountain" end
+        GuiTooltip(gui, player.name, GameTextGet("$noitatogether_tooltip_player_info", tostring(math.floor(player.curHp)), tostring(math.floor(player.maxHp)), location, string.format("%.0fm", player.y and player.y / 10 or 0)))
         GuiOptionsAddForNextWidget(gui, GUI_OPTION.Layout_NextSameLine)
         GuiZSetForNextWidget(gui, 9)
         local bar_w = player.curHp / player.maxHp
@@ -626,10 +626,10 @@ if not initialized then
         GuiZSetForNextWidget(gui, 10)
         GuiImageNinePiece(gui, next_id(), pos_x, pos_y, 120, 65, 1, "mods/noita-together/files/ui/outer.png")
         GuiZSetForNextWidget(gui, 9)
-        GuiText(gui, pos_x, pos_y, "Gold: " .. tostring(BankGold))
+        GuiText(gui, pos_x, pos_y, GameTextGet("$noitatogether_bank_gold", tostring(BankGold)))
 
         GuiZSetForNextWidget(gui, 9)
-        GuiText(gui, pos_x, pos_y+15, "Amount")
+        GuiText(gui, pos_x, pos_y+15, "$noitatogether_bank_gold_xfer_qty")
         GuiZSetForNextWidget(gui, 9)
         gold_amount = GuiTextInput(gui, next_id(), pos_x, pos_y + 25, gold_amount, 120, 10, "0123456789")
         
@@ -649,7 +649,7 @@ if not initialized then
         end
 
         GuiZSetForNextWidget(gui, 8)
-        GuiText(gui, pos_x + 12 , pos_y +52, "TAKE")
+        GuiText(gui, pos_x + 12 , pos_y +52, "$noitatogether_bank_gold_xfer_withdraw")
 
         GuiZSetForNextWidget(gui, 9)
         GuiImageNinePiece(gui, next_id(), pos_x + 85, pos_y + 54, 30, 5, 1, "mods/noita-together/files/ui/inner_darker.png")
@@ -665,7 +665,7 @@ if not initialized then
             end
         end
         GuiZSetForNextWidget(gui, 8)
-        GuiText(gui, pos_x + 80 , pos_y +52, "DEPOSIT")
+        GuiText(gui, pos_x + 80 , pos_y +52, "$noitatogether_bank_gold_xfer_deposit")
         GuiOptionsClear(gui)
     end
 
@@ -681,6 +681,7 @@ if not initialized then
             show_message = false
         end
         GuiZSetForNextWidget(gui, 8)
+        --TODO: this doesnt support characters other than [a-zA-Z0-9 ] (non-english, symbols, etc)
         player_msg = GuiTextInput(gui, next_id(), pos_x, pos_y, player_msg, 150, 99, "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789 ")
 
         --store hover state
@@ -724,23 +725,23 @@ if not initialized then
             py = py - 10
             if (#player_msg > 0 and GameGetFrameNum() >= last_player_msg and px ~= nil and py ~= nil and NT ~= nil and NT.run_started) then
                 if (CanSpawnPoi(px, py)) then
-                    SpawnPoi("My messsage", player_msg,  px, py)
+                    SpawnPoi("$noitatogether_message_mine", player_msg,  px, py)
                     SendWsEvent({event="CustomModEvent", payload={name="PlayerPOI", message=player_msg, x=px, y=py}})
                     show_message = false
                     player_msg = ""
-                    GamePrint("message sent")
+                    GamePrint("$noitatogether_message_sent")
                     last_player_msg = GameGetFrameNum() + 60*30
                 else
-                    GamePrint("can't send message too close to another message")
+                    GamePrint("$noitatogether_message_cant_too_close")
                 end
             else
-                GamePrint("can't send message yet")
+                GamePrint("$noitatogether_message_cant_too_soon")
             end
         end
         GuiZSetForNextWidget(gui, 9)
         GuiImageNinePiece(gui, next_id(), pos_x + 64, pos_y + offy + 5, 30, 5, 1, "mods/noita-together/files/ui/inner_darker.png")
         GuiZSetForNextWidget(gui, 7)
-        GuiText(gui, pos_x + 68 , pos_y + offy + 2, "SEND")
+        GuiText(gui, pos_x + 68 , pos_y + offy + 2, "$noitatogether_message_send")
     end
 
     function draw_gui()
@@ -794,8 +795,8 @@ if not initialized then
         end
         local ghost_button = HideGhosts and "hide_players.png" or "players.png"
         local chat_button = HideChat and "hide_chat.png" or "chat.png"
-        local ghost_tooltip = HideGhosts and "No player ghosts" or "Showing player ghosts"
-        local chat_tooltip = HideChat and "Ignoring chat messages" or "Showing chat messages"
+        local ghost_tooltip = HideGhosts and "$noitatogether_tooltip_player_ghost_toggle_off" or "$noitatogether_tooltip_player_ghost_toggle_on"
+        local chat_tooltip = HideChat and "$noitatogether_tooltip_show_chat_toggle_off" or "$noitatogether_tooltip_show_chat_toggle_on"
         
         if (GuiImageButton(gui, next_id(), 79, 0, "", "mods/noita-together/files/ui/buttons/keyboard.png")) then
             if (show_bank) then show_bank = false end
@@ -804,7 +805,7 @@ if not initialized then
                 player_msg = ""
             end
         end
-        GuiTooltip(gui, "leave a message here", "")
+        GuiTooltip(gui, "$noitatogether_tooltip_leave_a_message", "")
 
         if (GuiImageButton(gui, next_id(), 100, 0, "", "mods/noita-together/files/ui/buttons/" .. ghost_button)) then
             HideGhosts = not HideGhosts
@@ -824,13 +825,13 @@ if not initialized then
         if (GuiImageButton(gui, next_id(), 140, 0, "", "mods/noita-together/files/ui/buttons/player_list.png")) then
             show_player_list = not show_player_list
         end
-        GuiTooltip(gui, "Player List", "")
+        GuiTooltip(gui, "$noitatogether_tooltip_player_list", "")
 
         if (GuiImageButton(gui, next_id(), 160, 0, "", "mods/noita-together/files/ui/buttons/bank.png")) then
             if (show_message) then show_message = false end
             show_bank = not show_bank
         end
-        GuiTooltip(gui, "Item Bank", "")
+        GuiTooltip(gui, "$noitatogether_tooltip_item_bank", "")
 
         if (show_message) then
             draw_player_message()
@@ -872,7 +873,7 @@ if not initialized then
         local current_seed = tonumber(StatsGetValue("world_seed"))
         if (current_seed ~= seed and seed > 0) then
             GuiImageNinePiece(gui, next_id(), (screen_width / 2) - 90, 50, 180, 20, 0.8)
-            GuiText(gui, (screen_width / 2) - 80, 55, "Host changed world seed, start a new game")
+            GuiText(gui, (screen_width / 2) - 80, 55, "$noitatogether_host_changed_seed")
         end
 
         if (NT ~= nil and NT.run_ended) then

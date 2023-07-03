@@ -138,7 +138,7 @@ function AngerSteve(userId)
     if (NT.sent_steve or GlobalsGetValue("TEMPLE_SPAWN_GUARDIAN") == "1") then return nil end
     NT.sent_steve = true
     local player = PlayerList[userId].name
-    GamePrintImportant(player .. " Angered The Gods", "good luck")
+    GamePrintImportant(GameTextGet("$noitatogether_angered_gods_title", player), "$noitatogether_angered_gods_subtitle")
     GlobalsSetValue("TEMPLE_SPAWN_GUARDIAN", "1")
     local workshop_exit_id = EntityGetClosestWithTag(pos_x, pos_y, "workshop_exit")
     local guard_x = pos_x
@@ -182,7 +182,7 @@ function PlayerHeartPickup(perk, userId)
         end
     end
     GameTriggerMusicCue("item")
-    GamePrint(player_name .. " picked up a heart.")
+    GamePrint(GameTextGet("$noitatogether_player_got_heart", player_name))
 end
 
 function PlayerOrbPickup(id, userId)
@@ -191,10 +191,10 @@ function PlayerOrbPickup(id, userId)
             local player = PlayerList[userId].name
             local already_picked = GameGetOrbCollectedThisRun(id)
             if (already_picked) then
-                GamePrint(player .. " found an orb of knowledge you had already found.")
+                GamePrint(GameTextGet("$noitatogether_player_got_orb_had", player))
                 return nil
             end
-            GamePrint(player .. " found an orb of knowledge.")
+            GamePrint(GameTextGet("$noitatogether_player_got_orb", player))
             local orb = EntityLoad("mods/noita-together/files/entities/forced_orb.xml", GetPlayerPos())
             local orbcomp = EntityGetFirstComponent(orb, "OrbComponent")
             ComponentSetValue2(orbcomp, "orb_id", id)
@@ -425,7 +425,7 @@ end
 function RespawnPenalty(userId)
     local player_name = PlayerList[userId].name
     if (GameHasFlagRun("NT_death_penalty_full_respawn")) then
-        GamePrintImportant(player_name .. " died")
+        GamePrintImportant(GameTextGet("$noitatogether_player_died", player_name))
         return
     end
     local player = GetPlayer()
@@ -439,7 +439,7 @@ function RespawnPenalty(userId)
 
         local new_max = max_hp * 0.8
         if (new_max < 1) then
-            GamePrintImportant("Not enough life force", "Your teammate stays dead and the run ends...")
+            GamePrintImportant("$noitatogether_run_end_lowhp_title", "$noitatogether_run_end_lowhp_subtitle")
             EndRun()
             ComponentSetValue2(damage_models, "kill_now", true)
             return
@@ -449,7 +449,7 @@ function RespawnPenalty(userId)
             ComponentSetValue2(damage_models, "hp", new_max)
         end
     end
-    GamePrintImportant(player_name .. " died but...", "They took some of your lifeforce to respawn")
+    GamePrintImportant(GameTextGet("$noitatogether_player_died_penalty_title", player_name), "$noitatogether_player_died_penalty_subtitle")
 end
 
 function PlayerRespawn(entity_id, poly, weak)
@@ -509,8 +509,8 @@ function PlayerRespawn(entity_id, poly, weak)
         ComponentSetValue2(effect_comp, "frames", 60*40)
         EntityAddComponent2(effect_entity, "UIIconComponent", {
             icon_sprite_file = "data/ui_gfx/status_indicators/protection_all.png",
-            name = "Respawn Protection",
-            description = "You are being protected against campers.",
+            name = GameTextGet("$noitatogether_spawncamp_buff_name"),
+            description = GameTextGet("$noitatogether_spawncamp_buff_desc"),
             display_above_head = true,
             display_in_hud = true,
             is_perk = false
@@ -856,7 +856,7 @@ function StartRun()
         local controls_component = EntityGetFirstComponent(player, "ControlsComponent")
         if (controls_component ~= nil) then
             if (NT ~= nil and NT.run_started == false) then
-                GamePrintImportant("Run Started", "Have fun")
+                GamePrintImportant("$noitatogether_run_started_title", "$noitatogether_run_started_subtitle")
                 NT.run_started = true
             end
             ComponentSetValue2(controls_component, "enabled", true)

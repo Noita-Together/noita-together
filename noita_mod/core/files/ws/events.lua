@@ -21,7 +21,7 @@ customEvents = {
         end
         local user = PlayerList[data.userId]
         if (user ~= nil) then
-            GamePrintImportant(user.name .. " sent you a perk", "enjoy")
+            GamePrintImportant(GameTextGet("$noitatogether_teamperk_received_title", user.name), "$noitatogether_teamperk_received_subtitle")
         end
         local player = GetPlayer()
         local x, y = GetPlayerPos()
@@ -38,7 +38,9 @@ customEvents = {
             PlayerList[data.userId].sampo = true
         end
         NT.players_sampo = NT.players_sampo + 1
-        GamePrint(player .. " picked up the salt, they wait for you")
+        --TODO, populate this with the particular version they actually got, for flexing purposes :)
+        local mcguffin_name = "$item_mcguffin_0"
+        GamePrint(GameTextGet("$noitatogether_player_got_mcguffin", player, GameTextGet(mcguffin_name)))
     end,
     PlayerMove = function(data)
         --[[
@@ -70,30 +72,29 @@ customEvents = {
             EntityAddChild(player, effect_entity)
             EntityAddComponent2(effect_entity, "UIIconComponent", {
                 icon_sprite_file = "data/ui_gfx/status_indicators/protection_all.png",
-                name = "Weak Ambrosia",
-                description = player_name .. "thinks you are too weak\n50% damage reduction to most damage types",
+                name = GameTextGet("$noitatogether_hourglass_buff_protection_name"),
+                description = GameTextGet("$noitatogether_hourglass_buff_protection_desc", player_name),
                 display_above_head = true,
                 display_in_hud = true,
                 is_perk = false
             })
-            GamePrintImportant(player_name .. " boosted the team", "Players will have a protection effect for 2 minutes")
+            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_ambrosia_subtitle")
         elseif (data.effect == "berserk") then
-            local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_damage_multiplier.xml")
             local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
             ComponentSetValue2(effect_comp, "frames", 60*120)
             EntityAddComponent2(effect_entity, "UIIconComponent", {
                 icon_sprite_file = "data/ui_gfx/status_indicators/berserk.png",
-                name = "DAMAGE",
-                description = player_name .. " thinks you are too weak",
+                name = GameTextGet("$noitatogether_hourglass_buff_damage_name"),
+                description = GameTextGet("$noitatogether_hourglass_buff_damage_desc", player_name),
                 display_above_head = true,
                 display_in_hud = true,
                 is_perk = false
             })
-            GamePrintImportant(player_name .. " boosted the team", "Players will have a damage boost effect for 2 minutes")
+            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_berserk_subtitle")
         elseif (data.effect == "charm") then
             local x, y = GetPlayerOrCameraPos()
             EntityLoad("data/entities/projectiles/deck/regeneration_field_long.xml", x, y)
-            GamePrintImportant(player_name .. " sent you a boon", "")
+            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boon_title", player_name), "")
         elseif (data.effect == "confusion") then
             local fungi = CellFactory_GetType("fungi")
             if (player ~= nil) then
@@ -103,9 +104,9 @@ customEvents = {
                     local ingestion_size = ComponentGetValue2(stomach, "ingestion_size")
                     ComponentSetValue2(stomach, "ingestion_size", math.max(0, ingestion_size - 300))
                 end
-                GamePrintImportant(player_name .. " wants to party", "you have been dragged into it")
+                GamePrintImportant(GameTextGet("$noitatogether_hourglass_fungus_title", player_name), "$noitatogether_hourglass_fungus_subtitle_yes")
             else
-                GamePrintImportant(player_name .. " wants to party", "but you are having none of that")
+                GamePrintImportant(GameTextGet("$noitatogether_hourglass_fungus_title", player_name), "$noitatogether_hourglass_fungus_subtitle_no")
             end
         elseif (data.effect == "speed") then
             local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_movement_faster.xml")
@@ -113,13 +114,13 @@ customEvents = {
             ComponentSetValue2(effect_comp, "frames", 60*45)
             EntityAddComponent2(effect_entity, "UIIconComponent", {
                 icon_sprite_file = "data/ui_gfx/status_indicators/movement_faster.png",
-                name = "SPEED",
-                description = player_name .. " thinks you are too slow",
+                name = GameTextGet("$noitatogether_hourglass_buff_speed_name"),
+                description = GameTextGet("$noitatogether_hourglass_buff_speed_desc", player_name),
                 display_above_head = true,
                 display_in_hud = true,
                 is_perk = false
             })
-            GamePrintImportant(player_name .. " boosted the team", "Players will have a speed boost effect for 45 seconds")
+            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_speed_subtitle")
         end
     end
 }
@@ -143,13 +144,13 @@ wsEvents = {
         BankGold = data.gold
     end,
     UserTakeFailed = function(data)
-        GamePrint("Failed to take item.")
+        GamePrint("$noitatogether_bank_take_item_failed")
     end,
     UserTakeSuccess = function(data)
         local item = GetItemWithId(BankItems, data.id)
         RemoveItemWithId(BankItems, data.id)
         if (data.me) then
-            GamePrint("Stay on the left wing altar in the holy mountain to receive your item.")
+            GamePrint("$noitatogether_bank_take_item_success")
             local queue = json.decode(NT.queuedItems)
             table.insert(queue, item)
             NT.queuedItems = json.encode(queue)
@@ -158,18 +159,18 @@ wsEvents = {
     UserAddGold = function(data)
         BankGold = BankGold + data.amount
         if (PlayerList[data.userId] ~= nil) then
-            GamePrint(PlayerList[data.userId].name .. " deposited " .. tostring(data.amount) .. " gold to the bank.")
+            GamePrint(GameTextGet("$noitatogether_bank_player_deposited_gold", PlayerList[data.userId].name, tostring(data.amount)))
         end
     end,
     UserTakeGoldSuccess = function(data)
         BankGold = BankGold - data.amount
         if (data.me) then
-            GamePrint("Stay on the left wing altar in the holy mountain to receive your gold.")
+            GamePrint("$noitatogether_bank_take_gold_success")
             NT.gold_queue = NT.gold_queue + data.amount
         end
     end,
     UserTakeGoldFailed = function(data)
-        GamePrint("Failed to take gold.")
+        GamePrint("$noitatogether_bank_take_gold_failed")
     end,
     RequestGameInfo = function(data)
         local seed = StatsGetValue("world_seed")
@@ -206,7 +207,7 @@ wsEvents = {
             table.insert(BankItems, item)
         end
         if (PlayerList[data.userId] ~= nil) then
-            GamePrint(PlayerList[data.userId].name .. " deposited " .. #data.items .. " items to the bank.")
+            GamePrint(GameTextGet("$noitatogether_bank_player_deposited_items", PlayerList[data.userId].name, tostring(#data.items)))
         end
     end,
     AddPlayer = function(data)
@@ -250,14 +251,13 @@ wsEvents = {
     PlayerDeath = function(data)
         if (data.isWin == true) then
             PlayerList[data.userId].curHp = 0
-            msg = PlayerList[data.userId].name .. " has won."
             --InGameChatAddMsg({name = "[System]", message = msg})
-            GamePrintImportant(msg, "")
+            GamePrintImportant(GameTextGet("$noitatogether_player_won", PlayerList[data.userId].name), "")
         else
             PlayerList[data.userId].curHp = 0
-            msg = PlayerList[data.userId].name .. " has died."
+            --msg = PlayerList[data.userId].name .. " has died." --changed the text of this, so just commenting out for now..
             if (GameHasFlagRun("NT_death_penalty_end") or GameHasFlagRun("NT_death_penalty_weak_respawn")) then
-                NT.end_msg = msg
+                NT.end_msg = GameTextGet("$noitatogether_player_died", PlayerList[data.userId].name)
                 FinishRun()
             end
         end

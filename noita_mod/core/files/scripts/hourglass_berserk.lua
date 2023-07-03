@@ -16,5 +16,5 @@ function material_area_checker_success( pos_x, pos_y )
     table.insert(queue, {event="CustomModEvent", payload={name="SecretHourglass", effect="berserk"}})
     NT.wsQueue = json.encode(queue)
 
-    GamePrintImportant("Your team receives a boon", "")
+    GamePrintImportant("$noitatogether_hourglass_gave_boon", "")
 end
