@@ -753,7 +753,7 @@ class Lobby {
 
         const { name, gamemode, maxUsers, password, locked } = payload
         const updateMsg = {}
-        if (name.trim() && validator.isAscii(name.trim())) {
+        if (name && name.trim() && validator.isAscii(name.trim())) {
             room.name = room.SanitizeRoomName(name.trim())
             updateMsg.name = room.name
         }
@@ -772,7 +772,7 @@ class Lobby {
                 return
             }
         }
-        else if (password.trim() && validator.isAscii(password.trim())) {
+        else if (password && password.trim() && validator.isAscii(password.trim())) {
             room.password = password.trim()
         }
         else if (typeof locked != "undefined") {
