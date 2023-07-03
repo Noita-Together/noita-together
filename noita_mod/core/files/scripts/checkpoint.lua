@@ -1,5 +1,5 @@
 function collision_trigger(player)
-    if (not GameHasFlagRun("death_penalty_full_respawn") and not GameHasFlagRun("death_penalty_weak_respawn")) then
+    if (not GameHasFlagRun("NT_death_penalty_full_respawn") and not GameHasFlagRun("NT_death_penalty_weak_respawn")) then
         return
     end
     local entity_id = GetUpdatedEntityID()

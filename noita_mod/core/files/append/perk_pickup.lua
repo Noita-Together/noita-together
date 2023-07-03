@@ -20,7 +20,7 @@ function item_pickup( entity_item, entity_who_picked, item_name )
 		end
 	end
     if (GameHasFlagRun("NT_GAMEMODE_CO_OP") and not blocked) then
-        if ((GameHasFlagRun("team_perks") and list[perk_id] == true) or GameHasFlagRun("sync_perks")) then
+        if ((GameHasFlagRun("NT_team_perks") and list[perk_id] == true) or GameHasFlagRun("NT_sync_perks")) then
             local queue = json.decode(NT.wsQueue)
             table.insert(queue, {event="CustomModEvent", payload={name="TeamPerk", id=perk_id}})
             NT.wsQueue = json.encode(queue)
