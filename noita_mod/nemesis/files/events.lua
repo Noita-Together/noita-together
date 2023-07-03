@@ -66,12 +66,12 @@ local _AddPlayer = wsEvents["AddPlayer"]
 --local _RemovePlayer = wsEvents["RemovePlayer"]
 wsEvents["StartRun"] = function(data)
     local water = CellFactory_GetType( "water" )
-    if (GameHasFlagRun("ban_ambrosia")) then
+    if (GameHasFlagRun("NT_NEMESIS_ban_ambrosia")) then
         local ambrosia = CellFactory_GetType( "magic_liquid_protection_all" )
         ConvertMaterialEverywhere( ambrosia, water )
     end
 
-    if (GameHasFlagRun("ban_invis")) then
+    if (GameHasFlagRun("NT_NEMESIS_ban_invis")) then
         local invis = CellFactory_GetType( "magic_liquid_invisibility" )
         ConvertMaterialEverywhere( invis, water )
     end

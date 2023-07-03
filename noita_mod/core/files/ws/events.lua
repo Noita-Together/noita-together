@@ -8,15 +8,15 @@ customEvents = {
         SpawnPoi(user.name .. "'s message", data.message, data.x, data.y)
     end,
     FungalShift = function(data)
-        if(GameHasFlagRun("NT_GAMEMODE_CO_OP") and GameHasFlagRun("sync_shift")) then
+        if(GameHasFlagRun("NT_GAMEMODE_CO_OP") and GameHasFlagRun("NT_sync_shift")) then
             DoFungalShift(data.from, data.to)
         end
     end,
     TeamPerk = function(data)
         local list = dofile("mods/noita-together/files/scripts/perks.lua")
-        if (not GameHasFlagRun("NT_GAMEMODE_CO_OP") or (not GameHasFlagRun("sync_perks") and not GameHasFlagRun("team_perks"))) then 
+        if (not GameHasFlagRun("NT_GAMEMODE_CO_OP") or (not GameHasFlagRun("NT_sync_perks") and not GameHasFlagRun("NT_team_perks"))) then 
             return nil
-        elseif (GameHasFlagRun("team_perks") and not GameHasFlagRun("sync_perks") and (list[data.id] == false or list[data.id] == nil)) then
+        elseif (GameHasFlagRun("NT_team_perks") and not GameHasFlagRun("NT_sync_perks") and (list[data.id] == false or list[data.id] == nil)) then
             return nil
         end
         local user = PlayerList[data.userId]
@@ -125,12 +125,12 @@ customEvents = {
 }
 wsEvents = {
     AngerySteve = function (data)
-        if (GameHasFlagRun("sync_steve")) then
+        if (GameHasFlagRun("NT_sync_steve")) then
             AngerSteve(data.userId)
         end
     end,
     RespawnPenalty = function (data)
-        if (GameHasFlagRun("death_penalty_weak_respawn")) then
+        if (GameHasFlagRun("NT_death_penalty_weak_respawn")) then
             RespawnPenalty(data.userId)
         end
     end,
@@ -256,7 +256,7 @@ wsEvents = {
         else
             PlayerList[data.userId].curHp = 0
             msg = PlayerList[data.userId].name .. " has died."
-            if (GameHasFlagRun("death_penalty_end") or GameHasFlagRun("death_penalty_weak_respawn")) then
+            if (GameHasFlagRun("NT_death_penalty_end") or GameHasFlagRun("NT_death_penalty_weak_respawn")) then
                 NT.end_msg = msg
                 FinishRun()
             end
@@ -287,7 +287,7 @@ wsEvents = {
     UpdateFlags = function(data)
         dofile("mods/noita-together/files/scripts/remove_flags.lua")
         for _, entry in ipairs(data) do
-            if (entry.flag == "sync_world_seed") then
+            if (entry.flag == "NT_sync_world_seed") then
                 ModSettingSet( "noita_together.seed", entry.uIntVal )
                 local seed = tonumber(StatsGetValue("world_seed"))
                 if (entry.uIntVal > 0 and seed ~= entry.uIntVal) then

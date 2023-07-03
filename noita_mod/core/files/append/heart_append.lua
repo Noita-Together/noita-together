@@ -16,7 +16,7 @@ function shared_heart(entity_item, entity_who_picked, name)
         for i, damagemodel in ipairs(damagemodels) do
             max_hp = tonumber(ComponentGetValue(damagemodel, "max_hp"))
             max_hp_old = max_hp
-            if (GameHasFlagRun("sync_hearts")) then
+            if (GameHasFlagRun("NT_sync_hearts")) then
                 max_hp = max_hp + math.max(0.16 ,(1 / (playercount)) * multiplier)
             else
                 max_hp = max_hp + 1 * multiplier
@@ -44,7 +44,7 @@ function shared_heart(entity_item, entity_who_picked, name)
 end
 
 function item_pickup(entity_item, entity_who_picked, name)
-    if (GameHasFlagRun("NT_GAMEMODE_CO_OP") and GameHasFlagRun("sync_hearts")) then
+    if (GameHasFlagRun("NT_GAMEMODE_CO_OP") and GameHasFlagRun("NT_sync_hearts")) then
         shared_heart(entity_item, entity_who_picked, name)
         if (NT.skip_heart > 0) then
             NT.skip_heart = NT.skip_heart - 1
