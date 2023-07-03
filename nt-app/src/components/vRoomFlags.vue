@@ -62,7 +62,7 @@ export default {//braincells where'd ya go
     },
     beforeMount() {
         this.payload = this.flags;
-        const deathFlag = this.storeFlags.find(v => v.id.startsWith("death_penalty") && v.value)
+        const deathFlag = this.storeFlags.find(v => v.id.startsWith("NT_death_penalty") && v.value)
         console.log({ f: this.storeFlags })
         this.deathFlag = deathFlag.name
     },
