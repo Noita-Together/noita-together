@@ -600,6 +600,16 @@ class Lobby {
         this.canCreateRooms = true
     }
 
+    /**
+     *
+     * @param role {'host','play','spectate'}
+     * @param user {User}
+     * @constructor
+     */
+    CanUserAccess(role, user){
+        if(user.access this.canCreateRooms && role === "host") return
+    }
+
     CheckUsers() {
         this.users.forEach(user => {
             if (!user.isAlive) {

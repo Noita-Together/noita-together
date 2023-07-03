@@ -6,10 +6,16 @@ import {TwitchDecodedToken} from "shared-lib/types/Twitch"
 import Lobby from "./lobby";
 
 import axios from "axios";
+import {UserDatasource, PendingConnectionDatasource} from "@/src/Datasource";
+import {defaultRoles, RoleImpl, User} from "@/src/entity/User";
+import {PendingConnection} from "@/src/entity/PendingConnection";
 
 let cachedJWKS: string|undefined = undefined
 
 const timeStart = Date.now()
+
+const userDatasource = UserDatasource()
+const pendingConnectionDatasource = PendingConnectionDatasource()
 
 class NoitaTogetherWebsocket{
     readonly port?
@@ -43,6 +49,33 @@ class NoitaTogetherWebsocket{
         })
         this.wsServer?.close()
         this.wsServer?.emit("close")
+    }
+
+    private async AddOrGetUserFromDB(id: string, twitch_username: string): Promise<User|null>{
+        const db = await userDatasource
+        if(!db) return null
+        const repository = db.getRepository(User)
+        let user = await repository.findOneBy({
+            id: id
+        })
+        if(!user){
+            user = new User(id, twitch_username, defaultRoles)
+            await repository.save(user)
+        }
+        if(user.display_name !== twitch_username){
+            user.display_name = twitch_username
+            await repository.save(user)
+        }
+        return user
+    }
+
+    private async CreatePendingConnection(): Promise<User|null>{
+        const db = await pendingConnectionDatasource
+        if(!db) return null
+        const respository = db.getRepository(PendingConnection)
+        const pendingConnection = new PendingConnection()
+        respository.save(pendingConnection)
+        return new User(`pending:${pendingConnection.id}`,  `$pending_${pendingConnection.id}`, new RoleImpl())
     }
 
     private subscribeEvents(){
@@ -84,10 +117,14 @@ class NoitaTogetherWebsocket{
     async validateToken(token: string) : Promise<User|null>{
         if (!token) return null
         if(this.offlineCode && token.startsWith(`offline/${this.offlineCode}`) && token.split('/').length === 3){
-            return {
-                id: `${Math.random()}`,
-                display_name: token.split('/')[2]
-            }
+            return new User(`${Math.random()}`, token.split('/')[2], defaultRoles)
+        }
+        if(token.startsWith('stats')){
+            const userId = Math.round(Math.random()*10000)
+            return new User(`${userId}`, '', new RoleImpl({canWatchStats: true}))
+        }
+        if(token.startsWith('deviceAuth')){
+            return this.CreatePendingConnection()
         }
 
         if(this.offlineCode) return null
@@ -96,10 +133,7 @@ class NoitaTogetherWebsocket{
         const verify: Promise<TwitchDecodedToken> = verifyJwt(token, cachedJWKS)
         return verify
             .then((jwtObject: TwitchDecodedToken) => {
-                return {
-                    id: jwtObject.sub,
-                    display_name: jwtObject.preferred_username
-                } as User
+                return this.AddOrGetUserFromDB(jwtObject.sub, jwtObject.preferred_username)
             })
             .catch((e) => {
                 console.error('We failed to validate JWT :(. No user!')
@@ -114,11 +148,6 @@ const fetchJWKS = async () => {
     const response = await axios.get('https://id.twitch.tv/oauth2/keys')
     console.log('Fetched!')
     return response.data
-}
-
-export interface User{
-    id: string,
-    display_name: string
 }
 
 export {
