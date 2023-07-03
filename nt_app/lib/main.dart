@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 final Uri _noitaTogetherHomePage = Uri.parse('https://noita-together.skyefullofbreeze.com');
 final Uri _noitaTogetherLogin = Uri.parse('https://noita-together.skyefullofbreeze.com/api/auth/login');
+final Uri _noitaTogetherWsStatus = Uri.parse('ws://noita-together.skyefullofbreeze.com/status');
 
 void main() {
   runApp(const MyApp());
@@ -79,6 +81,15 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+    });
+  }
+
+  void _checkStatus(){
+    var channel = WebSocketChannel.connect(wsUrl);
+
+    channel.stream.listen((message) {
+      channel.sink.add('received!');
+      channel.sink.close(status.goingAway);
     });
   }
 
