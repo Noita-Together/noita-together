@@ -25,7 +25,7 @@ function item_pickup( entity_item, entity_who_picked, name )
         NT.sampo_pickup = true
         NT.players_sampo = NT.players_sampo + 1
         local queue = json.decode(NT.wsQueue)
-        table.insert(queue, {event="CustomModEvent", payload={name="SampoPickup"}})
+        table.insert(queue, {event="CustomModEvent", payload={name="SampoPickup",orbs=GameGetOrbCountThisRun()}})
         NT.wsQueue = json.encode(queue)
     end
 end
