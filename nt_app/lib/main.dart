@@ -7,6 +7,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 final Uri _noitaTogetherHomePage = Uri.parse('https://noita-together.skyefullofbreeze.com');
 final Uri _noitaTogetherLogin = Uri.parse('https://noita-together.skyefullofbreeze.com/api/auth/login');
 final Uri _noitaTogetherWsStatus = Uri.parse('ws://noita-together.skyefullofbreeze.com/uptime');
+final Uri _noitaTogetherWsDeviceAuth = Uri.parse('ws://localhost:5466/deviceAuth');
 
 void main() {
   runApp(const MyApp());
@@ -73,9 +74,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   TwitchTokens? twitchTokens;
   String? wsMessage;
+  var channel = WebSocketChannel.connect(_noitaTogetherWsDeviceAuth);
 
   void _incrementCounter() {
-    _checkStatus();
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -83,17 +84,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
-    });
-  }
-
-  void _checkStatus(){
-    var channel = WebSocketChannel.connect(_noitaTogetherWsStatus);
-
-    channel.stream.listen((message) {
-      setState(() {
-        wsMessage: message;
-      });
-      channel.sink.close(0);
     });
   }
 
@@ -163,6 +153,12 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter: $wsMessage',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            StreamBuilder(
+              stream: channel.stream,
+              builder: (context, snapshot) {
+                return Text(snapshot.hasData ? '${snapshot.data}' : '');
+              },
+            )
           ],
         ),
       ),

@@ -31,3 +31,4 @@ pnpm-debug.log*
 /.yarn/cache/
 /.yarn/install-state.gz
 jwt-secret.txt
+*.sqlite

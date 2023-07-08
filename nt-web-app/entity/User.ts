@@ -1,30 +1,61 @@
-import {Entity, PrimaryGeneratedColumn, Column, UpdateDateColumn, CreateDateColumn} from "typeorm"
+import {Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn} from "typeorm"
+
+export type LoginProvider = 'local'|'twitch'
 
 @Entity()
-export class User {
-    @PrimaryGeneratedColumn()
+export class User{
+    @PrimaryColumn()
     id: string
+
+    @Column()
+    provider: string
 
     @Column()
     display_name: string
 
-    @Column()
-    access: Role
+    private _access: Role|null = null;
 
-    @CreateDateColumn()
-    user_since?: string
+    @Column({ type: "text", nullable: false })
+    get access(): string {
+        // Convert the Role object to a space-delimited string
+        if (this._access) {
+            return Object.entries(this._access)
+                .filter(([_, value]) => value)
+                .map(([key]) => key)
+                .join(" ");
+        }
+        return '';
+    }
 
-    @UpdateDateColumn()
-    updated_at?: string
+    set access(value: string|null) {
+        if(!value){
+            this._access = new RoleImpl()
+            return
+        }
+        // Convert the space-delimited string back to a Role object
+        const role: Role = {};
+        value.split(" ").forEach(key => {
+            role[key] = true;
+        });
+        this._access = role;
+    }
 
-    constructor(id: string, twitch_user_name: string, access: Role) {
-        this.access = access
+    @CreateDateColumn({ type: "datetime" })
+    user_since?: Date;
+
+    @UpdateDateColumn({ type: "datetime" })
+    updated_at?: Date;
+
+    constructor(id: string, twitch_user_name: string, access: Role, provider: LoginProvider) {
+        this._access = access
         this.display_name = twitch_user_name
         this.id = id
+        this.provider = provider
     }
 }
 
 export interface Role {
+    [key: string]: boolean | undefined
     canCreateRooms?: boolean
     canJoinRooms?: boolean
     canChat?: boolean
@@ -39,6 +70,7 @@ export interface Role {
 }
 
 export class RoleImpl implements Role {
+    [key: string]: boolean | undefined;
     canChat: boolean;
     canCreateRooms: boolean;
     canJoinRooms: boolean;

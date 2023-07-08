@@ -6,9 +6,17 @@ import {TwitchDecodedToken} from "shared-lib/types/Twitch"
 import Lobby from "./lobby";
 
 import axios from "axios";
-import {UserDatasource, PendingConnectionDatasource} from "@/src/Datasource";
-import {defaultRoles, RoleImpl, User} from "@/src/entity/User";
-import {PendingConnection} from "@/src/entity/PendingConnection";
+import {PendingConnectionDatasource, UserDatasource} from "./Datasource";
+import {defaultRoles, RoleImpl, User} from "../entity/User";
+import {PendingConnection} from "../entity/PendingConnection";
+import dotenv from "dotenv";
+import AuthSocket from "./authWebsocket";
+import stream from "node:stream";
+import {Socket} from "net";
+
+dotenv.config();
+
+const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
 
 let cachedJWKS: string|undefined = undefined
 
@@ -51,36 +59,29 @@ class NoitaTogetherWebsocket{
         this.wsServer?.emit("close")
     }
 
-    private async AddOrGetUserFromDB(id: string, twitch_username: string): Promise<User|null>{
+    private static async GetUserFromDB(id: string): Promise<User|null>{
         const db = await userDatasource
         if(!db) return null
         const repository = db.getRepository(User)
-        let user = await repository.findOneBy({
-            id: id
+        const user = await repository.findOneBy({
+            id: id,
+            provider: 'twitch'
         })
-        if(!user){
-            user = new User(id, twitch_username, defaultRoles)
-            await repository.save(user)
-        }
-        if(user.display_name !== twitch_username){
-            user.display_name = twitch_username
-            await repository.save(user)
-        }
+        if(!user) console.log(`Failed to return a user for ${id}!`)
         return user
     }
 
-    private async CreatePendingConnection(): Promise<User|null>{
+    private static async CreatePendingConnection(socket: Socket): Promise<PendingConnection|null>{
         const db = await pendingConnectionDatasource
         if(!db) return null
-        const respository = db.getRepository(PendingConnection)
-        const pendingConnection = new PendingConnection()
-        respository.save(pendingConnection)
-        return new User(`pending:${pendingConnection.id}`,  `$pending_${pendingConnection.id}`, new RoleImpl())
+        const pendingConnection = new PendingConnection(socket)
+        await pendingConnection.save()
+        return pendingConnection
     }
 
     private subscribeEvents(){
         console.log("subscribeEvents...")
-        this.wsServer?.on('upgrade', async (req, socket, head) => {
+        this.wsServer?.on('upgrade', async (req, socket: Socket, head) => {
             try {
                 if(!req.url){
                     socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
@@ -96,18 +97,34 @@ class NoitaTogetherWebsocket{
                     socket.destroy()
                     return
                 }
-                let user = await this.validateToken(token) //Get user from token
 
-                if (!user) {
-                    console.log(`HTTP/1.1 401 Unauthorized`)
-                    socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
-                    socket.destroy()
-                    return
+                if(token.startsWith('deviceAuth')){
+                    const pendingConnection = await NoitaTogetherWebsocket.CreatePendingConnection(socket)
+                    if (!pendingConnection) {
+                        console.log(`HTTP/1.1 500 Internal Server Error`)
+                        socket.write('HTTP/1.1 500 Internal Server Error\r\n\r\n')
+                        socket.destroy()
+                        return
+                    }
+                    AuthSocket.server.handleUpgrade(req, socket, head, (ws: any)=>{
+                        AuthSocket.server.emit('connection', ws, req, pendingConnection)
+                    })
+                }
+                else{
+                    let user = await this.validateToken(token) //Get user from token
+
+                    if (!user) {
+                        console.log(`HTTP/1.1 401 Unauthorized`)
+                        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+                        socket.destroy()
+                        return
+                    }
+
+                    Lobby.server.handleUpgrade(req, socket, head, (ws: any) => {
+                        Lobby.server.emit('connection', ws, req, user)
+                    })
                 }
 
-                Lobby.server.handleUpgrade(req, socket, head, (ws: any) => {
-                    Lobby.server.emit('connection', ws, req, user)
-                })
             } catch (error) {
 
             }
@@ -117,23 +134,20 @@ class NoitaTogetherWebsocket{
     async validateToken(token: string) : Promise<User|null>{
         if (!token) return null
         if(this.offlineCode && token.startsWith(`offline/${this.offlineCode}`) && token.split('/').length === 3){
-            return new User(`${Math.random()}`, token.split('/')[2], defaultRoles)
+            return new User(`${Math.random()}`, token.split('/')[2], defaultRoles, 'local')
         }
         if(token.startsWith('stats')){
             const userId = Math.round(Math.random()*10000)
-            return new User(`${userId}`, '', new RoleImpl({canWatchStats: true}))
-        }
-        if(token.startsWith('deviceAuth')){
-            return this.CreatePendingConnection()
+            return new User(`${userId}`, '', new RoleImpl({canWatchStats: true}), 'local')
         }
 
         if(this.offlineCode) return null
         if (!cachedJWKS)
             cachedJWKS = await fetchJWKS()
-        const verify: Promise<TwitchDecodedToken> = verifyJwt(token, cachedJWKS)
+        const verify: Promise<TwitchDecodedToken> = verifyJwt(token, SECRET_ACCESS)
         return verify
             .then((jwtObject: TwitchDecodedToken) => {
-                return this.AddOrGetUserFromDB(jwtObject.sub, jwtObject.preferred_username)
+                return NoitaTogetherWebsocket.GetUserFromDB(jwtObject.sub)
             })
             .catch((e) => {
                 console.error('We failed to validate JWT :(. No user!')

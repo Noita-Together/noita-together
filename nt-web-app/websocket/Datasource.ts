@@ -1,11 +1,11 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { User } from "@/src/entity/User"
-import {PendingConnection} from "@/src/entity/PendingConnection";
+import { User } from "../entity/User"
+import {PendingConnection} from "../entity/PendingConnection";
 
 const userDataSource = new DataSource({
     type: "sqlite",
-    database: "Users",
+    database: "user.sqlite",
     entities: [User],
     synchronize: true,
     logging: false,
@@ -13,14 +13,16 @@ const userDataSource = new DataSource({
 
 const pendingUsersDatasource = new DataSource({
     type: "sqlite",
-    database: "pendingUserConnections",
+    database: "pendingUserConnections.sqlite",
     entities: [PendingConnection],
     synchronize: true,
     logging: false,
 })
+const userDataSourceConnection = userDataSource.initialize()
+const pendingUsersDatasourceConnection = pendingUsersDatasource.initialize()
 
 const UserDatasource = (): Promise<null|DataSource> => {
-    return (userDataSource as DataSource).initialize()
+    return userDataSourceConnection
         .catch((error) => {
             console.log(error)
             return Promise.resolve(null)
@@ -28,7 +30,7 @@ const UserDatasource = (): Promise<null|DataSource> => {
 }
 
 const PendingConnectionDatasource = (): Promise<null|DataSource> => {
-    return (pendingUsersDatasource as DataSource).initialize()
+    return pendingUsersDatasourceConnection
         .catch((error) => {
             console.log(error)
             return Promise.resolve(null)

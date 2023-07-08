@@ -15,7 +15,7 @@
     "server": "yarn workspace nt-web-app serve",
     "serverDev": "yarn workspace nt-web-app serveDev",
     "buildClient": "yarn workspace nt-app electron:build",
-    "regenerate-proto": "yarn workspace nt-server type-gen"
+    "regenerate-proto": "yarn workspace nt-web-app type-gen"
   },
   "dependencies": {
     "axios": "^1.4.0"

@@ -6,6 +6,18 @@
       <excludeFolder url="file://$MODULE_DIR$/nt_app/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/nt_app/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/nt_app/build" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/url_launcher_windows/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/url_launcher_windows/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/url_launcher_windows/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux/build" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/linux/flutter/ephemeral/.plugin_symlinks/url_launcher_linux/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/url_launcher_windows/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/url_launcher_windows/build" />
+      <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/url_launcher_windows/.pub" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

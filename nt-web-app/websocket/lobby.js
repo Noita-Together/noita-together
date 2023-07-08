@@ -607,7 +607,7 @@ class Lobby {
      * @constructor
      */
     CanUserAccess(role, user){
-        if(user.access this.canCreateRooms && role === "host") return
+        return true //TODO
     }
 
     CheckUsers() {
@@ -623,6 +623,10 @@ class Lobby {
     OnConnection(socket, req, user) {
         const id = user.id
         const name = user.display_name
+        if(user.display_name.startsWith('$pending_') && user.id.startsWith('pending:')){
+            this.pendingConnections.set(id, new User(id, name, 0, socket, lobby))
+            return
+        }
         const uaccess = user.uaccess || 0
         this.AddUser(id, name, uaccess, socket, this)
     }
@@ -918,7 +922,6 @@ class Lobby {
 
         room.FinishRun()
     }
-
 }
 
 const lobby = new Lobby()
