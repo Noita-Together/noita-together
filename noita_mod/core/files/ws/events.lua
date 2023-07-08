@@ -38,9 +38,26 @@ customEvents = {
             PlayerList[data.userId].sampo = true
         end
         NT.players_sampo = NT.players_sampo + 1
-        --TODO, populate this with the particular version they actually got, for flexing purposes :)
-        local mcguffin_name = "$item_mcguffin_0"
-        GamePrint(GameTextGet("$noitatogether_player_got_mcguffin", player, GameTextGet(mcguffin_name)))
+        
+        --Populate this with the particular version they actually got, for flexing purposes :)
+        local orbs = data.orbs or 0
+        local orbs_for_name = orbs
+
+        if( orbs_for_name < 0 ) then
+            orbs_for_name = 0
+        elseif ( orbs_for_name > 33 ) then
+            orbs_for_name = 33
+        elseif( orbs_for_name > 13 ) then --nothing between 13 and 33
+            orbs_for_name = 13
+        end
+
+        local sampo_message = nil
+        if orbs >= 13 then --show exact orb count, no longer uniquely named
+            sampo_message = GameTextGet("$noitatogether_player_got_mcguffin_orbs", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)), tostring(orbs))
+        else
+            sampo_message = GameTextGet("$noitatogether_player_got_mcguffin", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)))
+        end
+        GamePrint(sampo_message)
     end,
     PlayerMove = function(data)
         --[[
