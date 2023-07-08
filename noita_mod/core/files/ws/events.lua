@@ -40,7 +40,7 @@ customEvents = {
         NT.players_sampo = NT.players_sampo + 1
         
         --Populate this with the particular version they actually got, for flexing purposes :)
-        local orbs = data.orbs
+        local orbs = data.orbs or 0
 
         if( orbs < 0 ) then
             orbs = 0
