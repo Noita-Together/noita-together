@@ -53,7 +53,7 @@ customEvents = {
 
         local sampo_message = nil
         if orbs >= 13 then --show exact orb count, no longer uniquely named
-            sampo_message = GameTextGet("$noitatogether_player_got_mcguffin_orbs", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name), tostring(orbs)))
+            sampo_message = GameTextGet("$noitatogether_player_got_mcguffin_orbs", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)), tostring(orbs))
         else
             sampo_message = GameTextGet("$noitatogether_player_got_mcguffin", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)))
         end
