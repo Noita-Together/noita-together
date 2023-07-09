@@ -1,8 +1,5 @@
-import {BaseEntity, Column, Entity, PrimaryColumn, UpdateDateColumn} from "typeorm"
+import {BaseEntity, Column, Entity, PrimaryColumn} from "typeorm"
 import * as crypto from "crypto";
-import stream from "node:stream";
-import WebSocket from "ws";
-import {Duplex} from "stream";
 import {Socket} from "net";
 
 @Entity()
@@ -19,7 +16,7 @@ export class PendingConnection extends BaseEntity{
     resolvedProvider?: string
 
     socket?: Socket;
-
+    @Column()
     lastCheck: number = Date.now()
 
     constructor(socket?: Socket) {
@@ -31,10 +28,17 @@ export class PendingConnection extends BaseEntity{
 }
 
 function generateValidationCode() {
-    // Generate a random 4-byte (32-bit) number
-    const randomBytes = crypto.randomBytes(4);
-    const randomInt = randomBytes.readUInt32BE(0);
+    // Generate a secure random buffer
+    const buffer = crypto.randomBytes(4);
 
-    // Convert the random number to a fixed-length string
-    return String(randomInt).padStart(8, '0');
+    // Convert the buffer to a 32-bit unsigned integer
+    const randomInt = buffer.readUInt32BE(0);
+
+    // Calculate the maximum value for the 8-digit code
+    const maxCode = Math.pow(10, 8) - 1;
+
+    // Limit the random number within the desired range
+    const validationCode = randomInt % (maxCode + 1);
+
+    return validationCode.toString().padStart(8, '0');
 }

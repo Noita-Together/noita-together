@@ -9,14 +9,13 @@ import axios from "axios";
 import {PendingConnectionDatasource, UserDatasource} from "./Datasource";
 import {defaultRoles, RoleImpl, User} from "../entity/User";
 import {PendingConnection} from "../entity/PendingConnection";
-import dotenv from "dotenv";
 import AuthSocket from "./authWebsocket";
-import stream from "node:stream";
 import {Socket} from "net";
 
-dotenv.config();
-
 const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
+const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID as string
+
+if(!TWITCH_CLIENT_ID) throw new Error("Unable to load .env!")
 
 let cachedJWKS: string|undefined = undefined
 
