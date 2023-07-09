@@ -1,13 +1,18 @@
 import 'dart:convert';
-import 'dart:ffi';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:nt_app/utils/nt_updater.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:nt_server_api/api.dart';
+
+import 'interfaces/twitch_tokens.dart';
 
 class ApiClientDev extends ApiClient {
   ApiClientDev({
@@ -81,39 +86,14 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class TwitchTokens {
-  String? access;
-  String? refresh;
-  int? expiresIn;
-  int? createdOn;
-
-  TwitchTokens();
-
-  factory TwitchTokens.fromJSON(Map<String, dynamic> json) {
-    var tokens = TwitchTokens();
-    tokens.access = json['access'];
-    tokens.refresh = json['refresh'];
-    tokens.expiresIn = json['expiresIn'];
-    tokens.createdOn = json['createdOn'];
-    return tokens;
-  }
-
-  Map<String, dynamic> toJson() => {
-        'access': access,
-        'refresh': refresh,
-        'expiresIn': expiresIn,
-        'createdOn': createdOn
-      };
-
-  Map<String, dynamic> toRefreshTokenJson() => {'refresh': refresh};
-}
-
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   TwitchTokens? twitchTokens;
   bool fetchedLoginFromDisk = false;
   String? wsMessage;
   WebSocketChannel? authChannel;
+  String? gamePath;
+  bool fetchingGamePath = true;
 
   @override
   void initState() {
@@ -138,6 +118,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }).then((_) async {
       setState(() {
         fetchedLoginFromDisk = true;
+      });
+    });
+    getGamePath().then((value) {
+      setState(() {
+        fetchingGamePath = false;
+        gamePath = value;
       });
     });
   }
@@ -213,11 +199,53 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget renderLoginButton(BuildContext context) {
     if (!fetchedLoginFromDisk) return const Text('Fetching Login');
-    if (twitchTokens != null)
+    if (twitchTokens != null) {
       return TextButton(onPressed: _onLogout, child: const Text('Log Out'));
-    ;
+    }
     if (authChannel != null) return const Text('Logging In');
     return TextButton(onPressed: _onLogin, child: const Text('Log In'));
+  }
+
+  Future<void> openFilePickerAndSave() async {
+    openFilePicker().then((value) => {
+          setState(() {
+            gamePath = value;
+          })
+        });
+  }
+
+  Widget renderGamepathInfo(BuildContext context) {
+    if (fetchingGamePath) return const Text("Fetching game path");
+    if (((gamePath?.length ?? 0) > 0)) return Text(gamePath!);
+
+    return AlertDialog(
+      shape: BeveledRectangleBorder(
+        borderRadius: BorderRadius.circular(1),
+        side: const BorderSide(
+          color: Colors.deepOrange,
+          style: BorderStyle.solid
+        )
+      ),
+      elevation: 8,
+
+      title: const Text('Unable to locate game path automatically'),
+      content: const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Please select an option below")
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: openFilePickerAndSave,
+          child: const Text('Choose path'),
+        ),
+        TextButton(
+          onPressed: (){exit(0);},
+          child: const Text('Exit NT'),
+        )
+      ],
+    );
   }
 
   @override
@@ -263,22 +291,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+          children: <Widget>[renderGamepathInfo(context)],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      )
     );
   }
 }

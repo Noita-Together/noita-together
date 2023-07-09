@@ -39,6 +39,7 @@ dependencies:
   web_socket_channel: 2.4.0
   shared_preferences: 2.2.0
   path_provider: 2.0.15
+  file_picker: ^4.2.0
 
   openapi_generator_annotations: ^4.0.0
   nt_server_api:
