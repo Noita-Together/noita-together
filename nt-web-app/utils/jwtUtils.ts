@@ -24,7 +24,23 @@ function createRefreshToken(userData: TwitchUserData){
     }, SECRET_REFRESH, {expiresIn: '5d'})
 }
 
+const verifyToken = (jwtToken: string, tokenSecret: string): any => {
+    console.log('Verify JWT...')
+    return new Promise((resolve, reject) => {
+        jwt.verify(jwtToken, tokenSecret, {complete: true}, (err, decoded: any)=>{
+            if (err) {
+                console.log('Error!')
+                reject(new Error(`JWT verification failed: ${err.message}`));
+            } else {
+                console.log(`We got ${JSON.stringify(decoded)}`)
+                resolve(decoded.payload);
+            }
+        });
+    });
+}
+
 export {
     createAccessToken,
-    createRefreshToken
+    createRefreshToken,
+    verifyToken
 }

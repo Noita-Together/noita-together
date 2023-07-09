@@ -37,6 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   url_launcher: 6.1.11
   web_socket_channel: 2.4.0
+  shared_preferences: 2.2.0
+  path_provider: 2.0.15
+
+  openapi_generator_annotations: ^4.0.0
+  nt_server_api:
+    path: api/nt_server_api
 
 dev_dependencies:
   flutter_test:
@@ -48,6 +54,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  openapi_generator: 4.10.0
+  build_runner: 2.4.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

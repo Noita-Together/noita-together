@@ -41,16 +41,20 @@ class AuthWebsocket {
     async OnConnection(ws, req, user) {
         let connection = new Connection(ws, req, user)
         this.pendingConnections[user.id] = connection
-        connection.send(user.userCode)
+        connection.send(JSON.stringify({
+            type: 'deviceCode',
+            data: {
+                deviceCode: user.userCode,
+                loginServer: process.env.WEBSERVER_AUTH_URL
+            }
+        }))
     }
 
     CheckUsers = async() => {
-        console.log('Check Users :)')
         await this.DoCheckUsers().catch((e)=>{
             console.log('DoCheckUsers failed this run :(')
             console.error(e)
         })
-        console.log('Checked users')
         this.timeout = setTimeout(()=>this.CheckUsers(), 5000)
     }
 
@@ -58,11 +62,9 @@ class AuthWebsocket {
         const userIdsToCheck = []
         const pendingData = {}
         const connections = Object.values(this.pendingConnections)
-        console.log(`DoCheck ${connections.length} Users`)
         for (const connection of connections) {
             let user = connection.user
             await user.reload()
-            console.log(`DoCheck Resolved? ${user.resolvedUserId}`)
             if (Date.now() - user.lastCheck > SOCKET_TIMEOUT_SECONDS * 1000) {
                 delete this.pendingConnections[user.id]
                 user.socket?.destroy()
@@ -90,7 +92,8 @@ class AuthWebsocket {
             const accessToken = createAccessToken(userData)
             const refreshToken = createRefreshToken(userData)
             connection.send(JSON.stringify({
-                tokens: {
+                type: 'authenticationTokens',
+                data: {
                     access: accessToken,
                     refresh: refreshToken,
                     expiresIn: 28800

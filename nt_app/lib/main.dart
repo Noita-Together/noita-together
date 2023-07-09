@@ -1,13 +1,31 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:nt_server_api/api.dart';
 
-final Uri _noitaTogetherHomePage = Uri.parse('https://noita-together.skyefullofbreeze.com');
-final Uri _noitaTogetherLogin = Uri.parse('https://noita-together.skyefullofbreeze.com/api/auth/login');
-final Uri _noitaTogetherWsStatus = Uri.parse('ws://noita-together.skyefullofbreeze.com/uptime');
-final Uri _noitaTogetherWsDeviceAuth = Uri.parse('ws://localhost:5466/deviceAuth');
+class ApiClientDev extends ApiClient {
+  ApiClientDev({
+    super.basePath = 'http://localhost:3000/api',
+    super.authentication,
+  });
+}
+
+final ntApi = AuthenticationApi(ApiClientDev());
+
+final Uri _noitaTogetherHomePage =
+    Uri.parse('https://noita-together.skyefullofbreeze.com');
+const _noitaTogetherLogin =
+    "https://noita-together.skyefullofbreeze.com/api/auth/login";
+final Uri _noitaTogetherWsStatus =
+    Uri.parse('ws://noita-together.skyefullofbreeze.com/uptime');
+final Uri _noitaTogetherWsDeviceAuth =
+    Uri.parse('ws://localhost:5466/deviceAuth');
 
 void main() {
   runApp(const MyApp());
@@ -22,25 +40,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-        useMaterial3: true,
-        appBarTheme: const AppBarTheme(centerTitle: true)
-      ),
+          // This is the theme of your application.
+          //
+          // TRY THIS: Try running your application with "flutter run". You'll see
+          // the application has a blue toolbar. Then, without quitting the app,
+          // try changing the seedColor in the colorScheme below to Colors.green
+          // and then invoke "hot reload" (save your changes or press the "hot
+          // reload" button in a Flutter-supported IDE, or press "r" if you used
+          // the command line to start the app).
+          //
+          // Notice that the counter didn't reset back to zero; the application
+          // state is not lost during the reload. To reset the state, use hot
+          // restart instead.
+          //
+          // This works for code too, not just values: Most code changes can be
+          // tested with just a hot reload.
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(centerTitle: true)),
       home: const MyHomePage(title: 'Noita Together'),
     );
   }
@@ -64,17 +81,66 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class TwitchTokens{
-  String? auth;
+class TwitchTokens {
+  String? access;
   String? refresh;
-  String? expiresIn;
+  int? expiresIn;
+  int? createdOn;
+
+  TwitchTokens();
+
+  factory TwitchTokens.fromJSON(Map<String, dynamic> json) {
+    var tokens = TwitchTokens();
+    tokens.access = json['access'];
+    tokens.refresh = json['refresh'];
+    tokens.expiresIn = json['expiresIn'];
+    tokens.createdOn = json['createdOn'];
+    return tokens;
+  }
+
+  Map<String, dynamic> toJson() => {
+        'access': access,
+        'refresh': refresh,
+        'expiresIn': expiresIn,
+        'createdOn': createdOn
+      };
+
+  Map<String, dynamic> toRefreshTokenJson() => {'refresh': refresh};
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   TwitchTokens? twitchTokens;
+  bool fetchedLoginFromDisk = false;
   String? wsMessage;
-  var channel = WebSocketChannel.connect(_noitaTogetherWsDeviceAuth);
+  WebSocketChannel? authChannel;
+
+  @override
+  void initState() {
+    super.initState();
+    _getPrefs().then((SharedPreferences value) async {
+      if (!value.containsKey('auth')) null;
+      String tokens = value.getString('auth')!;
+      setState(() {
+        var twitchTokensTmp = TwitchTokens.fromJSON(jsonDecode(tokens));
+        ntApi
+            .authRefreshPost(authorization: "Bearer ${twitchTokensTmp.refresh}")
+            .then((value) {
+          twitchTokensTmp.access = value?.token;
+          twitchTokensTmp.expiresIn = int.parse(value?.expiresIn ?? '0');
+          setState(() {
+            twitchTokens = twitchTokensTmp;
+          });
+        });
+      });
+    }).catchError((e) {
+      print(e);
+    }).then((_) async {
+      setState(() {
+        fetchedLoginFromDisk = true;
+      });
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -92,7 +158,47 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onLogin() {
-    _launchUrl(_noitaTogetherLogin);
+    WebSocketChannel channel =
+        WebSocketChannel.connect(_noitaTogetherWsDeviceAuth);
+    channel.stream.listen(
+      (data) {
+        print(data);
+        var json = jsonDecode(data);
+        switch (json['type']) {
+          case 'deviceCode':
+            _launchUrl(Uri.parse(
+                "${json['data']['loginServer']}/api/auth/login?deviceCode=${json['data']['deviceCode']}"));
+            break;
+          case 'authenticationTokens':
+            var data = json['data'];
+            var tokens = TwitchTokens();
+            tokens.access = data["access"];
+            tokens.refresh = data["refresh"];
+            tokens.expiresIn = data["expiresIn"];
+            tokens.createdOn = DateTime.now().millisecond;
+
+            authChannel?.sink.close();
+            setState(() {
+              authChannel = null;
+              twitchTokens = tokens;
+            });
+            _getPrefs().then((value) => value.setString(
+                'auth', jsonEncode(tokens.toRefreshTokenJson())));
+            break;
+        }
+      },
+      onError: (error) => print(error),
+    );
+    setState(() {
+      authChannel = channel;
+    });
+  }
+
+  void _onLogout() {
+    _getPrefs().then((value) => value.clear());
+    setState(() {
+      twitchTokens = null;
+    });
   }
 
   Future<void> _launchUrl(Uri url) async {
@@ -101,9 +207,21 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<SharedPreferences> _getPrefs() async {
+    return await SharedPreferences.getInstance();
+  }
+
+  Widget renderLoginButton(BuildContext context) {
+    if (!fetchedLoginFromDisk) return const Text('Fetching Login');
+    if (twitchTokens != null)
+      return TextButton(onPressed: _onLogout, child: const Text('Log Out'));
+    ;
+    if (authChannel != null) return const Text('Logging In');
+    return TextButton(onPressed: _onLogin, child: const Text('Log In'));
+  }
+
   @override
   Widget build(BuildContext context) {
-
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -120,11 +238,11 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
         actions: [
-          TextButton(onPressed: _onServerStatusClicked, child: const Text('Server Status')),
-          twitchTokens != null ? const Text('Logged In') : TextButton(onPressed: _onLogin, child: const Text('Log In')),
-          const Image(
-              image: AssetImage('assets/icon.png')
-          ),
+          TextButton(
+              onPressed: _onServerStatusClicked,
+              child: const Text('Server Status')),
+          renderLoginButton(context),
+          const Image(image: AssetImage('assets/icon.png')),
         ],
       ),
       body: Center(
@@ -150,15 +268,9 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '$_counter: $wsMessage',
+              '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            StreamBuilder(
-              stream: channel.stream,
-              builder: (context, snapshot) {
-                return Text(snapshot.hasData ? '${snapshot.data}' : '');
-              },
-            )
           ],
         ),
       ),
