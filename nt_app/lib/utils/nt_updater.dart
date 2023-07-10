@@ -7,9 +7,15 @@ Future<SharedPreferences> _getPrefs() async {
   return await SharedPreferences.getInstance();
 }
 
-Future<String> getGamePath() async {
+Future<String?> getGamePath() async {
   var gamePathMaybe = await _getPrefs().then((value) => value.getString("gamePath"));
-  if(gamePathMaybe != null && File.fromUri(Uri.parse(gamePathMaybe)).existsSync()) return gamePathMaybe;
+  try {
+    if(gamePathMaybe != null && Directory(gamePathMaybe).existsSync()) return gamePathMaybe;
+  } catch (e) {
+    print("getGamePath");
+    print(e);
+  }
+
   if (Platform.isWindows) {
     List<String> gamePaths = [];
     ProcessResult resultSteam = await Process.run('powershell.exe', [
@@ -43,11 +49,11 @@ Future<String> getGamePath() async {
     }
 
     if (!foundNoita) {
-      return '';
+      return null;
     }
   }
 
-  return '';
+  return null;
 }
 
 Future<String?> openFilePicker() async {
@@ -61,5 +67,9 @@ Future<String?> openFilePicker() async {
   }
   // User canceled the file picker
   return null;
+}
+
+Future<void> copyFiles() async {
+  //TODO we are going to build a separate program to copy the files so we don't give the entire app admin permissions
 }
 
