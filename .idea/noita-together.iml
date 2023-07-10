@@ -45,6 +45,9 @@
       <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/build" />
       <excludeFolder url="file://$MODULE_DIR$/nt_app/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/.pub" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
