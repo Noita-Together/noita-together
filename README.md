@@ -43,7 +43,15 @@ TODO github actions setup
 
 ### Backend 
 
-TODO
+#### First time setup
+
+```
+yarn install
+yarn serverInitOnce
+```
+
+#### Running the server
+
 ```
 yarn install
 yarn server
@@ -58,15 +66,35 @@ Create a .env file at `nt-app/`
 TWITCH_API_KEY=
 TWITCH_CLIENT_ID=
 OAUTH_REDIRECT_URI=http://localhost:3000/api/authenticate
+WEBSERVER_AUTH_URL=http://localhost:3000
+NOITA_APP_REDIRECT_URI=http://localhost:25669
 ```
 
 TODO github actions setup
 
-### Core mod
+### Noita Mods
 
-TODO
+Building new mods
 
-### Nemesis
+run the following:
 
-TODO
+```
+yarn install
+node ./build-mods.js
+```
+
+Commit the following files afterwards:
+
+```
+noita_mod/core/manifest.json
+noita_mod/nemesis/manifest.json
+```
+
+#### Core mod
+
+Location: noita_mod/core
+
+#### Nemesis
+
+Location: noita_mod/nemesis
 
