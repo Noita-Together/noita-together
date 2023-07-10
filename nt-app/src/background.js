@@ -144,19 +144,24 @@ ipcMain.on("remember_user", (event, val) => {
 
 ipcMain.on("TRY_LOGIN", async (event, account) => {
     try {
-        const token = await keytar.getPassword("Noita Together", account)
-        const { body } = await got.post(`https://${process.env.VUE_APP_HOSTNAME}/auth/refresh`, {
-            json: {
-                ticket: token
+        const refresh = await keytar.getPassword("Noita Together", account)
+        const { body } = await got.post(`${process.env.VUE_APP_HOSTNAME}/auth/refresh`, {
+            headers: {
+              "authorization": `Bearer ${refresh}`
             },
             responseType: 'json'
         })
-        const { display_name, ticket, id, e } = body
-        appEvent("USER_EXTRA", e)
+        console.log(body)
+        const { token } = body
+        console.log(token)
+        appEvent("USER_EXTRA", undefined)
+        let decoded = jwt.decode(token)
+        console.log(decoded)
+        let {sub, preferred_username} = decoded
         wsClient({
-            display_name,
-            token: ticket,
-            id
+            display_name: preferred_username,
+            token: token,
+            id: sub
         })
     } catch (error) {
         console.error(error)

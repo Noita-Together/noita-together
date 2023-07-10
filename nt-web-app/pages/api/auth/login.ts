@@ -13,10 +13,11 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
+    const deviceCode = req.query.deviceCode
     const redirectUri = encodeURIComponent(OAUTH_REDIRECT_URI+'/api/auth/code');
     console.log(`RedirectUri: ${redirectUri}`)
     const scope = encodeURIComponent('openid'); //Scopes here. We should not need any though :P
-    const state = randomUUID();
+    const state = deviceCode ?? randomUUID();
 
     const url = `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${TWITCH_CLIENT_ID}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
 

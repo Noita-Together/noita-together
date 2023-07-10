@@ -6,10 +6,23 @@ import {TwitchDecodedToken} from "shared-lib/types/Twitch"
 import Lobby from "./lobby";
 
 import axios from "axios";
+import {PendingConnectionDatasource, UserDatasource} from "./Datasource";
+import {defaultRoles, RoleImpl, User} from "../entity/User";
+import {PendingConnection} from "../entity/PendingConnection";
+import AuthSocket from "./authWebsocket";
+import {Socket} from "net";
+
+const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
+const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID as string
+
+if(!TWITCH_CLIENT_ID) throw new Error("Unable to load .env!")
 
 let cachedJWKS: string|undefined = undefined
 
 const timeStart = Date.now()
+
+const userDatasource = UserDatasource()
+const pendingConnectionDatasource = PendingConnectionDatasource()
 
 class NoitaTogetherWebsocket{
     readonly port?
@@ -45,9 +58,29 @@ class NoitaTogetherWebsocket{
         this.wsServer?.emit("close")
     }
 
+    private static async GetUserFromDB(id: string): Promise<User|null>{
+        const db = await userDatasource
+        if(!db) return null
+        const repository = db.getRepository(User)
+        const user = await repository.findOneBy({
+            id: id,
+            provider: 'twitch'
+        })
+        if(!user) console.log(`Failed to return a user for ${id}!`)
+        return user
+    }
+
+    private static async CreatePendingConnection(socket: Socket): Promise<PendingConnection|null>{
+        const db = await pendingConnectionDatasource
+        if(!db) return null
+        const pendingConnection = new PendingConnection(socket)
+        await pendingConnection.save()
+        return pendingConnection
+    }
+
     private subscribeEvents(){
         console.log("subscribeEvents...")
-        this.wsServer?.on('upgrade', async (req, socket, head) => {
+        this.wsServer?.on('upgrade', async (req, socket: Socket, head) => {
             try {
                 if(!req.url){
                     socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
@@ -63,18 +96,34 @@ class NoitaTogetherWebsocket{
                     socket.destroy()
                     return
                 }
-                let user = await this.validateToken(token) //Get user from token
 
-                if (!user) {
-                    console.log(`HTTP/1.1 401 Unauthorized`)
-                    socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
-                    socket.destroy()
-                    return
+                if(token.startsWith('deviceAuth')){
+                    const pendingConnection = await NoitaTogetherWebsocket.CreatePendingConnection(socket)
+                    if (!pendingConnection) {
+                        console.log(`HTTP/1.1 500 Internal Server Error`)
+                        socket.write('HTTP/1.1 500 Internal Server Error\r\n\r\n')
+                        socket.destroy()
+                        return
+                    }
+                    AuthSocket.server.handleUpgrade(req, socket, head, (ws: any)=>{
+                        AuthSocket.server.emit('connection', ws, req, pendingConnection)
+                    })
+                }
+                else{
+                    let user = await this.validateToken(token) //Get user from token
+
+                    if (!user) {
+                        console.log(`HTTP/1.1 401 Unauthorized`)
+                        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n')
+                        socket.destroy()
+                        return
+                    }
+
+                    Lobby.server.handleUpgrade(req, socket, head, (ws: any) => {
+                        Lobby.server.emit('connection', ws, req, user)
+                    })
                 }
 
-                Lobby.server.handleUpgrade(req, socket, head, (ws: any) => {
-                    Lobby.server.emit('connection', ws, req, user)
-                })
             } catch (error) {
 
             }
@@ -84,22 +133,15 @@ class NoitaTogetherWebsocket{
     async validateToken(token: string) : Promise<User|null>{
         if (!token) return null
         if(this.offlineCode && token.startsWith(`offline/${this.offlineCode}`) && token.split('/').length === 3){
-            return {
-                id: `${Math.random()}`,
-                display_name: token.split('/')[2]
-            }
+            return new User(`${Math.random()}`, token.split('/')[2], defaultRoles, 'local')
         }
-
         if(this.offlineCode) return null
         if (!cachedJWKS)
             cachedJWKS = await fetchJWKS()
-        const verify: Promise<TwitchDecodedToken> = verifyJwt(token, cachedJWKS)
+        const verify: Promise<TwitchDecodedToken> = verifyJwt(token, SECRET_ACCESS)
         return verify
             .then((jwtObject: TwitchDecodedToken) => {
-                return {
-                    id: jwtObject.sub,
-                    display_name: jwtObject.preferred_username
-                } as User
+                return NoitaTogetherWebsocket.GetUserFromDB(jwtObject.sub)
             })
             .catch((e) => {
                 console.error('We failed to validate JWT :(. No user!')
@@ -114,11 +156,6 @@ const fetchJWKS = async () => {
     const response = await axios.get('https://id.twitch.tv/oauth2/keys')
     console.log('Fetched!')
     return response.data
-}
-
-export interface User{
-    id: string,
-    display_name: string
 }
 
 export {

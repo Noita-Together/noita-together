@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/noita-together.iml" filepath="$PROJECT_DIR$/.idea/noita-together.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nt_app/nt_app.iml" filepath="$PROJECT_DIR$/nt_app/nt_app.iml" />
     </modules>
   </component>
 </project>

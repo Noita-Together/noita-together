@@ -1,16 +1,23 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import * as http from 'http';
 import next from "next";
-
-import {NoitaTogetherWebsocket} from 'nt-server';
+import {NoitaTogetherWebsocket} from './websocket';
 import {parse} from "url";
+import {getServerAccessToken} from "./utils/TwitchUtils";
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = 3000;
 // when using middleware `hostname` and `port` must be provided below
+let tokensPromise = getServerAccessToken()
+
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
-app.prepare().then(() => {
+app.prepare().then(async () => {
+    const tokens = await tokensPromise
+    if(!tokens?.access_token) throw new Error("Unable to authenticate with twitch!")
     const websocket = new NoitaTogetherWebsocket()
     websocket.startServer()
     http.createServer(async (req, res) => {
