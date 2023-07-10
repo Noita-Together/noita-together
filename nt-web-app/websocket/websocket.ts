@@ -135,11 +135,6 @@ class NoitaTogetherWebsocket{
         if(this.offlineCode && token.startsWith(`offline/${this.offlineCode}`) && token.split('/').length === 3){
             return new User(`${Math.random()}`, token.split('/')[2], defaultRoles, 'local')
         }
-        if(token.startsWith('stats')){
-            const userId = Math.round(Math.random()*10000)
-            return new User(`${userId}`, '', new RoleImpl({canWatchStats: true}), 'local')
-        }
-
         if(this.offlineCode) return null
         if (!cachedJWKS)
             cachedJWKS = await fetchJWKS()

@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "client": "yarn workspace nt-app electron:serve",
-    "serverInitOnce": "node create-jwt-secret.js",
+    "serverInitOnce": "yarn workspace nt-web-app serverInitOnce",
     "server": "yarn workspace nt-web-app serve",
     "serverDev": "yarn workspace nt-web-app serveDev",
     "buildClient": "yarn workspace nt-app electron:build",
