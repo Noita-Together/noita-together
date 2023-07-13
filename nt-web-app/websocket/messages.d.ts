@@ -186,8 +186,8 @@ export namespace NT {
         /** GameAction cPlayerSecretHourglass */
         cPlayerSecretHourglass?: (NT.IClientPlayerSecretHourglass|null);
 
-        /** GameAction SPlayerSecretHourglass */
-        SPlayerSecretHourglass?: (NT.IServerPlayerSecretHourglass|null);
+        /** GameAction sPlayerSecretHourglass */
+        sPlayerSecretHourglass?: (NT.IServerPlayerSecretHourglass|null);
 
         /** GameAction cCustomModEvent */
         cCustomModEvent?: (NT.IClientCustomModEvent|null);
@@ -319,8 +319,8 @@ export namespace NT {
         /** GameAction cPlayerSecretHourglass. */
         public cPlayerSecretHourglass?: (NT.IClientPlayerSecretHourglass|null);
 
-        /** GameAction SPlayerSecretHourglass. */
-        public SPlayerSecretHourglass?: (NT.IServerPlayerSecretHourglass|null);
+        /** GameAction sPlayerSecretHourglass. */
+        public sPlayerSecretHourglass?: (NT.IServerPlayerSecretHourglass|null);
 
         /** GameAction cCustomModEvent. */
         public cCustomModEvent?: (NT.IClientCustomModEvent|null);
@@ -344,7 +344,7 @@ export namespace NT {
         public sPlayerPos?: (NT.IServerPlayerPos|null);
 
         /** GameAction action. */
-        public action?: ("cPlayerMove"|"sPlayerMove"|"cPlayerUpdate"|"sPlayerUpdate"|"cPlayerUpdateInventory"|"sPlayerUpdateInventory"|"cHostItemBank"|"sHostItemBank"|"cHostUserTake"|"sHostUserTake"|"cHostUserTakeGold"|"sHostUserTakeGold"|"cPlayerAddGold"|"sPlayerAddGold"|"cPlayerTakeGold"|"sPlayerTakeGold"|"cPlayerAddItem"|"sPlayerAddItem"|"cPlayerTakeItem"|"sPlayerTakeItem"|"cPlayerPickup"|"sPlayerPickup"|"cNemesisAbility"|"sNemesisAbility"|"cNemesisPickupItem"|"sNemesisPickupItem"|"cChat"|"sChat"|"cPlayerDeath"|"sPlayerDeath"|"cPlayerNewGamePlus"|"sPlayerNewGamePlus"|"cPlayerSecretHourglass"|"SPlayerSecretHourglass"|"cCustomModEvent"|"sCustomModEvent"|"cRespawnPenalty"|"sRespawnPenalty"|"cAngerySteve"|"sAngerySteve"|"sPlayerPos");
+        public action?: ("cPlayerMove"|"sPlayerMove"|"cPlayerUpdate"|"sPlayerUpdate"|"cPlayerUpdateInventory"|"sPlayerUpdateInventory"|"cHostItemBank"|"sHostItemBank"|"cHostUserTake"|"sHostUserTake"|"cHostUserTakeGold"|"sHostUserTakeGold"|"cPlayerAddGold"|"sPlayerAddGold"|"cPlayerTakeGold"|"sPlayerTakeGold"|"cPlayerAddItem"|"sPlayerAddItem"|"cPlayerTakeItem"|"sPlayerTakeItem"|"cPlayerPickup"|"sPlayerPickup"|"cNemesisAbility"|"sNemesisAbility"|"cNemesisPickupItem"|"sNemesisPickupItem"|"cChat"|"sChat"|"cPlayerDeath"|"sPlayerDeath"|"cPlayerNewGamePlus"|"sPlayerNewGamePlus"|"cPlayerSecretHourglass"|"sPlayerSecretHourglass"|"cCustomModEvent"|"sCustomModEvent"|"cRespawnPenalty"|"sRespawnPenalty"|"cAngerySteve"|"sAngerySteve"|"sPlayerPos");
 
         /**
          * Creates a new GameAction instance using the specified properties.
@@ -534,13 +534,13 @@ export namespace NT {
     interface IServerPlayerPos {
 
         /** ServerPlayerPos userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerPos x */
-        x: number;
+        x?: (number|null);
 
         /** ServerPlayerPos y */
-        y: number;
+        y?: (number|null);
     }
 
     /** Represents a ServerPlayerPos. */
@@ -692,7 +692,7 @@ export namespace NT {
     interface IServerPlayerMove {
 
         /** ServerPlayerMove userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerMove frames */
         frames?: (NT.IPlayerFrame[]|null);
@@ -874,7 +874,7 @@ export namespace NT {
     interface IServerPlayerUpdate {
 
         /** ServerPlayerUpdate userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerUpdate curHp */
         curHp?: (number|null);
@@ -1070,10 +1070,10 @@ export namespace NT {
         interface IInventoryWand {
 
             /** InventoryWand index */
-            index: number;
+            index?: (number|null);
 
             /** InventoryWand wand */
-            wand: NT.IWand;
+            wand?: (NT.IWand|null);
         }
 
         /** Represents an InventoryWand. */
@@ -1089,7 +1089,7 @@ export namespace NT {
             public index: number;
 
             /** InventoryWand wand. */
-            public wand: NT.IWand;
+            public wand?: (NT.IWand|null);
 
             /**
              * Creates a new InventoryWand instance using the specified properties.
@@ -1149,10 +1149,10 @@ export namespace NT {
         interface IInventoryItem {
 
             /** InventoryItem index */
-            index: number;
+            index?: (number|null);
 
             /** InventoryItem item */
-            item: NT.IItem;
+            item?: (NT.IItem|null);
         }
 
         /** Represents an InventoryItem. */
@@ -1168,7 +1168,7 @@ export namespace NT {
             public index: number;
 
             /** InventoryItem item. */
-            public item: NT.IItem;
+            public item?: (NT.IItem|null);
 
             /**
              * Creates a new InventoryItem instance using the specified properties.
@@ -1228,10 +1228,10 @@ export namespace NT {
         interface IInventorySpell {
 
             /** InventorySpell index */
-            index: number;
+            index?: (number|null);
 
             /** InventorySpell spell */
-            spell: NT.ISpell;
+            spell?: (NT.ISpell|null);
         }
 
         /** Represents an InventorySpell. */
@@ -1247,7 +1247,7 @@ export namespace NT {
             public index: number;
 
             /** InventorySpell spell. */
-            public spell: NT.ISpell;
+            public spell?: (NT.ISpell|null);
 
             /**
              * Creates a new InventorySpell instance using the specified properties.
@@ -1308,7 +1308,7 @@ export namespace NT {
     interface IServerPlayerUpdateInventory {
 
         /** ServerPlayerUpdateInventory userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerUpdateInventory wands */
         wands?: (NT.ServerPlayerUpdateInventory.IInventoryWand[]|null);
@@ -1401,10 +1401,10 @@ export namespace NT {
         interface IInventoryWand {
 
             /** InventoryWand index */
-            index: number;
+            index?: (number|null);
 
             /** InventoryWand wand */
-            wand: NT.IWand;
+            wand?: (NT.IWand|null);
         }
 
         /** Represents an InventoryWand. */
@@ -1420,7 +1420,7 @@ export namespace NT {
             public index: number;
 
             /** InventoryWand wand. */
-            public wand: NT.IWand;
+            public wand?: (NT.IWand|null);
 
             /**
              * Creates a new InventoryWand instance using the specified properties.
@@ -1480,10 +1480,10 @@ export namespace NT {
         interface IInventoryItem {
 
             /** InventoryItem index */
-            index: number;
+            index?: (number|null);
 
             /** InventoryItem item */
-            item: NT.IItem;
+            item?: (NT.IItem|null);
         }
 
         /** Represents an InventoryItem. */
@@ -1499,7 +1499,7 @@ export namespace NT {
             public index: number;
 
             /** InventoryItem item. */
-            public item: NT.IItem;
+            public item?: (NT.IItem|null);
 
             /**
              * Creates a new InventoryItem instance using the specified properties.
@@ -1559,10 +1559,10 @@ export namespace NT {
         interface IInventorySpell {
 
             /** InventorySpell index */
-            index: number;
+            index?: (number|null);
 
             /** InventorySpell spell */
-            spell: NT.ISpell;
+            spell?: (NT.ISpell|null);
         }
 
         /** Represents an InventorySpell. */
@@ -1578,7 +1578,7 @@ export namespace NT {
             public index: number;
 
             /** InventorySpell spell. */
-            public spell: NT.ISpell;
+            public spell?: (NT.ISpell|null);
 
             /**
              * Creates a new InventorySpell instance using the specified properties.
@@ -1833,13 +1833,13 @@ export namespace NT {
     interface IClientHostUserTake {
 
         /** ClientHostUserTake userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ClientHostUserTake id */
-        id: string;
+        id?: (string|null);
 
         /** ClientHostUserTake success */
-        success: boolean;
+        success?: (boolean|null);
     }
 
     /** Represents a ClientHostUserTake. */
@@ -1918,13 +1918,13 @@ export namespace NT {
     interface IServerHostUserTake {
 
         /** ServerHostUserTake userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerHostUserTake id */
-        id: string;
+        id?: (string|null);
 
         /** ServerHostUserTake success */
-        success: boolean;
+        success?: (boolean|null);
     }
 
     /** Represents a ServerHostUserTake. */
@@ -2003,13 +2003,13 @@ export namespace NT {
     interface IClientHostUserTakeGold {
 
         /** ClientHostUserTakeGold userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ClientHostUserTakeGold amount */
-        amount: number;
+        amount?: (number|null);
 
         /** ClientHostUserTakeGold success */
-        success: boolean;
+        success?: (boolean|null);
     }
 
     /** Represents a ClientHostUserTakeGold. */
@@ -2088,13 +2088,13 @@ export namespace NT {
     interface IServerHostUserTakeGold {
 
         /** ServerHostUserTakeGold userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerHostUserTakeGold amount */
-        amount: number;
+        amount?: (number|null);
 
         /** ServerHostUserTakeGold success */
-        success: boolean;
+        success?: (boolean|null);
     }
 
     /** Represents a ServerHostUserTakeGold. */
@@ -2173,7 +2173,7 @@ export namespace NT {
     interface IClientPlayerAddGold {
 
         /** ClientPlayerAddGold amount */
-        amount: number;
+        amount?: (number|null);
     }
 
     /** Represents a ClientPlayerAddGold. */
@@ -2246,10 +2246,10 @@ export namespace NT {
     interface IServerPlayerAddGold {
 
         /** ServerPlayerAddGold userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerAddGold amount */
-        amount: number;
+        amount?: (number|null);
     }
 
     /** Represents a ServerPlayerAddGold. */
@@ -2325,7 +2325,7 @@ export namespace NT {
     interface IClientPlayerTakeGold {
 
         /** ClientPlayerTakeGold amount */
-        amount: number;
+        amount?: (number|null);
     }
 
     /** Represents a ClientPlayerTakeGold. */
@@ -2398,10 +2398,10 @@ export namespace NT {
     interface IServerPlayerTakeGold {
 
         /** ServerPlayerTakeGold userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerTakeGold amount */
-        amount: number;
+        amount?: (number|null);
     }
 
     /** Represents a ServerPlayerTakeGold. */
@@ -2866,7 +2866,7 @@ export namespace NT {
     interface IServerPlayerAddItem {
 
         /** ServerPlayerAddItem userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerAddItem spells */
         spells?: (NT.ServerPlayerAddItem.ISpells|null);
@@ -3261,7 +3261,7 @@ export namespace NT {
     interface IClientPlayerTakeItem {
 
         /** ClientPlayerTakeItem id */
-        id: string;
+        id?: (string|null);
     }
 
     /** Represents a ClientPlayerTakeItem. */
@@ -3334,10 +3334,10 @@ export namespace NT {
     interface IServerPlayerTakeItem {
 
         /** ServerPlayerTakeItem userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerTakeItem id */
-        id: string;
+        id?: (string|null);
     }
 
     /** Represents a ServerPlayerTakeItem. */
@@ -3413,7 +3413,7 @@ export namespace NT {
     interface IClientChat {
 
         /** ClientChat message */
-        message: string;
+        message?: (string|null);
     }
 
     /** Represents a ClientChat. */
@@ -3486,16 +3486,16 @@ export namespace NT {
     interface IServerChat {
 
         /** ServerChat id */
-        id: string;
+        id?: (string|null);
 
         /** ServerChat userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerChat name */
-        name: string;
+        name?: (string|null);
 
         /** ServerChat message */
-        message: string;
+        message?: (string|null);
     }
 
     /** Represents a ServerChat. */
@@ -3661,7 +3661,7 @@ export namespace NT {
         interface IHeartPickup {
 
             /** HeartPickup hpPerk */
-            hpPerk: boolean;
+            hpPerk?: (boolean|null);
         }
 
         /** Represents a HeartPickup. */
@@ -3734,7 +3734,7 @@ export namespace NT {
         interface IOrbPickup {
 
             /** OrbPickup id */
-            id: number;
+            id?: (number|null);
         }
 
         /** Represents an OrbPickup. */
@@ -3898,7 +3898,7 @@ export namespace NT {
         interface IHeartPickup {
 
             /** HeartPickup hpPerk */
-            hpPerk: boolean;
+            hpPerk?: (boolean|null);
         }
 
         /** Represents a HeartPickup. */
@@ -3971,7 +3971,7 @@ export namespace NT {
         interface IOrbPickup {
 
             /** OrbPickup id */
-            id: number;
+            id?: (number|null);
         }
 
         /** Represents an OrbPickup. */
@@ -4045,7 +4045,7 @@ export namespace NT {
     interface IClientNemesisPickupItem {
 
         /** ClientNemesisPickupItem gameId */
-        gameId: string;
+        gameId?: (string|null);
     }
 
     /** Represents a ClientNemesisPickupItem. */
@@ -4118,10 +4118,10 @@ export namespace NT {
     interface IServerNemesisPickupItem {
 
         /** ServerNemesisPickupItem userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerNemesisPickupItem gameId */
-        gameId: string;
+        gameId?: (string|null);
     }
 
     /** Represents a ServerNemesisPickupItem. */
@@ -4197,7 +4197,7 @@ export namespace NT {
     interface IClientNemesisAbility {
 
         /** ClientNemesisAbility gameId */
-        gameId: string;
+        gameId?: (string|null);
     }
 
     /** Represents a ClientNemesisAbility. */
@@ -4270,10 +4270,10 @@ export namespace NT {
     interface IServerNemesisAbility {
 
         /** ServerNemesisAbility userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerNemesisAbility gameId */
-        gameId: string;
+        gameId?: (string|null);
     }
 
     /** Represents a ServerNemesisAbility. */
@@ -4349,7 +4349,7 @@ export namespace NT {
     interface IClientPlayerDeath {
 
         /** ClientPlayerDeath isWin */
-        isWin: boolean;
+        isWin?: (boolean|null);
 
         /** ClientPlayerDeath gameTime */
         gameTime?: (number|null);
@@ -4431,10 +4431,10 @@ export namespace NT {
     interface IServerPlayerDeath {
 
         /** ServerPlayerDeath userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerDeath isWin */
-        isWin: boolean;
+        isWin?: (boolean|null);
 
         /** ServerPlayerDeath gameTime */
         gameTime?: (number|null);
@@ -4519,7 +4519,7 @@ export namespace NT {
     interface IClientPlayerNewGamePlus {
 
         /** ClientPlayerNewGamePlus amount */
-        amount: number;
+        amount?: (number|null);
     }
 
     /** Represents a ClientPlayerNewGamePlus. */
@@ -4595,7 +4595,7 @@ export namespace NT {
         userId?: (string|null);
 
         /** ServerPlayerNewGamePlus amount */
-        amount: number;
+        amount?: (number|null);
     }
 
     /** Represents a ServerPlayerNewGamePlus. */
@@ -4671,7 +4671,7 @@ export namespace NT {
     interface IClientPlayerSecretHourglass {
 
         /** ClientPlayerSecretHourglass material */
-        material: string;
+        material?: (string|null);
     }
 
     /** Represents a ClientPlayerSecretHourglass. */
@@ -4744,10 +4744,10 @@ export namespace NT {
     interface IServerPlayerSecretHourglass {
 
         /** ServerPlayerSecretHourglass userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerPlayerSecretHourglass material */
-        material: string;
+        material?: (string|null);
     }
 
     /** Represents a ServerPlayerSecretHourglass. */
@@ -4823,7 +4823,7 @@ export namespace NT {
     interface IClientCustomModEvent {
 
         /** ClientCustomModEvent payload */
-        payload: string;
+        payload?: (string|null);
     }
 
     /** Represents a ClientCustomModEvent. */
@@ -4896,10 +4896,10 @@ export namespace NT {
     interface IServerCustomModEvent {
 
         /** ServerCustomModEvent userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerCustomModEvent payload */
-        payload: string;
+        payload?: (string|null);
     }
 
     /** Represents a ServerCustomModEvent. */
@@ -4975,7 +4975,7 @@ export namespace NT {
     interface IClientRespawnPenalty {
 
         /** ClientRespawnPenalty deaths */
-        deaths: number;
+        deaths?: (number|null);
     }
 
     /** Represents a ClientRespawnPenalty. */
@@ -5048,10 +5048,10 @@ export namespace NT {
     interface IServerRespawnPenalty {
 
         /** ServerRespawnPenalty userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerRespawnPenalty deaths */
-        deaths: number;
+        deaths?: (number|null);
     }
 
     /** Represents a ServerRespawnPenalty. */
@@ -5127,7 +5127,7 @@ export namespace NT {
     interface IClientAngerySteve {
 
         /** ClientAngerySteve idk */
-        idk: boolean;
+        idk?: (boolean|null);
     }
 
     /** Represents a ClientAngerySteve. */
@@ -5200,7 +5200,7 @@ export namespace NT {
     interface IServerAngerySteve {
 
         /** ServerAngerySteve userId */
-        userId: string;
+        userId?: (string|null);
     }
 
     /** Represents a ServerAngerySteve. */
@@ -5273,7 +5273,7 @@ export namespace NT {
     interface IWand {
 
         /** Wand id */
-        id: string;
+        id?: (string|null);
 
         /** Wand stats */
         stats?: (NT.Wand.IWandStats|null);
@@ -5384,52 +5384,52 @@ export namespace NT {
         interface IWandStats {
 
             /** WandStats sprite */
-            sprite: string;
+            sprite?: (string|null);
 
             /** WandStats named */
-            named: boolean;
+            named?: (boolean|null);
 
             /** WandStats uiName */
-            uiName: string;
+            uiName?: (string|null);
 
             /** WandStats manaMax */
-            manaMax: number;
+            manaMax?: (number|null);
 
             /** WandStats manaChargeSpeed */
-            manaChargeSpeed: number;
+            manaChargeSpeed?: (number|null);
 
             /** WandStats reloadTime */
-            reloadTime: number;
+            reloadTime?: (number|null);
 
             /** WandStats actionsPerRound */
-            actionsPerRound: number;
+            actionsPerRound?: (number|null);
 
             /** WandStats deckCapacity */
-            deckCapacity: number;
+            deckCapacity?: (number|null);
 
             /** WandStats shuffleDeckWhenEmpty */
-            shuffleDeckWhenEmpty: boolean;
+            shuffleDeckWhenEmpty?: (boolean|null);
 
             /** WandStats spreadDegrees */
-            spreadDegrees: number;
+            spreadDegrees?: (number|null);
 
             /** WandStats speedMultiplier */
-            speedMultiplier: number;
+            speedMultiplier?: (number|null);
 
             /** WandStats fireRateWait */
-            fireRateWait: number;
+            fireRateWait?: (number|null);
 
             /** WandStats tipX */
-            tipX: number;
+            tipX?: (number|null);
 
             /** WandStats tipY */
-            tipY: number;
+            tipY?: (number|null);
 
             /** WandStats gripX */
-            gripX: number;
+            gripX?: (number|null);
 
             /** WandStats gripY */
-            gripY: number;
+            gripY?: (number|null);
         }
 
         /** Represents a WandStats. */
@@ -5548,10 +5548,10 @@ export namespace NT {
     interface ISpell {
 
         /** Spell id */
-        id: string;
+        id?: (string|null);
 
         /** Spell gameId */
-        gameId: string;
+        gameId?: (string|null);
 
         /** Spell sentBy */
         sentBy?: (string|null);
@@ -5560,7 +5560,7 @@ export namespace NT {
         contributedBy?: (string|null);
 
         /** Spell usesRemaining */
-        usesRemaining: number;
+        usesRemaining?: (number|null);
     }
 
     /** Represents a Spell. */
@@ -5651,10 +5651,10 @@ export namespace NT {
     interface IItem {
 
         /** Item id */
-        id: string;
+        id?: (string|null);
 
         /** Item color */
-        color: NT.Item.IColor;
+        color?: (NT.Item.IColor|null);
 
         /** Item content */
         content?: (NT.Item.IMaterial[]|null);
@@ -5666,7 +5666,7 @@ export namespace NT {
         contributedBy?: (string|null);
 
         /** Item isChest */
-        isChest: boolean;
+        isChest?: (boolean|null);
     }
 
     /** Represents an Item. */
@@ -5682,7 +5682,7 @@ export namespace NT {
         public id: string;
 
         /** Item color. */
-        public color: NT.Item.IColor;
+        public color?: (NT.Item.IColor|null);
 
         /** Item content. */
         public content: NT.Item.IMaterial[];
@@ -5762,13 +5762,13 @@ export namespace NT {
         interface IColor {
 
             /** Color r */
-            r: number;
+            r?: (number|null);
 
             /** Color g */
-            g: number;
+            g?: (number|null);
 
             /** Color b */
-            b: number;
+            b?: (number|null);
         }
 
         /** Represents a Color. */
@@ -5847,10 +5847,10 @@ export namespace NT {
         interface IMaterial {
 
             /** Material id */
-            id: number;
+            id?: (number|null);
 
             /** Material amount */
-            amount: number;
+            amount?: (number|null);
         }
 
         /** Represents a Material. */
@@ -5927,13 +5927,13 @@ export namespace NT {
     interface IEntityItem {
 
         /** EntityItem id */
-        id: string;
+        id?: (string|null);
 
         /** EntityItem path */
-        path: string;
+        path?: (string|null);
 
         /** EntityItem sprite */
-        sprite: string;
+        sprite?: (string|null);
 
         /** EntityItem sentBy */
         sentBy?: (string|null);
@@ -6420,7 +6420,7 @@ export namespace NT {
     interface IClientRoomDelete {
 
         /** ClientRoomDelete id */
-        id: string;
+        id?: (string|null);
     }
 
     /** Represents a ClientRoomDelete. */
@@ -6493,7 +6493,7 @@ export namespace NT {
     interface IServerRoomDeleted {
 
         /** ServerRoomDeleted id */
-        id: string;
+        id?: (string|null);
     }
 
     /** Represents a ServerRoomDeleted. */
@@ -6566,13 +6566,13 @@ export namespace NT {
     interface IClientRoomCreate {
 
         /** ClientRoomCreate name */
-        name: string;
+        name?: (string|null);
 
         /** ClientRoomCreate gamemode */
-        gamemode: number;
+        gamemode?: (number|null);
 
         /** ClientRoomCreate maxUsers */
-        maxUsers: number;
+        maxUsers?: (number|null);
 
         /** ClientRoomCreate password */
         password?: (string|null);
@@ -6660,22 +6660,22 @@ export namespace NT {
     interface IServerRoomCreated {
 
         /** ServerRoomCreated id */
-        id: string;
+        id?: (string|null);
 
         /** ServerRoomCreated name */
-        name: string;
+        name?: (string|null);
 
         /** ServerRoomCreated gamemode */
-        gamemode: number;
+        gamemode?: (number|null);
 
         /** ServerRoomCreated maxUsers */
-        maxUsers: number;
+        maxUsers?: (number|null);
 
         /** ServerRoomCreated password */
         password?: (string|null);
 
         /** ServerRoomCreated locked */
-        locked: boolean;
+        locked?: (boolean|null);
 
         /** ServerRoomCreated users */
         users?: (NT.ServerRoomCreated.IUser[]|null);
@@ -6774,16 +6774,16 @@ export namespace NT {
         interface IUser {
 
             /** User userId */
-            userId: string;
+            userId?: (string|null);
 
             /** User name */
-            name: string;
+            name?: (string|null);
 
             /** User ready */
-            ready: boolean;
+            ready?: (boolean|null);
 
             /** User owner */
-            owner: boolean;
+            owner?: (boolean|null);
         }
 
         /** Represents a User. */
@@ -7311,7 +7311,7 @@ export namespace NT {
         interface IGameFlag {
 
             /** GameFlag flag */
-            flag: string;
+            flag?: (string|null);
 
             /** GameFlag intVal */
             intVal?: (number|null);
@@ -7505,7 +7505,7 @@ export namespace NT {
         interface IGameFlag {
 
             /** GameFlag flag */
-            flag: string;
+            flag?: (string|null);
 
             /** GameFlag intVal */
             intVal?: (number|null);
@@ -7697,7 +7697,7 @@ export namespace NT {
     interface IClientJoinRoom {
 
         /** ClientJoinRoom id */
-        id: string;
+        id?: (string|null);
 
         /** ClientJoinRoom password */
         password?: (string|null);
@@ -7779,22 +7779,22 @@ export namespace NT {
     interface IServerJoinRoomSuccess {
 
         /** ServerJoinRoomSuccess id */
-        id: string;
+        id?: (string|null);
 
         /** ServerJoinRoomSuccess name */
-        name: string;
+        name?: (string|null);
 
         /** ServerJoinRoomSuccess gamemode */
-        gamemode: number;
+        gamemode?: (number|null);
 
         /** ServerJoinRoomSuccess maxUsers */
-        maxUsers: number;
+        maxUsers?: (number|null);
 
         /** ServerJoinRoomSuccess password */
         password?: (string|null);
 
         /** ServerJoinRoomSuccess locked */
-        locked: boolean;
+        locked?: (boolean|null);
 
         /** ServerJoinRoomSuccess users */
         users?: (NT.ServerJoinRoomSuccess.IUser[]|null);
@@ -7893,16 +7893,16 @@ export namespace NT {
         interface IUser {
 
             /** User userId */
-            userId: string;
+            userId?: (string|null);
 
             /** User name */
-            name: string;
+            name?: (string|null);
 
             /** User ready */
-            ready: boolean;
+            ready?: (boolean|null);
 
             /** User owner */
-            owner: boolean;
+            owner?: (boolean|null);
         }
 
         /** Represents a User. */
@@ -8058,10 +8058,10 @@ export namespace NT {
     interface IServerUserJoinedRoom {
 
         /** ServerUserJoinedRoom userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerUserJoinedRoom name */
-        name: string;
+        name?: (string|null);
     }
 
     /** Represents a ServerUserJoinedRoom. */
@@ -8137,7 +8137,7 @@ export namespace NT {
     interface IClientLeaveRoom {
 
         /** ClientLeaveRoom userId */
-        userId: string;
+        userId?: (string|null);
     }
 
     /** Represents a ClientLeaveRoom. */
@@ -8210,7 +8210,7 @@ export namespace NT {
     interface IServerUserLeftRoom {
 
         /** ServerUserLeftRoom userId */
-        userId: string;
+        userId?: (string|null);
     }
 
     /** Represents a ServerUserLeftRoom. */
@@ -8283,7 +8283,7 @@ export namespace NT {
     interface IClientKickUser {
 
         /** ClientKickUser userId */
-        userId: string;
+        userId?: (string|null);
     }
 
     /** Represents a ClientKickUser. */
@@ -8356,7 +8356,7 @@ export namespace NT {
     interface IServerUserKicked {
 
         /** ServerUserKicked userId */
-        userId: string;
+        userId?: (string|null);
     }
 
     /** Represents a ServerUserKicked. */
@@ -8429,7 +8429,7 @@ export namespace NT {
     interface IClientBanUser {
 
         /** ClientBanUser userId */
-        userId: string;
+        userId?: (string|null);
     }
 
     /** Represents a ClientBanUser. */
@@ -8502,7 +8502,7 @@ export namespace NT {
     interface IServerUserBanned {
 
         /** ServerUserBanned userId */
-        userId: string;
+        userId?: (string|null);
     }
 
     /** Represents a ServerUserBanned. */
@@ -8575,7 +8575,7 @@ export namespace NT {
     interface IClientReadyState {
 
         /** ClientReadyState ready */
-        ready: boolean;
+        ready?: (boolean|null);
 
         /** ClientReadyState seed */
         seed?: (string|null);
@@ -8681,10 +8681,10 @@ export namespace NT {
     interface IServerUserReadyState {
 
         /** ServerUserReadyState userId */
-        userId: string;
+        userId?: (string|null);
 
         /** ServerUserReadyState ready */
-        ready: boolean;
+        ready?: (boolean|null);
 
         /** ServerUserReadyState seed */
         seed?: (string|null);
@@ -8793,7 +8793,7 @@ export namespace NT {
     interface IClientStartRun {
 
         /** ClientStartRun forced */
-        forced: boolean;
+        forced?: (boolean|null);
     }
 
     /** Represents a ClientStartRun. */
@@ -8866,7 +8866,7 @@ export namespace NT {
     interface IServerHostStart {
 
         /** ServerHostStart forced */
-        forced: boolean;
+        forced?: (boolean|null);
     }
 
     /** Represents a ServerHostStart. */
@@ -8939,7 +8939,7 @@ export namespace NT {
     interface IClientRequestRoomList {
 
         /** ClientRequestRoomList page */
-        page: number;
+        page?: (number|null);
     }
 
     /** Represents a ClientRequestRoomList. */
@@ -9096,28 +9096,28 @@ export namespace NT {
         interface IRoom {
 
             /** Room id */
-            id: string;
+            id?: (string|null);
 
             /** Room name */
-            name: string;
+            name?: (string|null);
 
             /** Room gamemode */
-            gamemode: number;
+            gamemode?: (number|null);
 
             /** Room curUsers */
-            curUsers: number;
+            curUsers?: (number|null);
 
             /** Room maxUsers */
-            maxUsers: number;
+            maxUsers?: (number|null);
 
             /** Room protected */
-            "protected": boolean;
+            "protected"?: (boolean|null);
 
             /** Room owner */
-            owner: string;
+            owner?: (string|null);
 
             /** Room locked */
-            locked: boolean;
+            locked?: (boolean|null);
         }
 
         /** Represents a Room. */
@@ -9212,7 +9212,7 @@ export namespace NT {
     interface IServerRoomAddToList {
 
         /** ServerRoomAddToList room */
-        room: NT.ServerRoomAddToList.IRoom;
+        room?: (NT.ServerRoomAddToList.IRoom|null);
     }
 
     /** Represents a ServerRoomAddToList. */
@@ -9225,7 +9225,7 @@ export namespace NT {
         constructor(properties?: NT.IServerRoomAddToList);
 
         /** ServerRoomAddToList room. */
-        public room: NT.ServerRoomAddToList.IRoom;
+        public room?: (NT.ServerRoomAddToList.IRoom|null);
 
         /**
          * Creates a new ServerRoomAddToList instance using the specified properties.
@@ -9287,28 +9287,28 @@ export namespace NT {
         interface IRoom {
 
             /** Room id */
-            id: string;
+            id?: (string|null);
 
             /** Room name */
-            name: string;
+            name?: (string|null);
 
             /** Room gamemode */
-            gamemode: number;
+            gamemode?: (number|null);
 
             /** Room curUsers */
-            curUsers: number;
+            curUsers?: (number|null);
 
             /** Room maxUsers */
-            maxUsers: number;
+            maxUsers?: (number|null);
 
             /** Room protected */
-            "protected": boolean;
+            "protected"?: (boolean|null);
 
             /** Room owner */
-            owner: string;
+            owner?: (string|null);
 
             /** Room locked */
-            locked: boolean;
+            locked?: (boolean|null);
         }
 
         /** Represents a Room. */
