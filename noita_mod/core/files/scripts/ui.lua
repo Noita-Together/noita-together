@@ -594,8 +594,11 @@ if not initialized then
         end
         
         local location = GameTextGetTranslatedOrNot(player.location)
-        if (location == nil or location == "_EMPTY_") then location = "$noitatogether_mountain" end
-        GuiTooltip(gui, player.name, GameTextGet("$noitatogether_tooltip_player_info", tostring(math.floor(player.curHp)), tostring(math.floor(player.maxHp)), location, string.format("%.0fm", player.y and player.y / 10 or 0)))
+        if (location == nil or location == "_EMPTY_") then location = GameTextGetTranslatedOrNot("$noitatogether_mountain") end
+        local tooltip = GameTextGet("$noitatogether_tooltip_player_HP", tostring(math.floor(player.curHp)), tostring(math.floor(player.maxHp)))
+        tooltip = tooltip .. "\n" .. GameTextGet("$noitatogether_tooltip_player_location", location)
+        tooltip = tooltip .. "\n" .. GameTextGet("$noitatogether_tooltip_player_depth", string.format("%.0fm", player.y and player.y / 10 or 0))
+        GuiTooltip(gui, player.name, tooltip)
         GuiOptionsAddForNextWidget(gui, GUI_OPTION.Layout_NextSameLine)
         GuiZSetForNextWidget(gui, 9)
         local bar_w = player.curHp / player.maxHp
