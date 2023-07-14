@@ -37,7 +37,11 @@
             <table>
               <thead>
               <tr>
-                <th>Name</th>
+                <th class="users-name">
+                  <span>Name</span>
+                  <img v-if="!sortByUser" title="sort by name" alt="Sort by name" class="users-sort" src="/sort_by_icon.svg" @click="sortUser()"/>
+                  <img v-if="sortByUser" title="Sort by oldest to newest" alt="Sort by oldest to newest" class="users-sort" src="/sort_by_icon_active.svg" @click="sortUser()"/>
+                </th>
                 <th>State</th>
                 <th v-if="isHost">Actions</th>
               </tr>
@@ -142,6 +146,7 @@ export default {
             showRoomFlags: false,
             showLeaveModal: false,
             expandedContent: "",
+            sortByUser: false,
             chatMsg: "",
             lastMsg: Date.now(),
             locked: false
@@ -187,7 +192,15 @@ export default {
             return this.$store.getters.isHost
         },
         users() {
-            return this.$store.state.room.users
+            const data = [
+                ...this.$store.state.room.users
+            ]
+            if(!this.sortByUser) return data
+            return data.sort((a, b) => {
+              if(!a.name) return 1
+              if(!b.name) return -1
+              return a.name.toLowerCase() >= b.name.toLowerCase() ? 1 : -1
+            })
         },
         expandedModItem(){
           return this.expandedContent
@@ -264,6 +277,9 @@ export default {
         openTab(tab){
             this.setTab(tab)
         },
+        sortUser(){
+          this.sortByUser = !this.sortByUser
+        },
         closeLeaveModal() {
             this.showLeaveModal = false
         },
@@ -293,6 +309,18 @@ export default {
     margin-bottom: 1em;
     overflow: auto;
     overflow-x: hidden;
+}
+
+.users-name{
+  display: flex;
+}
+
+.users-sort{
+  cursor: pointer;
+  margin-left: 8px;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .tab-switcher{
