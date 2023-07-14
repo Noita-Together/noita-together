@@ -1,4 +1,4 @@
-import Lobby from "./lobby";
+import Lobby from "./Lobby";
 import {User} from "./User"
 import {Room} from "./Room"
 
