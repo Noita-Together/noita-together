@@ -525,6 +525,14 @@ export default new Vuex.Store({
                 message: payload.message.trim()
             })
         },
+        sendClientAlert: ({ commit }, payload) => {
+            commit("pushChat", {
+                id: 'alert',
+                userId: "-1",
+                name: "Alert",
+                message: payload.message.trim()
+            })
+        },
         sendFlags: ({ getters }) => {
             const flags = getters.flags.map(val => {
                 let flag = { flag: val.id }

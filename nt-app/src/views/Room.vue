@@ -112,10 +112,10 @@
             <div class="chatbox" @keydown="sendChat">
                 <input type="text" v-model="chatMsg" placeholder="Send Message" />
             </div>
-            <div class="room-chat" ref="chat">
+            <div class="room-chat" ref="chat" @scroll="handleScroll()">
                 <template v-if="chat.length > 0">
                     <div class="chat-entry" v-for="(entry, index) in chat" :key="index">
-                        <span class="chat-time">[{{ entry.time }}]</span>
+                        <span class="chat-time" :style="{ color: entry.userId === '-1' ? '#e69569' : '#fff'}">[{{ entry.time }}]</span>
                         <span class="chat-name" :style="{ color: entry.color }">{{ entry.name }}</span>
                         <span class="chat-message">{{ entry.message }}</span>
                     </div>
@@ -147,6 +147,7 @@ export default {
             showLeaveModal: false,
             expandedContent: "",
             sortByUser: false,
+            shouldScroll: true,
             chatMsg: "",
             lastMsg: Date.now(),
             locked: false
@@ -166,11 +167,8 @@ export default {
     watch: {
         chat() {
             this.$nextTick(() => {
-                const container = this.$refs.chat
-                if (container) {
-                    if (container.scrollHeight - container.scrollTop < 700) {
-                        container.scrollTop = container.scrollHeight
-                    }
+                if (this.shouldScroll) {
+                  this.scrollToBottom();
                 }
             })
         },
@@ -239,6 +237,18 @@ export default {
         }
     },
     methods: {
+        handleScroll() {
+          const chatBox = this.$refs.chat;
+          const scrollTop = chatBox.scrollTop;
+          const scrollHeight = chatBox.scrollHeight;
+          const clientHeight = chatBox.clientHeight;
+          const scrollThreshold = 100; // Adjust the threshold as needed
+
+          this.shouldScroll = scrollHeight - scrollTop - clientHeight < scrollThreshold;
+        },
+        scrollToBottom() {
+          this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+        },
         lockRoom() {
             this.$store.dispatch("updateRoom", { locked: !this.room.locked })
         },
@@ -250,8 +260,12 @@ export default {
                 return
             }
             if (Date.now() - this.lastMsg < 400) {
-                console.log("TOO FAST MANG")
+                this.$store.dispatch("sendClientAlert", { message: "You are being rate limited!" })
                 return
+            }
+            if(this.chatMsg.length > 2000){
+              this.$store.dispatch("sendClientAlert", { message: "Message too long! Try again with less than 2000 characters!" })
+              return
             }
             this.$store.dispatch("sendChat", { message: this.chatMsg.trim() })
             this.lastMsg = Date.now()
