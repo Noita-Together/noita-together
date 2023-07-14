@@ -17,8 +17,6 @@ const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID as string
 
 if(!TWITCH_CLIENT_ID) throw new Error("Unable to load .env!")
 
-let cachedJWKS: string|undefined = undefined
-
 const timeStart = Date.now()
 
 const userDatasource = UserDatasource()
@@ -136,8 +134,6 @@ class NoitaTogetherWebsocket{
             return new User(`${Math.random()}`, token.split('/')[2], defaultRoles, 'local')
         }
         if(this.offlineCode) return null
-        if (!cachedJWKS)
-            cachedJWKS = await fetchJWKS()
         const verify: Promise<TwitchDecodedToken> = verifyJwt(token, SECRET_ACCESS)
         return verify
             .then((jwtObject: TwitchDecodedToken) => {
@@ -149,13 +145,6 @@ class NoitaTogetherWebsocket{
                 return null
             })
     }
-}
-
-const fetchJWKS = async () => {
-    console.log('Fetch JWKS...')
-    const response = await axios.get('https://id.twitch.tv/oauth2/keys')
-    console.log('Fetched!')
-    return response.data
 }
 
 export {
