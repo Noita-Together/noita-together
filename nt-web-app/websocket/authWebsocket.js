@@ -1,11 +1,7 @@
-import WebSocket, {createWebSocketStream, Server} from "ws";
+import WebSocket from "ws";
 import {PendingConnection} from "../entity/PendingConnection";
 import {PendingConnectionDatasource, UserDatasource} from "./Datasource";
-import * as http from "http";
-import { Repository } from "typeorm";
 import {User} from "../entity/User";
-import stream from "node:stream";
-import {TwitchUserData} from "../entity/TwitchGetUsersResponse";
 import {createAccessToken, createRefreshToken} from "../utils/jwtUtils";
 import {getUsersById} from "../utils/TwitchUtils";
 
@@ -26,7 +22,7 @@ class AuthWebsocket {
         UserDatasource()
             .then((db) => this.userRepository = db?.getRepository(User))
 
-        this.timeout = setTimeout(()=>this.CheckUsers(), 5000)
+        this.timeout = setTimeout(this.CheckUsers, 5000)
 
         this.server.on(
             "connection",
@@ -48,6 +44,7 @@ class AuthWebsocket {
                 loginServer: process.env.WEBSERVER_AUTH_URL
             }
         }))
+        this.CheckUsers().then(r => console.log('Booted up Check Users Function!'))
     }
 
     CheckUsers = async() => {
@@ -55,7 +52,8 @@ class AuthWebsocket {
             console.log('DoCheckUsers failed this run :(')
             console.error(e)
         })
-        this.timeout = setTimeout(()=>this.CheckUsers(), 5000)
+        if(Object.values(this.pendingConnections).length === 0) return
+        this.timeout = setTimeout(this.CheckUsers, 5000)
     }
 
     DoCheckUsers = async() => {
