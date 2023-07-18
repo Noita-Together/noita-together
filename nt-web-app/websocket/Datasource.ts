@@ -2,7 +2,7 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "../entity/User"
 import {PendingConnection} from "../entity/PendingConnection";
-import {RoomStats, UserStats, EnemyKillCount, ItemPickupEvent} from "../entity/RunStatistics";
+import {RoomStats, UserStats, EnemyKillCount, ItemPickupEvent, SessionStats} from "../entity/RunStatistics";
 
 const userDataSource = new DataSource({
     type: "sqlite",
@@ -23,7 +23,7 @@ const pendingUsersDatasource = new DataSource({
 const roomStatsDatasource = new DataSource({
     type: "sqlite",
     database: "roomStats.sqlite",
-    entities: [RoomStats, UserStats, EnemyKillCount, ItemPickupEvent],
+    entities: [RoomStats, UserStats, EnemyKillCount, ItemPickupEvent, SessionStats],
     synchronize: true,
     logging: false,
 })

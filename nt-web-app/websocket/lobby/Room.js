@@ -17,6 +17,7 @@ class Room {
         this.flagsCache = null
         this.users = new Map()
         this.users.set(owner.id, owner)
+        this.session_id = undefined
 
         this.stats = null
         this.ResetStats()
