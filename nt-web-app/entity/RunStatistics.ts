@@ -113,7 +113,7 @@ export class UserStats extends BaseSessionStatsChild{
         wins: number = 0,
         deaths: number = 0,
     ) {
-        super(`${session_id}-${user_id}`, user_id, session_id)
+        super(`${session_id}-${user_id}`, session_id, user_id)
         this.wins = wins
         this.steve_kills = steve_kills
         this.big_steve_kills = big_steve_kills

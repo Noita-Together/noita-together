@@ -1,28 +1,57 @@
-import { DataSource } from "typeorm"
+import { QueryRunner, Repository } from "typeorm"
 import {RoomStatsDatasource} from "../Datasource";
 import StatsInterface from "./StatsInterface";
 import {RoomStats, SessionStats, UserStats} from "../../entity/RunStatistics";
 
 class StatsController implements StatsInterface{
-    private pendingEvents: number = 0
-    private runStatsDb: DataSource
-    private constructor(runStatsDb: DataSource) {
+    private statsQueue: (()=>Promise<unknown>)[] = []
+    private statsQueueProcessing = false
+    private runStatsDb: QueryRunner
+    private sessionStatsRepo: Repository<SessionStats>
+    private roomStatsRepo: Repository<RoomStats>
+    private userStatsRepo: Repository<UserStats>
+
+    private constructor(runStatsDb: QueryRunner) {
         this.runStatsDb = runStatsDb
+        this.sessionStatsRepo = runStatsDb.manager.getRepository(SessionStats)
+        this.roomStatsRepo = runStatsDb.manager.getRepository(RoomStats)
+        this.userStatsRepo = runStatsDb.manager.getRepository(UserStats)
     }
 
     static async create(): Promise<StatsController>{
         const db = await RoomStatsDatasource()
         if(!db) throw new Error("createStatsController: Failed to init DB!")
-        return new StatsController(db)
+        const queryRunner = db.createQueryRunner()
+        await queryRunner.connect()
+        return new StatsController(queryRunner)
+    }
+
+    wait100executor = (resolve: (value: unknown) => void, reject: (reason?: any) => void)=>setTimeout(resolve, 100)
+
+    async processEvents(){
+        this.statsQueueProcessing = true
+        while (this.statsQueue.length > 0){
+            await this.statsHandler()
+            // await new Promise(this.wait100executor)
+        }
+        this.statsQueueProcessing = false
+    }
+
+    async statsHandler(){
+        const item = this.statsQueue.shift()
+
+        if(!item) return
+        try {
+            await item()
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     runEvent(event_name: string, callback: ()=>Promise<unknown>){
-        this.pendingEvents++
-        callback().catch((e)=>{
-            console.error(e)
-        }).then(_=>{
-            this.pendingEvents--
-        })
+        console.log(event_name)
+        this.statsQueue.push(callback)
+        if(!this.statsQueueProcessing) this.processEvents()
     }
 
     createRoom(owner_id: string, room_name: string, room_id: string): void {
@@ -38,9 +67,10 @@ class StatsController implements StatsInterface{
         return session.session_id!!;
     }
 
-    completeSession(session_id: string): void {
+    completeSession(session_id: string|undefined): void {
+        if(!session_id) return
         this.runEvent('session_completed',async() => {
-            const session = await this.runStatsDb.getRepository(SessionStats).findOneById(session_id)
+            const session = await this.sessionStatsRepo.findOneById(session_id)
             if(!session) return
             session.finished = true
             await session.save()
@@ -48,9 +78,9 @@ class StatsController implements StatsInterface{
     }
 
     addBigSteveKillToUser(session_id: string, user_id: string, x: number, y: number): void {
+        if(!session_id) return
         this.runEvent('big_steve_kill',async() => {
-            const repo = this.runStatsDb.getRepository(UserStats)
-            let userStats = await repo.findOneBy({
+            let userStats = await this.userStatsRepo.findOneBy({
                 session_id: session_id,
                 user_id: user_id
             })
@@ -58,13 +88,14 @@ class StatsController implements StatsInterface{
                 userStats = new UserStats(session_id, user_id)
             }
             userStats.big_steve_kills++
-            await repo.save(userStats)
+            await this.userStatsRepo.save(userStats)
         })
     }
 
-    addSteveKillToUser(session_id: string, user_id: string, x: number, y: number): void {
+    addSteveKillToUser(session_id: string|undefined, user_id: string, x: number, y: number): void {
+        if(!session_id) return
         this.runEvent('steve_kill',async() => {
-            const repo = this.runStatsDb.getRepository(UserStats)
+            const repo = this.userStatsRepo
             let userStats = await repo.findOneBy({
                 session_id: session_id,
                 user_id: user_id
@@ -77,15 +108,17 @@ class StatsController implements StatsInterface{
         })
     }
 
-    addEnemyKill(session_id: string, user_id: string, enemy_name: string, x: number, y: number): void {
+    addEnemyKill(session_id: string|undefined, user_id: string, enemy_name: string, x: number, y: number): void {
+        if(!session_id) return
         this.runEvent('enemy_killed',async() => {
 
         })
     }
 
-    addDeathToUser(session_id: string, user_id: string, kill_reason: string, x: number, y: number): void {
+    addDeathToUser(session_id: string|undefined, user_id: string, kill_reason: string, x: number, y: number): void {
+        if(!session_id) return
         this.runEvent('user_death',async() => {
-            const repo = this.runStatsDb.getRepository(UserStats)
+            const repo = this.userStatsRepo
             let userStats = await repo.findOneBy({
                 session_id: session_id,
                 user_id: user_id
@@ -98,9 +131,10 @@ class StatsController implements StatsInterface{
         })
     }
 
-    addWinToUser(session_id: string, user_id: string, x: number, y: number): void {
+    addWinToUser(session_id: string|undefined, user_id: string, x: number, y: number): void {
+        if(!session_id) return
         this.runEvent('user_win',async() => {
-            const repo = this.runStatsDb.getRepository(UserStats)
+            const repo = this.userStatsRepo
             let userStats = await repo.findOneBy({
                 session_id: session_id,
                 user_id: user_id
@@ -113,13 +147,15 @@ class StatsController implements StatsInterface{
         })
     }
 
-    addHeartToUser(session_id: string, user_id: string, x: number, y: number): void {
+    addHeartToUser(session_id: string|undefined, user_id: string, x: number, y: number): void {
+        if(!session_id) return
         this.runEvent('heart_pickup',async() => {
-            const repo = this.runStatsDb.getRepository(UserStats)
+            const repo = this.userStatsRepo
             let userStats = await repo.findOneBy({
                 session_id: session_id,
                 user_id: user_id
             })
+            console.log(`Found an existing user? ${!!userStats}`)
             if(!userStats){
                 userStats = new UserStats(session_id, user_id)
             }
@@ -128,9 +164,10 @@ class StatsController implements StatsInterface{
         })
     }
 
-    addOrbToUser(session_id: string, user_id: string, x: number, y: number): void {
+    addOrbToUser(session_id: string|undefined, user_id: string, x: number, y: number): void {
+        if(!session_id) return
         this.runEvent('orb_pickup',async() => {
-            const repo = this.runStatsDb.getRepository(UserStats)
+            const repo = this.userStatsRepo
             let userStats = await repo.findOneBy({
                 session_id: session_id,
                 user_id: user_id

@@ -152,12 +152,7 @@ class Lobby {
         }
         const pwd = password && validator.isAscii(password)
 
-        const room = new Room(uuidv4(), name, pwd ? password : "", user, maxUsers, gamemode, false, this)
-        this.statsController?.createRoom(user.id, room.name, room.id)
-        this.statsController?.createSession(room.id).then((session_id)=>{
-            room.session_id = session_id
-        })
-
+        const room = new Room(uuidv4(), name, pwd ? password : "", user, maxUsers, gamemode, false, this, this.statsController)
         this.rooms.set(room.id, room)
         user.room = room
         const msg = encodeLobbyMsg("sRoomCreated", {

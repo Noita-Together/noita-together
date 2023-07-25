@@ -1,8 +1,15 @@
 import {MakeFrame} from "./LobbyUtils";
 import {encodeGameMsg, encodeLobbyMsg} from "../messageHandler";
+import {StatsController} from "../stats/StatsController";
+import StatsInterface from "../stats/StatsInterface";
 
 class Room {
-    constructor(id, name, password, owner, maxUsers, gamemode, locked, lobby) {
+    /**
+     * @type {StatsInterface|undefined}
+     */
+    statsController;
+
+    constructor(id, name, password, owner, maxUsers, gamemode, locked, lobby, statsController) {
         this.id = id
         this.password = password
         this.owner = owner
@@ -20,6 +27,8 @@ class Room {
         this.session_id = undefined
 
         this.stats = null
+        this.statsController = statsController
+        this.statsController?.createRoom(owner.id, this.name, id)
         this.ResetStats()
         this.users.forEach(user => {
             this.ResetUserStats(user)
@@ -102,7 +111,7 @@ class Room {
 
         if (this.gamemode === 0) {//Coop
             // setStats(this.id, this.stats) //TODO re-enable
-            this.SysMsg(`Stats for the run: https://DOMAIN/stats/room/${this.id} (WIP feature)`)//TODO use run id instead of room id
+            this.SysMsg(`Stats for the run: https://${process.env.OAUTH_REDIRECT_URI}/stats/room/${this.id} (WIP feature)`)//TODO use run id instead of room id
         }
         else {
             this.SysMsg("Run over [Insert run stats here soon™]")
@@ -124,6 +133,13 @@ class Room {
                     items: {}
                 }
             }
+            this.session_id = undefined
+            this.statsController?.createSession(this.id).then((session_id)=>{
+                this.session_id = session_id
+            })
+        }
+        else{
+            this.session_id = undefined
         }
     }
 
@@ -349,9 +365,11 @@ class Room {
         if (this.gamemode === 0) {//Coop
             if (payload.heart) {
                 this.stats.users[user.id].hearts++
+                this.statsController?.addHeartToUser(this.session_id, user.id, payload.x??null, payload.y??null)
             }
             else if (payload.orb) {
                 this.stats.users[user.id].orbs++
+                this.statsController?.addOrbToUser(this.session_id, user.id, payload.x??null, payload.y??null)
             }
         }
         this.Rebroadcast("sPlayerPickup", payload, user, { ignoreSelf: true })
@@ -399,6 +417,7 @@ class Room {
         if (this.gamemode === 0) {//Coop
             this.stats.users[user.id].steve = true
         }
+        this.statsController?.addSteveKillToUser(this.session_id, user.id, payload.x??null, payload.y??null)
         this.Rebroadcast("sAngerySteve", payload, user, { ignoreSelf: true })
     }
 
@@ -406,6 +425,7 @@ class Room {
         if (!this.inProgress) { return } //TODO Error? run not started yet
         if (this.gamemode === 0) {//Coop
             this.stats.users[user.id].deaths++
+            this.statsController?.addDeathToUser(this.session_id, user.id)
         }
         this.Rebroadcast("sRespawnPenalty", payload, user, { ignoreSelf: true })
     }
@@ -414,6 +434,12 @@ class Room {
         if (!this.inProgress) { return } //TODO Error? run not started yet
         if (this.gamemode === 0) {//Coop
             this.stats.users[user.id].deaths++
+            if(payload.isWin){
+                this.statsController?.addWinToUser(this.session_id, user.id)
+            }
+            else{
+                this.statsController?.addDeathToUser(this.session_id, user.id)
+            }
         }
         this.Rebroadcast("sPlayerDeath", payload, user, { ignoreSelf: true })
     }
