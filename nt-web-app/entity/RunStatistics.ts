@@ -5,15 +5,19 @@ class BaseSessionStatsChild{
     id: string
 
     @Column()
+    username: string
+
+    @Column()
     session_id: string
 
     @Column()
     user_id: string
 
-    constructor(id: string, session_id: string, user_id: string) {
+    constructor(id: string, session_id: string, user_id: string, username: string) {
         this.id = id
         this.session_id = session_id
         this.user_id = user_id
+        this.username = username
     }
 }
 
@@ -105,6 +109,7 @@ export class UserStats extends BaseSessionStatsChild{
     constructor(
         session_id: string,
         user_id: string,
+        user_name: string,
         allowed_rejoin_if_active_run: boolean = true,
         hearts: number = 0,
         orbs: number = 0,
@@ -113,7 +118,7 @@ export class UserStats extends BaseSessionStatsChild{
         wins: number = 0,
         deaths: number = 0,
     ) {
-        super(`${session_id}-${user_id}`, session_id, user_id)
+        super(`${session_id}-${user_id}`, session_id, user_id, user_name)
         this.wins = wins
         this.steve_kills = steve_kills
         this.big_steve_kills = big_steve_kills
@@ -139,11 +144,12 @@ export class EnemyKillCount extends BaseSessionStatsChild{
     constructor(
         room_id: string,
         user_id: string,
+        user_name: string,
         enemy_name: string,
         enemy_id: string,
         kills: number = 0
     ) {
-        super(`${room_id}-${user_id}-enemy-kills`, user_id, room_id)
+        super(`${room_id}-${user_id}-enemy-kills`, user_id, room_id, user_name)
         this.enemy_name = enemy_name
         this.enemy_id = enemy_id
         this.kills = kills
@@ -160,6 +166,9 @@ export class ItemPickupEvent{
 
     @Column()
     user_id: string
+
+    @Column()
+    user_name: string
 
     @Column()
     item_name: string
@@ -179,6 +188,7 @@ export class ItemPickupEvent{
     constructor(
         room_id: string,
         user_id: string,
+        user_name: string,
         item_name: string,
         item_type: string,
         x: number = 0,
@@ -186,6 +196,7 @@ export class ItemPickupEvent{
     ) {
         this.room_id = room_id
         this.user_id = user_id
+        this.user_name = user_name
         this.item_name = item_name
         this.item_type = item_type
         this.x = x

@@ -10,12 +10,17 @@ class StatsController implements StatsInterface{
     private sessionStatsRepo: Repository<SessionStats>
     private roomStatsRepo: Repository<RoomStats>
     private userStatsRepo: Repository<UserStats>
+    private userPool: {[key: string]:string} = {}
 
     private constructor(runStatsDb: QueryRunner) {
         this.runStatsDb = runStatsDb
         this.sessionStatsRepo = runStatsDb.manager.getRepository(SessionStats)
         this.roomStatsRepo = runStatsDb.manager.getRepository(RoomStats)
         this.userStatsRepo = runStatsDb.manager.getRepository(UserStats)
+    }
+
+    setUser(user_id: string, display_name: string): void {
+        this.userPool[user_id] = display_name
     }
 
     static async create(): Promise<StatsController>{
@@ -85,7 +90,7 @@ class StatsController implements StatsInterface{
                 user_id: user_id
             })
             if(!userStats){
-                userStats = new UserStats(session_id, user_id)
+                userStats = new UserStats(session_id, user_id, this.userPool[user_id])
             }
             userStats.big_steve_kills++
             await this.userStatsRepo.save(userStats)
@@ -101,7 +106,7 @@ class StatsController implements StatsInterface{
                 user_id: user_id
             })
             if(!userStats){
-                userStats = new UserStats(session_id, user_id)
+                userStats = new UserStats(session_id, user_id, this.userPool[user_id])
             }
             userStats.steve_kills++
             await repo.save(userStats)
@@ -124,7 +129,7 @@ class StatsController implements StatsInterface{
                 user_id: user_id
             })
             if(!userStats){
-                userStats = new UserStats(session_id, user_id)
+                userStats = new UserStats(session_id, user_id, this.userPool[user_id])
             }
             userStats.deaths++
             await repo.save(userStats)
@@ -140,7 +145,7 @@ class StatsController implements StatsInterface{
                 user_id: user_id
             })
             if(!userStats){
-                userStats = new UserStats(session_id, user_id)
+                userStats = new UserStats(session_id, user_id, this.userPool[user_id])
             }
             userStats.wins++
             await repo.save(userStats)
@@ -157,7 +162,7 @@ class StatsController implements StatsInterface{
             })
             console.log(`Found an existing user? ${!!userStats}`)
             if(!userStats){
-                userStats = new UserStats(session_id, user_id)
+                userStats = new UserStats(session_id, user_id, this.userPool[user_id])
             }
             userStats.hearts++
             await repo.save(userStats)
@@ -173,7 +178,7 @@ class StatsController implements StatsInterface{
                 user_id: user_id
             })
             if(!userStats){
-                userStats = new UserStats(session_id, user_id)
+                userStats = new UserStats(session_id, user_id, this.userPool[user_id])
             }
             userStats.orbs++
             await repo.save(userStats)

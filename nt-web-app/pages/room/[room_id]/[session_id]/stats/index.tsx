@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import {Inter} from 'next/font/google'
-import styles from '../../../../styles/Stats.module.css'
+import styles from '../../../../../styles/Stats.module.css'
 
 const inter = Inter({subsets: ['latin']})
 
@@ -73,12 +73,12 @@ export default function Stats({
                         <tbody className={styles.statsBody}>
                         {userStats?.map(user => (
                             <tr key={user.id}>
-                                <td>{user.id}</td>
+                                <td>{user.username}</td>
                                 <td>{user.hearts}</td>
                                 <td>{user.orbs}</td>
                                 <td>{user.deaths}</td>
                                 <td>{user.wins}</td>
-                                <td>{user.triggered_steve ? "Yes" : "No"}</td>
+                                <td>{user.steve_kills}</td>
                             </tr>
                         ))}
                         </tbody>
@@ -90,8 +90,8 @@ export default function Stats({
 }
 
 import type {InferGetServerSidePropsType, GetServerSideProps} from 'next'
-import {RoomStatsDatasource} from "../../../../websocket/Datasource";
-import {RoomStats, UserStats} from "../../../../entity/RunStatistics";
+import {RoomStatsDatasource} from "../../../../../websocket/Datasource";
+import {RoomStats, SessionStats, UserStats} from "../../../../../entity/RunStatistics";
 import React, {useMemo} from "react";
 
 type SummedData = {
@@ -108,6 +108,7 @@ type Repo = {
     code?: number
     roomData?: string
     userStats?: string
+    sessionStats?: string
     aggregateData?: string
 }
 
@@ -115,41 +116,61 @@ const generateReturnObject = (repo: Repo) => {
     return {props: {repo}}
 }
 
+export interface StatsParams {
+    session_id: string,
+    room_id: string,
+
+    [key: string]: string | undefined | string[]
+}
+
 export const getServerSideProps: GetServerSideProps<{
     repo?: Repo
-}> = async ({params}) => {
+}, StatsParams> = async ({params}) => {
     try {
-        if (params?.room_id === 'demo') {
+        if (params?.session_id === 'demo') {
             return Promise.resolve(generateReturnObject(generateSampleData()))
         }
-        const db = await RoomStatsDatasource()
+        const [db] = await Promise.all([RoomStatsDatasource()])
         if (!db)
             return generateReturnObject({isValid: false, error: 'db init failure', code: 500})
         if (!params || !params.room_id || typeof params.room_id !== 'string')
             return generateReturnObject({isValid: false, error: 'params malformed. Expected string room_id', code: 400})
-        const {room_id} = params
+        const {room_id, session_id} = params
         //do a little sanitizing
         const uuidV4Regex = new RegExp(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i);
         if (!uuidV4Regex.test(room_id))
             return generateReturnObject({isValid: false, error: 'invalid room id'})
+        if (!uuidV4Regex.test(session_id))
+            return generateReturnObject({isValid: false, error: 'invalid session id'})
 
         const roomRepo = db.getRepository(RoomStats)
-        const room = await roomRepo.findOneBy({
-            room_id: room_id
-        })
+        const sessionRepo = db.getRepository(SessionStats)
+        const userStatsRepo = db.getRepository(UserStats)
+        const [room, session, userStats, aggregatedData] = await Promise.all([
+            roomRepo.findOneBy({
+                room_id: room_id
+            }), sessionRepo.findOneBy({
+                session_id: session_id
+            }), userStatsRepo.findBy({
+                session_id: session_id
+            }), userStatsRepo.query(
+                'SELECT sum(hearts),sum(deaths),sum(wins),sum(orbs) FROM userStats WHERE session_id LIKE ${session_id}'
+            )
+        ])
+
         if (!room)
             return generateReturnObject({isValid: false, error: 'room not found :(', code: 404})
-        const userStatsRepo = db.getRepository(UserStats)
-        const userStats = await userStatsRepo.findBy({
-            room_id: room_id
-        })
+        if (!session)
+            return generateReturnObject({isValid: false, error: 'session not found :(', code: 404})
         if (!userStats)
             return generateReturnObject({isValid: false, error: 'stats for room not found :(', code: 404})
-        const aggregatedData = await userStatsRepo.query('SELECT sum(hearts),sum(deaths),sum(wins),sum(orbs) FROM userStats WHERE room_id LIKE ${room_id}')
+        if (!aggregatedData)
+            return generateReturnObject({isValid: false, error: 'stats for room not found :(', code: 500})
 
         const repo: Repo = {
             isValid: true,
             roomData: JSON.stringify(room),
+            sessionStats: JSON.stringify(session),
             userStats: JSON.stringify(userStats),
             aggregateData: JSON.stringify(aggregatedData as SummedData)
         }
@@ -161,31 +182,32 @@ export const getServerSideProps: GetServerSideProps<{
 }
 
 const generateSampleData = (): Repo => {
-    const roomStats = new RoomStats('demo', 'Example', 'SkyeOfBreeze', '1', true)
+    const roomStats = new RoomStats("SkyeOfBreeze's Room", 'SkyeOfBreeze', 'demo')
+    const sessionStats = new SessionStats('SkyeOfBreeze',  true)
     const userStats = [
-        new UserStats('demo', '1', false, 1, 2, true, 1, 3),
-        new UserStats('demo', '1', false, 1, 2, true, 1, 3),
-        new UserStats('demo', '1', false, 1, 2, true, 1, 3),
-        new UserStats('demo', '2', false, 2, 0, false, 0, 1),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
-        new UserStats('demo', '3', false, 1, 2, false, 1, 0),
+        new UserStats('demo', '1', 'demo_user_1',false, 1, 2, 1, 1, 3),
+        new UserStats('demo', '2', 'demo_user_2',false, 1, 2, 2, 1, 3),
+        new UserStats('demo', '3', 'demo_user_3',false, 1, 2, 0, 1, 3),
+        new UserStats('demo', '4', 'demo_user_4',false, 2, 0, 0, 0, 1),
+        new UserStats('demo', '5', 'demo_user_5',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '6', 'demo_user_6',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '7', 'demo_user_7',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '8', 'demo_user_8',false, 1, 2, 5, 1, 0),
+        new UserStats('demo', '9', 'demo_user_9',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '10', 'demo_user_10',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '11', 'demo_user_11',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '12', 'demo_user_12',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '13', 'demo_user_13',false, 1, 2, 6, 1, 0),
+        new UserStats('demo', '14', 'demo_user_14',false, 5, 2, 0, 1, 0),
+        new UserStats('demo', '15', 'demo_user_15',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '16', 'demo_user_16',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '17', 'demo_user_17',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '18', 'demo_user_18',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '19', 'demo_user_19',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '20', 'demo_user_20',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '21', 'demo_user_21',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '22', 'demo_user_22',false, 1, 2, 0, 1, 0),
+        new UserStats('demo', '23', 'demo_user_23',false, 1, 2, 0, 1, 0),
     ]
     const aggregateData: SummedData = {
         hearts: userStats.reduce((prevValue, userStat) => {
@@ -201,13 +223,14 @@ const generateSampleData = (): Repo => {
             return userStat.deaths + prevValue
         }, 0),
         steve: userStats.reduce((prevValue, userStat) => {
-            return userStat.triggered_steve ? prevValue + 1 : prevValue
+            return userStat.steve_kills ? prevValue + 1 : prevValue
         }, 0)
     }
 
     return {
         isValid: true,
         roomData: JSON.stringify(roomStats),
+        sessionStats: JSON.stringify(sessionStats),
         userStats: JSON.stringify(userStats),
         aggregateData: JSON.stringify(aggregateData)
     }

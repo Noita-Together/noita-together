@@ -356,5 +356,5 @@ class Lobby {
     }
 }
 
-const lobby = new Lobby()
+const lobby = new Lobby(undefined, false)
 export default lobby

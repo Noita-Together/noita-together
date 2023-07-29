@@ -25,6 +25,7 @@ interface StatsInterface{
     addDeathToUser(session_id: string, user_id: string, kill_reason: string, x: number, y: number): void
     addWinToUser(session_id: string, user_id: string, x: number, y: number): void
     addEnemyKill(session_id: string, user_id: string, enemy_name: string, x: number, y: number): void
+    setUser(user_id: string, display_name: string): void
 }
 
 export default StatsInterface

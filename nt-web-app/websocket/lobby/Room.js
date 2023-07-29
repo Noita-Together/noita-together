@@ -2,6 +2,7 @@ import {MakeFrame} from "./LobbyUtils";
 import {encodeGameMsg, encodeLobbyMsg} from "../messageHandler";
 import {StatsController} from "../stats/StatsController";
 import StatsInterface from "../stats/StatsInterface";
+import {stringify} from "querystring";
 
 class Room {
     /**
@@ -90,6 +91,12 @@ class Room {
         this.Broadcast(msg)
     }
 
+    SendStats(){
+        const stats = this.stats
+        const msg = encodeGameMsg("sStatUpdate", { data: JSON.stringify(stats) })
+        this.Broadcast(msg)
+    }
+
     UpdateFlags(payload) {
         const msg = encodeLobbyMsg("sRoomFlagsUpdated", payload)
         this.flags = payload.flags
@@ -110,8 +117,8 @@ class Room {
         })
 
         if (this.gamemode === 0) {//Coop
-            // setStats(this.id, this.stats) //TODO re-enable
-            this.SysMsg(`Stats for the run: https://${process.env.OAUTH_REDIRECT_URI}/stats/room/${this.id} (WIP feature)`)//TODO use run id instead of room id
+            this.SendStats()
+            this.SysMsg(`Stats for the run updated in stats tab`)
         }
         else {
             this.SysMsg("Run over [Insert run stats here soon™]")
@@ -180,6 +187,7 @@ class Room {
             maxUsers: this.maxUsers,
             users
         }))
+        this.statsController?.setUser(user.id, user.display_name)
         if (this.flagsCache !== null) {
             user.Send(this.flagsCache)
         }
