@@ -76,12 +76,12 @@
     "files/scripts/spell_spitter.lua": "0e10a9c76984dc3e4b0a4f3d3b634123a16ffb26f256088bdee33e42f9cdb022",
     "files/scripts/spell_spitter_glow.lua": "4dc1a7112bfe16208e8f61185c29e4d6db0a0f8c8c29ad0ee8f8a4121630dfee",
     "files/scripts/start_run_hint.lua": "42fd4653a6486d7aabd1c5f55aa3b3aa9c373647aef6e99db229b51cc1a6a955",
-    "files/scripts/ui.lua": "129bfed75a42e8f1216ac6b55ea4c06ad00a0e9566b69c5f7c98602e80c85663",
+    "files/scripts/ui.lua": "f98b6296bdfcad4b8f05c5791e1853ded13b7638126d3436ec3127f3a35ffd26",
     "files/scripts/utils.lua": "79a159ff86319a4516cb4099662b561b750683fd85974285021498145c9b9535",
     "files/store.lua": "3e508fa82a23b52358cbb9dd685782f6db09042fd4d82feebadea9c44a5c6eee",
     "files/stringstore/noitaglobalstore.lua": "df6663bed01bc62a918f994d2a9ec0ad2847e799366c9ce9a371973226d1299a",
     "files/stringstore/stringstore.lua": "7934f19bd537a87b1b9476cb30fa506f7d48b37953011980630a9eb37df4060f",
-    "files/translations/translations.csv": "5bea42d056ee892ec93890517f8ea3fb526c6f153504e219cc3ebfe5f0fe7b13",
+    "files/translations/translations.csv": "7c208be15d9180edfe4a1275bfd1fb12aa4763127d7e7d1340a91ca64e420c50",
     "files/ui/all.png": "f29721c891aeebbe72feebfa094aff50bc6c120402c322936907a7e2ff1a0596",
     "files/ui/arrows/arrow 10.png": "c7aa5cecaee36ff1ba87fb069278c10b0a670cbae17db2d0085687806537d41e",
     "files/ui/arrows/arrow back 10.png": "7da59b3072b4dbb586652a724707f49ef716b9e5ba640c993896f6f822edd9db",
@@ -185,5 +185,5 @@
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "5a7a0b3f69465bff9f116dd4a0614840206c8113ed0bb0800c65df6d4b81635d"
   },
-  "buildDate": "2023-07-10T01:40:58.369Z"
+  "buildDate": "2023-07-30T02:21:19.474Z"
 }
