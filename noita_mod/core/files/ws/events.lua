@@ -1,4 +1,6 @@
 dofile( "data/scripts/perks/perk.lua" )
+dofile( "mods/noita-together/files/scripts/hourglass_events.lua")
+
 customEvents = {
     PlayerPOI = function(data)
         local user = PlayerList[data.userId]
@@ -79,7 +81,8 @@ customEvents = {
     PlayerCosmeticFlags = function(data)
         UpdatePlayerGhostCosmetic(data)
     end,
-    SecretHourglass = function (data)
+    SecretHourglass = HandleHourglassEvent,
+    --[[ function (data)
         local player = GetPlayer()
         local player_name = PlayerList[data.userId].name
         
@@ -139,7 +142,7 @@ customEvents = {
             })
             GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_speed_subtitle")
         end
-    end
+    end ]]--
 }
 wsEvents = {
     AngerySteve = function (data)
