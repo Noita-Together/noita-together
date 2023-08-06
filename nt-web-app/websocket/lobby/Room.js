@@ -3,6 +3,7 @@ import {encodeGameMsg, encodeLobbyMsg} from "../messageHandler";
 import {StatsController} from "../stats/StatsController";
 import StatsInterface from "../stats/StatsInterface";
 import {stringify} from "querystring";
+import {v4 as uuidv4} from "uuid";
 
 class Room {
     /**
