@@ -1,5 +1,6 @@
 import {MakeFrame} from "./LobbyUtils";
 import {encodeGameMsg, encodeLobbyMsg} from "../messageHandler";
+import {v4 as uuidv4} from "uuid";
 
 class Room {
     constructor(id, name, password, owner, maxUsers, gamemode, locked, lobby) {

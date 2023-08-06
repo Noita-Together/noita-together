@@ -100,6 +100,7 @@ customEvents = {
             })
             GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_ambrosia_subtitle")
         elseif (data.effect == "berserk") then
+            local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_damage_multiplier.xml")
             local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
             ComponentSetValue2(effect_comp, "frames", 60*120)
             EntityAddComponent2(effect_entity, "UIIconComponent", {
