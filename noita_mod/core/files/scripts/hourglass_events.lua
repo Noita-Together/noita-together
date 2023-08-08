@@ -57,9 +57,17 @@ function HandleHourglassEvent(data)
         --todo something more graceful
         GamePrint("(NT) Warning: Unrecognized hourglass event \"" .. data.effect .. "\" !")
     else
+        --use "unknown" if the sender is unknown for some reason (bug, but causes problems if it does happen)
+        local sender
+        if PlayerList[data.userId] then
+            sender = PlayerList[data.userId].name
+        else
+            sender = "unknown"
+        end
+
         --run the registered handler for this effect class
         GamePrint("(NT) Exec hourglass event \"" .. data.effect .. "\"")
-        entry["handler"](GetPlayer(), PlayerList[data.userId].name, data)        
+        entry["handler"](GetPlayer(), sender, data)
     end
 end
 
