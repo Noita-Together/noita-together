@@ -1,4 +1,6 @@
 dofile( "data/scripts/perks/perk.lua" )
+dofile( "mods/noita-together/files/scripts/hourglass_events.lua")
+
 customEvents = {
     PlayerPOI = function(data)
         local user = PlayerList[data.userId]
@@ -79,68 +81,7 @@ customEvents = {
     PlayerCosmeticFlags = function(data)
         UpdatePlayerGhostCosmetic(data)
     end,
-    SecretHourglass = function (data)
-        local player = GetPlayer()
-        local player_name = PlayerList[data.userId].name
-        
-        if (data.effect == "ambrosia") then
-            local x, y = GetPlayerOrCameraPos()
-            local effect_entity = EntityLoad("mods/noita-together/files/effects/weak_ambrosia.xml", x, y)
-            EntityAddChild(player, effect_entity)
-            EntityAddComponent2(effect_entity, "UIIconComponent", {
-                icon_sprite_file = "data/ui_gfx/status_indicators/protection_all.png",
-                name = GameTextGet("$noitatogether_hourglass_buff_protection_name"),
-                description = GameTextGet("$noitatogether_hourglass_buff_protection_desc", player_name),
-                display_above_head = true,
-                display_in_hud = true,
-                is_perk = false
-            })
-            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_ambrosia_subtitle")
-        elseif (data.effect == "berserk") then
-            local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_damage_multiplier.xml")
-            local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
-            ComponentSetValue2(effect_comp, "frames", 60*120)
-            EntityAddComponent2(effect_entity, "UIIconComponent", {
-                icon_sprite_file = "data/ui_gfx/status_indicators/berserk.png",
-                name = GameTextGet("$noitatogether_hourglass_buff_damage_name"),
-                description = GameTextGet("$noitatogether_hourglass_buff_damage_desc", player_name),
-                display_above_head = true,
-                display_in_hud = true,
-                is_perk = false
-            })
-            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_berserk_subtitle")
-        elseif (data.effect == "charm") then
-            local x, y = GetPlayerOrCameraPos()
-            EntityLoad("data/entities/projectiles/deck/regeneration_field_long.xml", x, y)
-            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boon_title", player_name), "")
-        elseif (data.effect == "confusion") then
-            local fungi = CellFactory_GetType("fungi")
-            if (player ~= nil) then
-                EntityIngestMaterial( player, fungi, 300 )
-                local stomach = EntityGetFirstComponent(player, "IngestionComponent")
-                if (stomach ~= nil) then
-                    local ingestion_size = ComponentGetValue2(stomach, "ingestion_size")
-                    ComponentSetValue2(stomach, "ingestion_size", math.max(0, ingestion_size - 300))
-                end
-                GamePrintImportant(GameTextGet("$noitatogether_hourglass_fungus_title", player_name), "$noitatogether_hourglass_fungus_subtitle_yes")
-            else
-                GamePrintImportant(GameTextGet("$noitatogether_hourglass_fungus_title", player_name), "$noitatogether_hourglass_fungus_subtitle_no")
-            end
-        elseif (data.effect == "speed") then
-            local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_movement_faster.xml")
-            local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
-            ComponentSetValue2(effect_comp, "frames", 60*45)
-            EntityAddComponent2(effect_entity, "UIIconComponent", {
-                icon_sprite_file = "data/ui_gfx/status_indicators/movement_faster.png",
-                name = GameTextGet("$noitatogether_hourglass_buff_speed_name"),
-                description = GameTextGet("$noitatogether_hourglass_buff_speed_desc", player_name),
-                display_above_head = true,
-                display_in_hud = true,
-                is_perk = false
-            })
-            GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", player_name), "$noitatogether_hourglass_speed_subtitle")
-        end
-    end
+    SecretHourglass = HandleHourglassEvent
 }
 wsEvents = {
     AngerySteve = function (data)
