@@ -55,7 +55,7 @@ function HandleHourglassEvent(data)
     if entry == nil or type(entry) ~= "table" or type(entry["handler"]) ~= "function" then
         --Emit a warning and do nothing???
         --todo something more graceful
-        GamePrint("(NT) Warning: Unrecognized hourglass event \"" .. data.effect .. "\" !")
+        --GamePrint("(NT) Warning: Unrecognized hourglass event \"" .. data.effect .. "\" !")
     else
         --use "unknown" if the sender is unknown for some reason (bug, but causes problems if it does happen)
         local sender
@@ -66,14 +66,14 @@ function HandleHourglassEvent(data)
         end
 
         --run the registered handler for this effect class
-        GamePrint("(NT) Exec hourglass event \"" .. data.effect .. "\"")
+        --GamePrint("(NT) Exec hourglass event \"" .. data.effect .. "\"")
         entry["handler"](GetPlayer(), sender, data)
     end
 end
 
 --create an area checker entity for an hourglass effect
 function CreateHourglassEntity(x, y, effect, material)
-    GamePrint("creating hourglass entity \"" .. effect .. "\":\"" .. material .. "\"")
+    --GamePrint("creating hourglass entity \"" .. effect .. "\":\"" .. material .. "\"")
     if effect ~= nil and material ~= nil then
         local effect_entity = EntityLoad("mods/noita-together/files/entities/hourglass_effect_trigger.xml", x, y)
         local material_area_checker_component = EntityGetFirstComponentIncludingDisabled(effect_entity, "MaterialAreaCheckerComponent")
