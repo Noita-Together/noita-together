@@ -83,7 +83,7 @@
 </head>
 <body>
 <div class="content">
-    <div class="header-custom"><h1>Stats for [room-name]</h1></div>
+    <div class="header-custom"><h1>Stats for {room-name}</h1></div>
     <table id="stats-table">
         <thead>
         <tr id="headers">
@@ -108,26 +108,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr id="[user-id]">
-            <td>
-                [user-name]
-            </td>
-            <td>
-                [hearts-gained]
-            </td>
-            <td>
-                [orbs-gained]
-            </td>
-            <td>
-                [player-deaths]
-            </td>
-            <td>
-                [steve-deaths]
-            </td>
-            <td>
-                [player-left]
-            </td>
-        </tr>
+        {INSERT_STATS_HERE}
         </tbody>
     </table>
 </div>

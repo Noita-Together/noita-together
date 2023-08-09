@@ -9,6 +9,17 @@ import { getServerAccessToken } from "./utils/TwitchUtils";
 import fs from 'fs';
 import path from 'path';
 
+//Delete old stats on boot up. For now we do NOT want to persist this data
+const statsStorageDirectory = path.join(__dirname, `.storage/stats/`)
+try {
+    if (fs.existsSync(statsStorageDirectory)) {
+        fs.rmSync(statsStorageDirectory, {recursive: true})
+    }
+} catch (e) {
+    console.error(`Failed to delete stale html stats!`)
+    console.error(e)
+}
+
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
 const port = 3000;
