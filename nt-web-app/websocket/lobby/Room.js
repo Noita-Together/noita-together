@@ -270,7 +270,7 @@ class Room {
     }
 
     UserLeave(user, reason) {
-        console.log(`${this.id} : UserLeave : ${user.name} : ${reason}`)
+        console.log(`${this.id} : UserLeave : ${user.name} : ${JSON.stringify(reason)}`)
         if (this.owner.id === user.id) {
             this.Delete(true)
             return
