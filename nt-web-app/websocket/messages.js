@@ -179,11 +179,12 @@ export const NT = $root.NT = (() => {
         GameAction.prototype.cAngerySteve = null;
         GameAction.prototype.sAngerySteve = null;
         GameAction.prototype.sPlayerPos = null;
+        GameAction.prototype.sStatUpdate = null;
 
         let $oneOfFields;
 
         Object.defineProperty(GameAction.prototype, "action", {
-            get: $util.oneOfGetter($oneOfFields = ["cPlayerMove", "sPlayerMove", "cPlayerUpdate", "sPlayerUpdate", "cPlayerUpdateInventory", "sPlayerUpdateInventory", "cHostItemBank", "sHostItemBank", "cHostUserTake", "sHostUserTake", "cHostUserTakeGold", "sHostUserTakeGold", "cPlayerAddGold", "sPlayerAddGold", "cPlayerTakeGold", "sPlayerTakeGold", "cPlayerAddItem", "sPlayerAddItem", "cPlayerTakeItem", "sPlayerTakeItem", "cPlayerPickup", "sPlayerPickup", "cNemesisAbility", "sNemesisAbility", "cNemesisPickupItem", "sNemesisPickupItem", "cChat", "sChat", "cPlayerDeath", "sPlayerDeath", "cPlayerNewGamePlus", "sPlayerNewGamePlus", "cPlayerSecretHourglass", "sPlayerSecretHourglass", "cCustomModEvent", "sCustomModEvent", "cRespawnPenalty", "sRespawnPenalty", "cAngerySteve", "sAngerySteve", "sPlayerPos"]),
+            get: $util.oneOfGetter($oneOfFields = ["cPlayerMove", "sPlayerMove", "cPlayerUpdate", "sPlayerUpdate", "cPlayerUpdateInventory", "sPlayerUpdateInventory", "cHostItemBank", "sHostItemBank", "cHostUserTake", "sHostUserTake", "cHostUserTakeGold", "sHostUserTakeGold", "cPlayerAddGold", "sPlayerAddGold", "cPlayerTakeGold", "sPlayerTakeGold", "cPlayerAddItem", "sPlayerAddItem", "cPlayerTakeItem", "sPlayerTakeItem", "cPlayerPickup", "sPlayerPickup", "cNemesisAbility", "sNemesisAbility", "cNemesisPickupItem", "sNemesisPickupItem", "cChat", "sChat", "cPlayerDeath", "sPlayerDeath", "cPlayerNewGamePlus", "sPlayerNewGamePlus", "cPlayerSecretHourglass", "sPlayerSecretHourglass", "cCustomModEvent", "sCustomModEvent", "cRespawnPenalty", "sRespawnPenalty", "cAngerySteve", "sAngerySteve", "sPlayerPos", "sStatUpdate"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -276,6 +277,8 @@ export const NT = $root.NT = (() => {
                 $root.NT.ServerAngerySteve.encode(message.sAngerySteve, writer.uint32(322).fork()).ldelim();
             if (message.sPlayerPos != null && Object.hasOwnProperty.call(message, "sPlayerPos"))
                 $root.NT.ServerPlayerPos.encode(message.sPlayerPos, writer.uint32(330).fork()).ldelim();
+            if (message.sStatUpdate != null && Object.hasOwnProperty.call(message, "sStatUpdate"))
+                $root.NT.ServerStatsUpdate.encode(message.sStatUpdate, writer.uint32(338).fork()).ldelim();
             return writer;
         };
 
@@ -408,6 +411,9 @@ export const NT = $root.NT = (() => {
                     break;
                 case 41:
                     message.sPlayerPos = $root.NT.ServerPlayerPos.decode(reader, reader.uint32());
+                    break;
+                case 42:
+                    message.sStatUpdate = $root.NT.ServerStatsUpdate.decode(reader, reader.uint32());
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -829,6 +835,16 @@ export const NT = $root.NT = (() => {
                         return "sPlayerPos." + error;
                 }
             }
+            if (message.sStatUpdate != null && message.hasOwnProperty("sStatUpdate")) {
+                if (properties.action === 1)
+                    return "action: multiple values";
+                properties.action = 1;
+                {
+                    let error = $root.NT.ServerStatsUpdate.verify(message.sStatUpdate);
+                    if (error)
+                        return "sStatUpdate." + error;
+                }
+            }
             return null;
         };
 
@@ -1041,6 +1057,11 @@ export const NT = $root.NT = (() => {
                     throw TypeError(".NT.GameAction.sPlayerPos: object expected");
                 message.sPlayerPos = $root.NT.ServerPlayerPos.fromObject(object.sPlayerPos);
             }
+            if (object.sStatUpdate != null) {
+                if (typeof object.sStatUpdate !== "object")
+                    throw TypeError(".NT.GameAction.sStatUpdate: object expected");
+                message.sStatUpdate = $root.NT.ServerStatsUpdate.fromObject(object.sStatUpdate);
+            }
             return message;
         };
 
@@ -1252,6 +1273,11 @@ export const NT = $root.NT = (() => {
                 object.sPlayerPos = $root.NT.ServerPlayerPos.toObject(message.sPlayerPos, options);
                 if (options.oneofs)
                     object.action = "sPlayerPos";
+            }
+            if (message.sStatUpdate != null && message.hasOwnProperty("sStatUpdate")) {
+                object.sStatUpdate = $root.NT.ServerStatsUpdate.toObject(message.sStatUpdate, options);
+                if (options.oneofs)
+                    object.action = "sStatUpdate";
             }
             return object;
         };
@@ -5777,6 +5803,83 @@ export const NT = $root.NT = (() => {
         };
 
         return ServerChat;
+    })();
+
+    NT.ServerStatsUpdate = (function() {
+
+        function ServerStatsUpdate(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        ServerStatsUpdate.prototype.data = "";
+
+        ServerStatsUpdate.create = function create(properties) {
+            return new ServerStatsUpdate(properties);
+        };
+
+        ServerStatsUpdate.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            if (message.data != null && Object.hasOwnProperty.call(message, "data"))
+                writer.uint32(10).string(message.data);
+            return writer;
+        };
+
+        ServerStatsUpdate.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.NT.ServerStatsUpdate();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1:
+                    message.data = reader.string();
+                    break;
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            return message;
+        };
+
+        ServerStatsUpdate.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (message.data != null && message.hasOwnProperty("data"))
+                if (!$util.isString(message.data))
+                    return "data: string expected";
+            return null;
+        };
+
+        ServerStatsUpdate.fromObject = function fromObject(object) {
+            if (object instanceof $root.NT.ServerStatsUpdate)
+                return object;
+            let message = new $root.NT.ServerStatsUpdate();
+            if (object.data != null)
+                message.data = String(object.data);
+            return message;
+        };
+
+        ServerStatsUpdate.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults)
+                object.data = "";
+            if (message.data != null && message.hasOwnProperty("data"))
+                object.data = message.data;
+            return object;
+        };
+
+        ServerStatsUpdate.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        return ServerStatsUpdate;
     })();
 
     NT.ClientPlayerPickup = (function() {

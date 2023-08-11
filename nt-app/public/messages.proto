@@ -74,6 +74,7 @@ message GameAction {
         ServerAngerySteve s_angery_steve = 40;
 
         ServerPlayerPos s_player_pos = 41;
+        ServerStatsUpdate s_stat_update = 42;
     }
 }
 
@@ -281,6 +282,10 @@ message ServerChat {
     string user_id = 2;
     string name = 3;
     string message = 4;
+}
+
+message ServerStatsUpdate{
+    string data = 1;
 }
 
 

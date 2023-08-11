@@ -48,9 +48,13 @@
       <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/build" />
       <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/api/nt_server_api/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/api/nt_server_api/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter/nt_app/api/nt_server_api/build" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Dart SDK" level="project" />
+    <orderEntry type="library" name="Dart Packages" level="project" />
   </component>
 </module>

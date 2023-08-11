@@ -118,6 +118,11 @@ const ipcPlugin = (ipc) => {
             store.commit("pushChat", data)
         })
 
+        ipc.on("sStatUpdate", (event, data) => {
+            store.commit("setStats", data)
+        })
+
+
         /*
         ipc.on("sDisconnected", (e, reason) => {
             //Show disconnection msg ?
@@ -206,7 +211,8 @@ export default new Vuex.Store({
             body: "",
             canClose: true
         },
-        showErrDialog: false
+        showErrDialog: false,
+        stats: null
     },
     getters: {
         isHost: (state) => {
@@ -241,6 +247,9 @@ export default new Vuex.Store({
         },
         roomHasPassword: (state) => {
             return state.room.protected
+        },
+        stats: (state) => {
+            return JSON.parse(state.stats)
         },
         flags: (state) => {
             const mode = state.room.gamemode
@@ -327,6 +336,7 @@ export default new Vuex.Store({
             }).filter(v => typeof v !== "undefined")
         },
         resetRoom: (state) => {
+            state.stats = null
             state.room = {
                 id: "",
                 name: "",
@@ -365,6 +375,9 @@ export default new Vuex.Store({
         },
         showErrDialog: (state, payload) => {
             state.showErrDialog = payload
+        },
+        setStats: (state, payload) => {
+            state.stats = payload
         },
         pushChat: (state, payload) => {
             const time = new Date()

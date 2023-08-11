@@ -92,7 +92,8 @@ module.exports = (data) => {
             if (gameAction) {
                 key = Object.keys(gameAction).shift()
                 payload = gameAction[key]
-                if (key == "sChat") { appEvent(key, payload) }
+                if (key === "sChat") { appEvent(key, payload) }
+                if (key === "sStatUpdate") { appEvent(key, payload) }
                 if (typeof noita[key] == "function") {
                     noita[key](payload)
                 }

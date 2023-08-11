@@ -1,6 +1,7 @@
 "use strict";
 
-// const { setStats } = require("./controllers/statsController.js")
+import {StatsController} from "../stats/StatsController";
+import StatsInterface from "../stats/StatsInterface";
 import WebSocket from "ws";
 
 import {MakeFrame} from "./LobbyUtils"
@@ -15,11 +16,17 @@ import validator from "validator";
 const THRESHOLD = 1024 * 16
 
 class Lobby {
-    constructor() {
+    /**
+     * @type {StatsInterface|undefined}
+     */
+    statsController;
+    constructor(statsController = undefined, initStatsController=true) {
         this.server = new WebSocket.Server({ noServer: true, perMessageDeflate: false })
         this.users = new Map()
         this.rooms = new Map()
-
+        if(!statsController && initStatsController){
+            StatsController.create().then((controller)=>this.statsController = controller)
+        }
 
         this.server.on("connection", (socket, req, user) => this.OnConnection(socket, req, user))
         this.pinger = setInterval(() => {
@@ -145,7 +152,7 @@ class Lobby {
         }
         const pwd = password && validator.isAscii(password)
 
-        const room = new Room(uuidv4(), name, pwd ? password : "", user, maxUsers, gamemode, false, this)
+        const room = new Room(uuidv4(), name, pwd ? password : "", user, maxUsers, gamemode, false, this, this.statsController)
         this.rooms.set(room.id, room)
         user.room = room
         const msg = encodeLobbyMsg("sRoomCreated", {
@@ -177,6 +184,7 @@ class Lobby {
         const room = user.room
         if (room.owner.id !== user.id) { return }
         this.rooms.delete(room.id)
+        if(room.session_id) this.statsController?.completeSession(room.session_id)
         room.Delete()
     }
 
@@ -348,5 +356,5 @@ class Lobby {
     }
 }
 
-const lobby = new Lobby()
+const lobby = new Lobby(undefined, false)
 export default lobby
