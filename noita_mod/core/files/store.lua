@@ -26,4 +26,8 @@ if (NT.initialized ~= true) then
     NT.wsQueue = "[]"
     NT.queuedItems = "[]"
     NT.gold_queue = 0
+
+    --"Health Check" values for making sure we're running OK
+    NT.HealthCheck = {}
+    NT.HealthCheck.AsyncLoopLastFrame = -1
 end
