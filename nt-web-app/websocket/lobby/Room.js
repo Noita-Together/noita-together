@@ -366,12 +366,13 @@ class Room {
         const big = encodeGameMsg("sPlayerMove", { userId: user.id, ...payload })
         const sendSmallTo = []
         const sendBigTo = []
+        const distSquaredThreshold = 400*400
         const { position } = user
         for (const [userId, u] of this.users) {
             const x = u.position.x - position.x
             const y = u.position.y - position.y
-            const dist = Math.sqrt(x * x + y * y)
-            if (dist < 400) {
+            const distSquared = x * x + y * y
+            if (distSquared < distSquaredThreshold) {
                 sendBigTo.push(userId)
             }
             else {
