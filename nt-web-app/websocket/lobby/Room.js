@@ -150,6 +150,7 @@ class Room {
     }
 
     UpdateFlags(payload) {
+        console.log(`${this.id} : UpdateFlags : ${payload.flags}`)
         const msg = encodeLobbyMsg("sRoomFlagsUpdated", payload)
         this.flags = payload.flags
         this.flagsCache = msg
@@ -157,12 +158,14 @@ class Room {
     }
 
     StartRun() {
+        console.log(`${this.id} : StartRun`)
         this.inProgress = true
         const msg = encodeLobbyMsg("sHostStart", { forced: false })
         this.Broadcast(msg)
     }
 
     FinishRun() {
+        console.log(`${this.id} : FinishRun`)
         this.inProgress = false
         this.users.forEach(u => {
             u.FinishRun()
@@ -227,6 +230,7 @@ class Room {
 
     UserJoin(user) {
         const msg = encodeLobbyMsg("sUserJoinedRoom", { userId: user.id, name: user.name })
+        console.log(`${this.id} : UserJoin : ${user.name}`)
         this.Broadcast(msg)
         this.users.set(user.id, user)
         user.room = this
@@ -266,6 +270,7 @@ class Room {
     }
 
     UserLeave(user, reason) {
+        console.log(`${this.id} : UserLeave : ${user.name} : ${reason}`)
         if (this.owner.id === user.id) {
             this.Delete(true)
             return
@@ -326,6 +331,7 @@ class Room {
     }
 
     Delete(ownerDisconnected) {
+        console.log(`${this.id} : Delete : ownerDisconnected=${ownerDisconnected}`)
         const msg = encodeLobbyMsg("sRoomDeleted", { id: this.id })
         this.Broadcast(msg, ownerDisconnected ? this.owner.id : "")
         this.owner = null
@@ -485,12 +491,12 @@ class Room {
         if (this.gamemode === 0) {//Coop
             this.stats.users[user.id].steve = true
         }
-        this.statsController?.addSteveKillToUser(this.session_id, user.id, payload.x??null, payload.y??null)
         this.Rebroadcast("sAngerySteve", payload, user, { ignoreSelf: true })
     }
 
     cRespawnPenalty(payload, user) {
         if (!this.inProgress) { return } //TODO Error? run not started yet
+        console.log(`${this.id} : cRespawnPenalty : ${user.name} : ${JSON.stringify(payload)}`)
         if (this.gamemode === 0) {//Coop
             this.stats.users[user.id].deaths++
             this.statsController?.addDeathToUser(this.session_id, user.id)
@@ -500,6 +506,7 @@ class Room {
 
     cPlayerDeath(payload, user) {
         if (!this.inProgress) { return } //TODO Error? run not started yet
+        console.log(`${this.id} : cPlayerDeath : ${user.name} : ${JSON.stringify(payload)}`)
         if (this.gamemode === 0) {//Coop
             this.stats.users[user.id].deaths++
             if(payload.isWin){
