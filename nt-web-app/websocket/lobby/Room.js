@@ -122,7 +122,7 @@ class Room {
                 userData.push(data)
             })
             const replaceDataTemplate = {
-                'INSERT_STATS_HERE': userData.join('/n'),
+                'INSERT_STATS_HERE': userData.join(''),
                 'room-name': stats.roomName
             }
             fullHtml = fullHtml.replace(/{([^{}]+)}/g, function (keyExpr, key) {
@@ -516,7 +516,7 @@ class Room {
             switch (payload.message){
                 case '/endrun':
                     this.FinishRun()
-                    break;
+                    return
             }
         }
         this.Rebroadcast("sChat", { id: uuidv4(), name: user.name, ...payload }, user, { ignoreSelf: true })

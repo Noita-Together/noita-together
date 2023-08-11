@@ -40,16 +40,11 @@ app.prepare().then(async () => {
 
             const parsedUrl = parse(req.url, true);
             const { pathname, query } = parsedUrl;
-            console.log(pathname)
-            console.log(query)
-
-            console.log(pathname?.split('/').length)
             // Check if the URL matches the desired pattern
             if (pathname && pathname.includes('/room/stats/') && pathname.split('/').length === 5) {
                 let params = pathname.split('/')
                 const room_id = params[3] as string;
                 const session_id = params[4] as string;
-                console.log('roomId, sessionId', room_id, session_id)
 
                 // Read the HTML file and serve it
                 const filePath = path.join(__dirname, `.storage/stats/${room_id}/${session_id}/stats-final.html`);
