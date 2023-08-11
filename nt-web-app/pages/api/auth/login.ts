@@ -15,7 +15,6 @@ export default async function handler(
 ) {
     const deviceCode = req.query.deviceCode
     const redirectUri = encodeURIComponent(OAUTH_REDIRECT_URI+'/api/auth/code');
-    console.log(`RedirectUri: ${redirectUri}`)
     const scope = encodeURIComponent('openid'); //Scopes here. We should not need any though :P
     const state = deviceCode ?? randomUUID();
 

@@ -28,11 +28,9 @@ export default async function handler(
 ) {
     const code = req.query.code as string;
     const state = req.query.state as string;
-    console.log(JSON.stringify(req.query))
     const redirectUri = OAUTH_REDIRECT_URI+'/api/auth/code';
-    console.log(`RedirectUri: ${redirectUri}`)
     const grantType = 'authorization_code';
-
+    console.log('/api/auth/code: Start')
     try {
         const response = await axios.post('https://id.twitch.tv/oauth2/token', null, {
             params: {
@@ -51,6 +49,7 @@ export default async function handler(
         const db = await UserDatasource()
         if(!db){
             res.status(500).json({ error: 'Failed to retrieve tokens :(' });
+            console.log('Failed to retrieve tokens :(')
             return
         }
         const repo = db.getRepository(User)
@@ -58,6 +57,7 @@ export default async function handler(
         const dbPendingConnection = await PendingConnectionDatasource()
         if(!dbPendingConnection){
             res.status(500).json({ error: 'Failed to retrieve tokens :(' });
+            console.log('Failed to retrieve tokens :(')
             return
         }
         const repoPendingConnection = dbPendingConnection.getRepository(PendingConnection)
@@ -101,5 +101,6 @@ export default async function handler(
         console.error(error);
         res.status(500).json({ error: 'Failed to retrieve tokens :(' });
     }
+    console.log('/api/auth/code: End')
 }
 
