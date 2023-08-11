@@ -150,7 +150,7 @@ class Room {
     }
 
     UpdateFlags(payload) {
-        console.log(`${this.id} : UpdateFlags : ${payload.flags}`)
+        console.log(`${this.id} : UpdateFlags : ${JSON.stringify(payload.flags)}`)
         const msg = encodeLobbyMsg("sRoomFlagsUpdated", payload)
         this.flags = payload.flags
         this.flagsCache = msg
