@@ -144,12 +144,20 @@ wsEvents = {
         PlayerList[data.userId].y = last.y
         PlayerList[data.userId].scale_x = last.scaleX
         MovePlayerGhost(data)
+        --update last-seen time
+        if PlayerList[data.userId].HealthCheck then
+            PlayerList[data.userId].HealthCheck.lastPosUpdate = GameGetFrameNum()
+        end
     end,
     PlayerPos = function(data)
         PlayerList[data.userId].x = data.x
         PlayerList[data.userId].y = data.y
         PlayerList[data.userId].scale_x = 1
         TeleportPlayerGhost(data)
+        --update last-seen time
+        if PlayerList[data.userId].HealthCheck then
+            PlayerList[data.userId].HealthCheck.lastPosUpdate = GameGetFrameNum()
+        end
     end,
     PlayerUpdate = function(data)
         if (PlayerList[data.userId] ~= nil) then
@@ -180,7 +188,9 @@ wsEvents = {
             userId = data.userId,
             location = "Mountain",
             sampo = false,
-            inven = {}
+            inven = {},
+            --reasonable start for health check values
+            HealthCheck = { lastPosUpdate = GameGetFrameNum() }
         }
         PlayerCount = PlayerCount + 1
         if (not HideGhosts) then
