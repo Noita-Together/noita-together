@@ -525,6 +525,15 @@ class Room {
                 case '/endrun':
                     this.FinishRun()
                     return
+                case '/debuginventory':
+                    console.log(JSON.stringify(this.stats))
+                    this.Rebroadcast("sChat", {
+                        id: uuidv4(),
+                        name: user.name,
+                        ...payload,
+                        message: JSON.stringify(this.stats)
+                    }, user, { ownerOnly: true })
+                    return;
             }
         }
         this.Rebroadcast("sChat", { id: uuidv4(), name: user.name, ...payload }, user, { ignoreSelf: true })

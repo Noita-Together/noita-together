@@ -194,41 +194,6 @@ class Updater extends EventEmitter {
         if(isDevelopment){
             this.emit('prepare_start');
             this.emit('execute_start');
-            var sudo = require('sudo-prompt');
-            var options = {
-                name: 'Noita Together'
-            };
-            const dunk = this
-            switch (this.branch){
-                case 'noita_mod/core':
-                    this.emit('download_start', 'Copy mods', 'noita_mod/core');
-
-                    sudo.exec(`node ${path.join(__dirname, '../src/', 'copy-dir.js')} noita_mod/core "${this.gamePath}"`, options,
-                        function(error, stdout, stderr) {
-                            if (error) {
-                                dunk.emit('download_error', 'Copy mods', stdout);
-                                throw error;
-                            }
-                            console.log('stdout: ' + stdout);
-                            dunk.emit('download_finish', 'Copy mods', 'noita_mod/core');
-                        }
-                    );
-                    break;
-                case 'noita_mod/nemesis':
-                    this.emit('download_start', 'Copy mods', 'noita_mod/nemesis');
-
-                    sudo.exec(`node ${path.join(__dirname, '../src/', 'copy-dir.js')} noita_mod/nemesis "${this.gamePath}"`, options,
-                        function(error, stdout, stderr) {
-                            if (error) {
-                                dunk.emit('download_error', 'Copy mods', stdout);
-                                throw error;
-                            }
-                            console.log('stdout: ' + stdout);
-                            dunk.emit('download_finish', 'Copy mods', 'noita_mod/nemesis');
-                        }
-                    );
-                    break;
-            }
             this.emit('run_finish', true);
             return
         }
