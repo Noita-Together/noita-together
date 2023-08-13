@@ -57,6 +57,20 @@ yarn install
 yarn server
 ```
 
+#### Updating the protobuf file
+
+Please only make changes at `protobuf/messages.proto`
+
+Then after changes are complete, run `yarn build-proto`
+
+Version the following file changes if they appear:
+
+```
+nt-web-app/websocket/messages.d.ts
+nt-web-app/websocket/messages.js
+nt-app/public/messages.proto
+```
+
 #### Configuring your environment
 
 We do NOT version the .env file, so we need to create one :)

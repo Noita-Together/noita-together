@@ -81,8 +81,11 @@ _ws_main = function()
     increase_count()
 end
 last_wands = ""
+print_error("(NT:ws.lua) Start async_loop...")
 async_loop(function()
     if (NT ~= nil) then
+        --GamePrint("async tick (last " .. NT.HealthCheck.AsyncLoopLastFrame .. ")")
+        NT.HealthCheck.AsyncLoopLastFrame=GameGetFrameNum()
         local queue = json.decode(NT.wsQueue)
         for _, value in ipairs(queue) do
             SendWsEvent(value)

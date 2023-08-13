@@ -63,7 +63,7 @@ message GameAction {
 
         ClientPlayerSecretHourglass c_player_secret_hourglass = 33;
         ServerPlayerSecretHourglass s_player_secret_hourglass = 34;
-
+    
         ClientCustomModEvent c_custom_mod_event = 35;
         ServerCustomModEvent s_custom_mod_event = 36;
 
@@ -95,7 +95,7 @@ message ServerPlayerPos {
 }
 
 message ClientPlayerMove {
-    repeated PlayerFrame frames = 1;
+    repeated PlayerFrame frames = 1; 
 }
 
 message ServerPlayerMove {
