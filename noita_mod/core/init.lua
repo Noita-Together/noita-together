@@ -244,4 +244,7 @@ function OnModPreInit()
     end
 end
 
-dofile("mods/noita-together/files/ws/ws.lua")
+function OnWorldInitialized()
+    --Moved this into OnWorldInitialized, it is inconsistent when included directly in init.lua 
+    dofile("mods/noita-together/files/ws/ws.lua")
+end
