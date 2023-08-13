@@ -243,6 +243,10 @@ module.exports = (data) => {
         sendMsg(msg)
     })
 
+    noita.on("BANK_STATE",(event)=>{
+        appEvent("BANK_STATE", event)
+    })
+
     function sendMsg(msg) {
         if (client != null) {
             client.send(msg)

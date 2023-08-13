@@ -51,6 +51,10 @@ const ipcPlugin = (ipc) => {
             })
         })
 
+        ipc.on("BANK_STATE", (event, data) => {
+            store.commit("setBank", data)
+        })
+
         ipc.on("sRoomUpdated", (event, data) => {
             store.commit("roomUpdated", data)
         })
@@ -173,7 +177,8 @@ export default new Vuex.Store({
         },
         tabs: {
             "0": 'Users',
-            "1": 'Mods'
+            "1": 'Mods',
+            "2": 'Debug'
         },
         user: {
             name: "",
@@ -206,6 +211,7 @@ export default new Vuex.Store({
         roomChat: [],
         loading: false,
         joining: false,
+        bank: [],
         errDialog: {
             title: "",
             body: "",
@@ -215,6 +221,9 @@ export default new Vuex.Store({
         stats: null
     },
     getters: {
+        bank: (state)=> {
+            return state.bank
+        },
         isHost: (state) => {
             const users = state.room.users
             for (const user of users) {
@@ -372,6 +381,9 @@ export default new Vuex.Store({
         },
         setErrDialog: (state, payload) => {
             state.errDialog = payload
+        },
+        setBank: (state, payload) => {
+            state.bank = JSON.parse(payload)
         },
         showErrDialog: (state, payload) => {
             state.showErrDialog = payload

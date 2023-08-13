@@ -106,6 +106,44 @@
               </tbody>
             </table>
           </div>
+          <div v-if="tab === '2'"> <!--Debug tab-->
+            <table>
+              <thead>
+              <tr>
+                <th class="modlist-row">
+                  <div class="modlist-arrow-spacing"/>
+                  <div class="modlist-col">Mod Name</div>
+                  <div class="modlist-col-smol">Users</div>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="debugItem in debugItemList" :key="debugItem.name">
+                <td>
+                  <div class="modlist-row" @click="toggleCollapse(debugItem.name)">
+                    <i title="Click to expand"
+                       class="fas"
+                       slot="icon"
+                       :class="expandedModItem === debugItem.name ? 'fa-chevron-up modlist-arrow-up' : 'fa-chevron-down modlist-arrow-down'"
+                    />
+                    <div class="modlist-col">{{debugItem.name}}</div>
+                    <div class="modlist-col-smol">??</div>
+                  </div>
+                  <div v-if="expandedModItem === debugItem.name">
+                    {{debugItem.raw}}
+<!--                    <table class="modlist-users-table">-->
+<!--                      <tbody>-->
+<!--                      <tr v-for="user in mod.users" :key="user">-->
+<!--                        <td>{{ user }}</td>-->
+<!--                      </tr>-->
+<!--                      </tbody>-->
+<!--                    </table>-->
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="chat-wrapper">
@@ -174,6 +212,9 @@ export default {
         },
     },
     computed: {
+        bank() {
+            return this.$store.state.bank
+        },
         room() {
             return this.$store.state.room
         },
@@ -202,6 +243,15 @@ export default {
         },
         expandedModItem(){
           return this.expandedContent
+        },
+        debugItemList(){
+          return [
+            {
+              name: 'Bank',
+              raw: this.$store.state.bank,
+              computed: ''
+            }
+          ]
         },
         modList(){
             const mods = {}

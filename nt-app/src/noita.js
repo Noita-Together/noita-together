@@ -239,6 +239,7 @@ class NoitaGame extends EventEmitter {
             objects: [],
             gold: 0
         }
+        this.emit("BANK_STATE", JSON.stringify(this.bank))
     }
 
     sPlayerMove(payload) {
@@ -286,6 +287,7 @@ class NoitaGame extends EventEmitter {
     sPlayerUpdateInventory(payload) {
         if (payload.userId == this.user.userId) { return }
         this.sendEvt("PlayerUpdateInventory", payload)
+        this.emit("BANK_STATE", JSON.stringify(this.bank))
     }
     sHostItemBank(payload) {
         this.bank = {
@@ -296,6 +298,7 @@ class NoitaGame extends EventEmitter {
             gold: payload.gold
         }
         this.bankToGame()
+        this.emit("BANK_STATE", JSON.stringify(this.bank))
     }
     sHostUserTake(payload) {
         if (!payload.success) {
@@ -313,6 +316,7 @@ class NoitaGame extends EventEmitter {
                 }
             }
         }
+        this.emit("BANK_STATE", JSON.stringify(this.bank))
     }
     sPlayerAddItem(payload) {
         const data = { flasks: payload.flasks, spells: payload.spells, wands: payload.wands, objects: payload.objects }
@@ -327,15 +331,18 @@ class NoitaGame extends EventEmitter {
         }
 
         this.sendEvt("UserAddItems", { userId: payload.userId, items })//filter later?
+        this.emit("BANK_STATE", JSON.stringify(this.bank))
     }
     sPlayerAddGold(payload) {
         this.bank.gold += payload.amount
         this.sendEvt("UserAddGold", payload)
+        this.emit("BANK_STATE", JSON.stringify(this.bank))
     }
     sPlayerTakeGold(payload) {
         if (!this.isHost) { return }
         if (this.bank.gold >= payload.amount) {
             this.emit("HostTakeGold", { userId: payload.userId, amount: payload.amount, success: true })
+            this.emit("BANK_STATE", JSON.stringify(this.bank))
         }
         else {
             this.emit("HostTakeGold", { userId: payload.userId, amount: payload.amount, success: false })
@@ -345,6 +352,7 @@ class NoitaGame extends EventEmitter {
         if (payload.success) {
             this.bank.gold -= payload.amount
             this.sendEvt("UserTakeGoldSuccess", { me: payload.userId == this.user.userId, ...payload })
+            this.emit("BANK_STATE", JSON.stringify(this.bank))
         }
         else if (payload.userId == this.user.userId) {
             this.sendEvt("UserTakeGoldFailed", { me: payload.userId == this.user.userId, ...payload })
@@ -357,6 +365,7 @@ class NoitaGame extends EventEmitter {
             for (const item of this.bank[key]) {
                 if (item.id == payload.id) {
                     this.emit("HostTake", { userId: payload.userId, id: payload.id, success: true })
+                    this.emit("BANK_STATE", JSON.stringify(this.bank))
                     return
                 }
             }
