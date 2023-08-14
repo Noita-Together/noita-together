@@ -36,6 +36,10 @@ local TRANSLATIONS_FILE = "data/translations/common.csv"
 local translations = ModTextFileGetContent(TRANSLATIONS_FILE) .. ModTextFileGetContent("mods/noita-together/files/translations/translations.csv")
 ModTextFileSetContent(TRANSLATIONS_FILE, translations)
 
+--Run incompatible mod check
+dofile("mods/noita-together/files/scripts/ui_mod_warning.lua")
+local warnIncompatibleMods = false
+
 HideGhosts = false
 HideChat = false
 PlayerRadar = true
@@ -68,6 +72,10 @@ end
 
 function OnWorldPreUpdate()
     dofile("mods/noita-together/files/scripts/ui.lua")
+    --put this here in case ui.lua got clobbered
+    if warnIncompatibleMods then
+        warnIncompatibleMods = not draw_gui_mod_warning()
+    end
 end
 
 loc_tracker = {}
@@ -245,6 +253,9 @@ function OnModPreInit()
 end
 
 function OnWorldInitialized()
+    --enable incompatible mod warning for 30 seconds or so
+    warnIncompatibleMods = test_incompatible_mods()
+
     --Moved this into OnWorldInitialized, it is inconsistent when included directly in init.lua 
     dofile("mods/noita-together/files/ws/ws.lua")
 end

@@ -73,4 +73,5 @@ noitatogether_hourglass_buff_speed_name,SPEED,,,,,,,,,,,,name of speed hourglass
 noitatogether_hourglass_buff_speed_desc,$0 thinks you are too slow,,,,,,,,,,,,description of speed hourglass effect,
 noitatogether_spawncamp_buff_name,Respawn Protection,,,,,,,,,,,,name of invulnerability buff applied after respawning,
 noitatogether_spawncamp_buff_desc,You are being protected against campers,,,,,,,,,,,,name of invulnerability buff applied after respawning,
+noitatogether_mod_incompatibility_title,Some activated mods are known to be incompatible with this version of Noita Together,,,,,,,,,,,,title of mod incompatibility warning,
 noitatogether_x,x,,,,,,,,,,,,notes,
