@@ -8511,6 +8511,7 @@ export const NT = $root.NT = (() => {
         Item.prototype.sentBy = null;
         Item.prototype.contributedBy = null;
         Item.prototype.isChest = false;
+        Item.prototype.itemType = "";
 
         let $oneOfFields;
 
@@ -8544,6 +8545,8 @@ export const NT = $root.NT = (() => {
                 writer.uint32(42).string(message.contributedBy);
             if (message.isChest != null && Object.hasOwnProperty.call(message, "isChest"))
                 writer.uint32(48).bool(message.isChest);
+            if (message.itemType != null && Object.hasOwnProperty.call(message, "itemType"))
+                writer.uint32(58).string(message.itemType);
             return writer;
         };
 
@@ -8573,6 +8576,9 @@ export const NT = $root.NT = (() => {
                     break;
                 case 6:
                     message.isChest = reader.bool();
+                    break;
+                case 7:
+                    message.itemType = reader.string();
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -8616,6 +8622,9 @@ export const NT = $root.NT = (() => {
             if (message.isChest != null && message.hasOwnProperty("isChest"))
                 if (typeof message.isChest !== "boolean")
                     return "isChest: boolean expected";
+            if (message.itemType != null && message.hasOwnProperty("itemType"))
+                if (!$util.isString(message.itemType))
+                    return "itemType: string expected";
             return null;
         };
 
@@ -8646,6 +8655,8 @@ export const NT = $root.NT = (() => {
                 message.contributedBy = String(object.contributedBy);
             if (object.isChest != null)
                 message.isChest = Boolean(object.isChest);
+            if (object.itemType != null)
+                message.itemType = String(object.itemType);
             return message;
         };
 
@@ -8659,6 +8670,7 @@ export const NT = $root.NT = (() => {
                 object.id = "";
                 object.color = null;
                 object.isChest = false;
+                object.itemType = "";
             }
             if (message.id != null && message.hasOwnProperty("id"))
                 object.id = message.id;
@@ -8681,6 +8693,8 @@ export const NT = $root.NT = (() => {
             }
             if (message.isChest != null && message.hasOwnProperty("isChest"))
                 object.isChest = message.isChest;
+            if (message.itemType != null && message.hasOwnProperty("itemType"))
+                object.itemType = message.itemType;
             return object;
         };
 

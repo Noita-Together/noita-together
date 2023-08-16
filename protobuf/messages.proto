@@ -435,7 +435,8 @@ message Item {
     repeated Material content = 3;
     optional string sent_by = 4;
     optional string contributed_by = 5;
-    bool is_chest = 6;
+    bool is_chest = 6 [deprecated=true];
+    string item_type = 7;
 
     message Color {
         float r = 1;
