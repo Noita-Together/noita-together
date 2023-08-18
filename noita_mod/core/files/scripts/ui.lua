@@ -513,8 +513,13 @@ if not initialized then
         local offy_hax = false
         for i, toggle in ipairs(tabToggles[selectedTab]) do
             GuiZSetForNextWidget(gui, 9)
-            if (GuiImageButton(gui, next_id(), pos_x + offx+1, pos_y + 25, "", "mods/noita-together/files/ui/buttons/button.png")) then
+            local left_click, right_click = GuiImageButton(gui, next_id(), pos_x + offx+1, pos_y + 25, "", "mods/noita-together/files/ui/buttons/button.png")
+            if left_click then
                 tabToggles[selectedTab][i].enabled = not toggle.enabled
+            elseif right_click then
+                for j,toggle2 in ipairs(tabToggles[selectedTab]) do
+                    tabToggles[selectedTab][j].enabled = (i == j)
+                end
             end
             GuiTooltip(gui, toggle.tooltip, "")
             GuiZSetForNextWidget(gui, 8)
