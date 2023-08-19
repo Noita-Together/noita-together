@@ -132,7 +132,8 @@ const ipcPlugin = (ipc) => {
 }
 
 const ipcStuff = ipcPlugin(ipcRenderer)
-
+//TODO hot reloading support https://vuex.vuejs.org/guide/hot-reload.html
+//TODO plugins https://vuex.vuejs.org/guide/plugins.html
 export default new Vuex.Store({
     state: {
         defaultFlags: {

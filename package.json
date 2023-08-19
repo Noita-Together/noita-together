@@ -15,12 +15,17 @@
     "server": "yarn workspace nt-web-app serve",
     "serverDev": "yarn workspace nt-web-app serveDev",
     "buildClient": "yarn workspace nt-app electron:build",
-    "regenerate-proto": "yarn workspace nt-web-app type-gen"
+    "regenerate-proto-experimental": "pbjs -t static-module --ts --no-comments --no-delimited --out websocket/messages.ts websocket/messages.proto",
+    "regenerate-proto-server": "pbjs -t static-module --wrap es6 --no-comments --no-delimited --out nt-web-app/websocket/messages.js protobuf/messages.proto && pbjs -t static-module --no-delimited protobuf/messages.proto | pbts -o nt-web-app/websocket/messages.d.ts -",
+    "regenerate-proto-client": "node copy.js ./protobuf/messages.proto ./nt-app/public/messages.proto",
+    "build-proto": "yarn regenerate-proto-server && yarn regenerate-proto-client"
   },
   "dependencies": {
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "protobufjs": "^6.10.2"
   },
   "devDependencies": {
+    "pbjs": "^0.0.14",
     "prettier": "^2.8.8"
   }
 }

@@ -5746,6 +5746,9 @@ export namespace NT {
 
         /** Item isChest */
         isChest?: (boolean|null);
+
+        /** Item itemType */
+        itemType?: (string|null);
     }
 
     /** Represents an Item. */
@@ -5774,6 +5777,9 @@ export namespace NT {
 
         /** Item isChest. */
         public isChest: boolean;
+
+        /** Item itemType. */
+        public itemType: string;
 
         /** Item _sentBy. */
         public _sentBy?: "sentBy";
