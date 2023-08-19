@@ -11,6 +11,9 @@ if not incompatible_mods then
     --WUOTE NT-FRIDGE: replaces the entire ui.lua file, i suggest you use gsub to replace only the png path and use the translations support to replace the appropriate text keys --kabby
     incompatible_mods["NT-FRIDGE"] = { reason = "Replaces entire ui.lua, pls use translations and gsub for png path replace", test_function = nil }
 
+    --kabby nt-kabby-skye-backports: redundant when running skye NT :)
+    incompatible_mods["nt-kabby-skye-backports"] = { reason = "You are already running Skye NT and don't need this!", test_function = nil }
+
     --faintsnov nemesis-fix: fixes are integrated
     --TODO: not all fixes are actually implemented yet!
     --incompatible_mods["nemesis-fix"] = { reason = "Obsolete", test_function = nil }
