@@ -3,6 +3,7 @@
 import {StatsController} from "../stats/StatsController";
 import StatsInterface from "../stats/StatsInterface";
 import WebSocket from "ws";
+import * as fs from "fs"
 
 import {MakeFrame} from "./LobbyUtils"
 import {User} from "./User"
@@ -14,6 +15,9 @@ import {v4 as uuidv4} from "uuid";
 import validator from "validator";
 
 const THRESHOLD = 1024 * 16
+
+const allowed_dev_users = fs.readFileSync('.uaccess', 'utf-8').replace(/[\n\r]/g, '\n').split('\n').filter(a => a.endsWith(':dev'))
+console.log(`Loaded allowed dev users: ${JSON.stringify(allowed_dev_users, undefined, 2)}`)
 
 class Lobby {
     /**
@@ -32,7 +36,6 @@ class Lobby {
         this.pinger = setInterval(() => {
             this.CheckUsers()
         }, 30000)
-        this.canCreateRooms = true
     }
 
     /**
@@ -56,6 +59,7 @@ class Lobby {
     }
 
     OnConnection(socket, req, user) {
+        console.log('OnConnection', user)
         const id = user.id
         const name = user.display_name
         const uaccess = user.uaccess || 0
@@ -127,8 +131,9 @@ class Lobby {
     }
 
     cRoomCreate(payload, user) {
-        if (!this.canCreateRooms && user.name !== "Soler91") {
-            const msg = encodeLobbyMsg("sRoomCreateFailed", { reason: "Room creation is disabled at the moment, usually due to the server about to go into maintenance." })
+        if (process.env.DEV_MODE === 'true' && user.uaccess < 3) {
+            console.log(`cRoomCreate : devMode : user denied room creation as access level is ${user.uaccess}`)
+            const msg = encodeLobbyMsg("sRoomCreateFailed", { reason: "Room creation is disabled at the moment, Server is in dev mode :)" })
             user.Send(msg)
             return
         }

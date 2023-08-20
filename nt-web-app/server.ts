@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+if(process.env.DEV_MODE === 'true') console.log('!!!Server is in DEV mode. Only developers can create rooms!!!')
 
 import * as http from 'http';
 import next from "next";

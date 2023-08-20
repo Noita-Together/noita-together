@@ -11,6 +11,7 @@ import {defaultRoles, RoleImpl, User} from "../entity/User";
 import {PendingConnection} from "../entity/PendingConnection";
 import AuthSocket from "./authWebsocket";
 import {Socket} from "net";
+import fs from "fs";
 
 const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID as string
@@ -65,6 +66,17 @@ class NoitaTogetherWebsocket{
             provider: 'twitch'
         })
         if(!user) console.log(`Failed to return a user for ${id}!`)
+        if(user){
+            const uaccessDataForUser = fs.readFileSync('.uaccess', 'utf-8')
+                .replace(/[\n\r]/g, '\n').split('\n')
+                .filter(a=>user.display_name === a || `${user.display_name}:dev` === a)
+            let e = undefined
+            if(uaccessDataForUser.length === 1){
+                e = uaccessDataForUser[0].endsWith(':dev') ? 3 : 2;
+            }
+            console.log(`Logged in user has uaccess of ${e}`)
+            user.uaccess = e
+        }
         return user
     }
 

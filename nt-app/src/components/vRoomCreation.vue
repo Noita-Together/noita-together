@@ -54,7 +54,7 @@ export default {
         slots() {
             const slots = [5, 10, 15, 20, 25, 30]
             if (this.userExtra > 1) {
-                return slots.concat([45, 60, 75, 90])
+                return slots.concat([45, 60, 75, 90, 120])
             }
             return slots
         }
