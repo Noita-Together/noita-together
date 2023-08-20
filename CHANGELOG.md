@@ -18,8 +18,6 @@
 - Lock controls while hovering bank, message textboxes
 - Renamed some UI text relating to messages
 - Show proper sampo name when picked up by other players
-- Fix chat not autoscrolling down in some cases
-- Limit the chat messages to 2000 characters
 - Update protobuf files :)
 
 # Noita Together Nemesis
@@ -36,4 +34,6 @@ Please note that most fixes above in Noita Together Core have not been ported to
 - Add an /endrun command for hosts to force the run to generate stats 
 - User died message has changed
 - Update protobuf files :)
-- Set a default room name for uaccess people 
+- Set a default room name for uaccess people
+- Fix chat not autoscrolling down in some cases
+- Limit the chat messages to 2000 characters- 
