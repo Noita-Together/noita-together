@@ -41,7 +41,7 @@ class Room {
 
     SanitizeCapacity(cap) {
         const remain = cap % 5
-        if (this.owner.uaccess > 1 && cap > 0 && cap <= 90 && remain === 0) {
+        if (this.owner.uaccess > 1 && cap > 0 && cap <= 120 && remain === 0) {
             return cap
         }
         else if (cap > 0 && cap <= 30 && remain === 0) {

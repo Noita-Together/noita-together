@@ -40,7 +40,7 @@ export default {
         return {
             canCreate: true,
             toCreate: {
-                name: "",
+                name: `${this.$store.state.user.name}'s Room`,
                 gamemode: "Co-op",
                 password: "",
                 maxUsers: "5 slots",
@@ -54,7 +54,7 @@ export default {
         slots() {
             const slots = [5, 10, 15, 20, 25, 30]
             if (this.userExtra > 1) {
-                return slots.concat([45, 60, 75, 90])
+                return slots.concat([45, 60, 75, 90, 120])
             }
             return slots
         }
@@ -64,7 +64,7 @@ export default {
             const payload = { ...this.toCreate };
             let maxUsers = payload.maxUsers.split(" ")[0];
             payload.maxUsers = Number(maxUsers);
-            if (!payload.name) { payload.name = "eeeeeee" }
+            if (!payload.name) { payload.name = "" }
             if (payload.gamemode == "Co-op") { payload.gamemode = 0 }
             if (payload.gamemode == "Nemesis PROTOTYPE") { payload.gamemode = 2 }
             this.$emit("createRoom", payload);

@@ -6,6 +6,7 @@ import {defaultRoles, User} from "../../../entity/User";
 import {getUser} from "../../../utils/TwitchUtils";
 import {createAccessToken, createRefreshToken} from "../../../utils/jwtUtils";
 import {PendingConnection} from "../../../entity/PendingConnection";
+import fs from "fs";
 const TWITCH_API_KEY = process.env.TWITCH_API_KEY as string
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID as string
 const OAUTH_REDIRECT_URI = process.env.OAUTH_REDIRECT_URI as string
@@ -91,7 +92,15 @@ export default async function handler(
         else{
             const accessToken = createAccessToken(userData)
             const refreshToken = createRefreshToken(userData)
-            const url = `${NOITA_APP_REDIRECT_URI}/?token=${accessToken}&refresh=${refreshToken}&expires_in=28800`;
+            const uaccessDataForUser = fs.readFileSync('.uaccess', 'utf-8')
+                .replace(/[\n\r]/g, '\n').split('\n')
+                .filter(a=>user.display_name === a || `${user.display_name}:dev` === a)
+            let e = undefined
+            if(uaccessDataForUser.length === 1){
+                e = uaccessDataForUser[0].endsWith(':dev') ? 3 : 2;
+            }
+            console.log(`Logged in user has uacess of ${e}`)
+            const url = `${NOITA_APP_REDIRECT_URI}/?token=${accessToken}&refresh=${refreshToken}&expires_in=28800${e ? `&e=${e}` : ''}`;
 
             res.writeHead(302, { Location: url });
             res.end();

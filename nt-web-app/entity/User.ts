@@ -46,11 +46,14 @@ export class User{
     @UpdateDateColumn({ type: "datetime" })
     updated_at?: Date;
 
+    uaccess?: number
+
     constructor(id: string, twitch_user_name: string, access: Role, provider: LoginProvider) {
         this._access = access
         this.display_name = twitch_user_name
         this.id = id
         this.provider = provider
+        this.uaccess = 0
     }
 }
 
