@@ -24,6 +24,8 @@
 
 # Noita Together Nemesis
 
+Please note that most fixes above in Noita Together Core have not been ported to Nemesis
+
 - fix for nemesis "ban invisibility" perk
 
 # Noita Together App
