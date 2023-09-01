@@ -68,7 +68,7 @@
     "files/scripts/spell_spitter.lua": "0e10a9c76984dc3e4b0a4f3d3b634123a16ffb26f256088bdee33e42f9cdb022",
     "files/scripts/spell_spitter_glow.lua": "4dc1a7112bfe16208e8f61185c29e4d6db0a0f8c8c29ad0ee8f8a4121630dfee",
     "files/scripts/start_run_hint.lua": "42fd4653a6486d7aabd1c5f55aa3b3aa9c373647aef6e99db229b51cc1a6a955",
-    "files/scripts/ui.lua": "dd3ca8d7cdb2a51d1141cf4c174140df013cfcfcf6638aa9b6f2e912a9a66b12",
+    "files/scripts/ui.lua": "40cf9cd9d5705b507a172455fe5c5f9b5b261e8c6d3047cdd485681163b3106c",
     "files/scripts/utils.lua": "79a159ff86319a4516cb4099662b561b750683fd85974285021498145c9b9535",
     "files/store.lua": "34783106b3dc51862d8f577628cc4a60d0fa402cc51f4a748c6bc03181e74e88",
     "files/stringstore/noitaglobalstore.lua": "df6663bed01bc62a918f994d2a9ec0ad2847e799366c9ce9a371973226d1299a",
@@ -177,5 +177,5 @@
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "5a7a0b3f69465bff9f116dd4a0614840206c8113ed0bb0800c65df6d4b81635d"
   },
-  "buildDate": "2023-08-18T03:30:38.024Z"
+  "buildDate": "2023-09-01T02:37:12.261Z"
 }
