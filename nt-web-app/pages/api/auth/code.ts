@@ -29,7 +29,9 @@ export default async function handler(
 ) {
     const code = req.query.code as string;
     const state = req.query.state as string;
-    const redirectUri = OAUTH_REDIRECT_URI+'/api/auth/code';
+    const accept = req.headers.accept
+    const redirectUri = OAUTH_REDIRECT_URI + (accept === 'application/json' ? '/account' : '/api/auth/code');
+    console.log(redirectUri)
     const grantType = 'authorization_code';
     console.log('/api/auth/code: Start')
     try {
@@ -100,10 +102,22 @@ export default async function handler(
                 e = uaccessDataForUser[0].endsWith(':dev') ? 3 : 2;
             }
             console.log(`Logged in user has uacess of ${e}`)
-            const url = `${NOITA_APP_REDIRECT_URI}/?token=${accessToken}&refresh=${refreshToken}&expires_in=28800${e ? `&e=${e}` : ''}`;
+            if(accept === 'application/json'){
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    token: accessToken,
+                    refresh: refreshToken,
+                    expires_in: 28800,
+                    e: e,
+                    display_name: userData.display_name
+                }))
+            }
+            else{
+                const url = `${NOITA_APP_REDIRECT_URI}/?token=${accessToken}&refresh=${refreshToken}&expires_in=28800${e ? `&e=${e}` : ''}`;
 
-            res.writeHead(302, { Location: url });
-            res.end();
+                res.writeHead(302, { Location: url });
+                res.end();
+            }
         }
     } catch (error) {
         // Handle error response
