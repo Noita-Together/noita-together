@@ -1,5 +1,13 @@
 import dotenv from "dotenv";
 dotenv.config();
+import fs from 'fs';
+
+const uaccess_file = `.uaccess`
+if (!fs.existsSync(uaccess_file)) {
+    console.log('Creating empty uaccess file')
+    fs.writeFileSync(uaccess_file, '', 'utf-8')
+}
+
 if(process.env.DEV_MODE === 'true') console.log('!!!Server is in DEV mode. Only developers can create rooms!!!')
 
 import * as http from 'http';
@@ -7,7 +15,6 @@ import next from "next";
 import { NoitaTogetherWebsocket } from './websocket';
 import { parse } from "url";
 import { getServerAccessToken } from "./utils/TwitchUtils";
-import fs from 'fs';
 import path from 'path';
 
 //Delete old stats on boot up. For now we do NOT want to persist this data

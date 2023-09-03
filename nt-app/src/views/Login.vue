@@ -7,16 +7,17 @@
       </div>
       <span class="twitch-login-text">Login with Twitch.tv</span>
     </div>
-    <div class="remember-login">
-      <input type="checkbox" id="remember-user" name="remember-user" v-model="remember" />
-      <label for="remember-user">Remember me</label>
-    </div>
+<!--    <div class="remember-login">-->
+<!--      <input type="checkbox" id="remember-user" name="remember-user" v-model="remember" />-->
+<!--      <label for="remember-user">Remember me</label>-->
+<!--    </div>-->
 
-    <div class="twitch-login remembered-login" @click="ContinueSavedUser" v-if="savedUser">
-      <div class="twitch-logo">
-        <i class="fab fa-twitch"></i>
-      </div>
-      <span class="twitch-login-text">Continue as {{ savedUserName }}</span>
+    <div class="twitch-login remembered-login">
+<!--     v-if="savedUser" @click="ContinueSavedUser" -->
+<!--      <div class="twitch-logo">-->
+<!--        <i class="fab fa-twitch"></i>-->
+<!--      </div>-->
+<!--      <span class="twitch-login-text">Continue as {{ savedUserName }}</span>-->
     </div>
   </div>
 </template>
