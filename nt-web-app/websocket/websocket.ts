@@ -14,9 +14,8 @@ import {Socket} from "net";
 import fs from "fs";
 
 const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
-const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID as string
 
-if(!TWITCH_CLIENT_ID) throw new Error("Unable to load .env!")
+if(!SECRET_ACCESS) throw new Error("Unable to load .env!")
 
 const timeStart = Date.now()
 

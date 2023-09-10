@@ -12,21 +12,9 @@ if(process.env.DEV_MODE === 'true') console.log('!!!Server is in DEV mode. Only 
 
 import * as http from 'http';
 import next from "next";
-import { NoitaTogetherWebsocket } from './websocket';
 import { parse } from "url";
 import { getServerAccessToken } from "./utils/TwitchUtils";
 import path from 'path';
-
-//Delete old stats on boot up. For now we do NOT want to persist this data
-const statsStorageDirectory = path.join(__dirname, `.storage/stats/`)
-try {
-    if (fs.existsSync(statsStorageDirectory)) {
-        fs.rmSync(statsStorageDirectory, {recursive: true})
-    }
-} catch (e) {
-    console.error(`Failed to delete stale html stats!`)
-    console.error(e)
-}
 
 const dev = process.env.NODE_ENV !== 'production';
 const hostname = 'localhost';
@@ -40,8 +28,6 @@ const handle = app.getRequestHandler();
 app.prepare().then(async () => {
     const tokens = await tokensPromise
     if(!tokens?.access_token) throw new Error("Unable to authenticate with twitch!")
-    const websocket = new NoitaTogetherWebsocket()
-    websocket.startServer()
     http.createServer(async (req, res) => {
         try {
             if (!req.url) return
