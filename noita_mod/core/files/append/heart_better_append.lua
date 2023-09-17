@@ -43,7 +43,7 @@ function shared_heart(entity_item, entity_who_picked, name)
     end
 
     GamePrintImportant("$log_heart_better", description)
-    if playercount == 0 or true == true then
+    if playercount == 0 then
         description = GameTextGet("$noitatogether_heart_blocked_playercount")
         print_error(description)
         GamePrint(description)
