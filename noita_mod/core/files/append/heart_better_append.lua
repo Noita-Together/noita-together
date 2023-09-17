@@ -9,6 +9,7 @@ function shared_heart(entity_item, entity_who_picked, name)
     local max_hp_old = 0
     local max_hp = 0
     local multiplier = tonumber( GlobalsGetValue( "HEARTS_MORE_EXTRA_HP_MULTIPLIER", "1" ) )
+    local min_hp_to_add = 0.32 * multiplier
 
     local x, y = EntityGetTransform(entity_item)
     local playercount = NT.player_count
@@ -17,11 +18,11 @@ function shared_heart(entity_item, entity_who_picked, name)
             max_hp = tonumber(ComponentGetValue(damagemodel, "max_hp"))
             max_hp_old = max_hp
             if (GameHasFlagRun("NT_sync_hearts")) then
-                local expected_max_hp = 0.32
+                local expected_max_hp = min_hp_to_add
                 if(playercount > 0) then
                     expected_max_hp = (2 / (playercount)) * multiplier
                 end
-                max_hp = max_hp + math.max(0.32 , expected_max_hp)
+                max_hp = max_hp + math.max(min_hp_to_add , expected_max_hp)
             else
                 max_hp = max_hp + 2 * multiplier
             end

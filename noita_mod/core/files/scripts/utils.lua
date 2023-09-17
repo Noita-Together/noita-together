@@ -161,6 +161,7 @@ function PlayerHeartPickup(perk, userId)
     local variablestorages = EntityGetComponent(entity_who_picked, "VariableStorageComponent")
     local playercount = NT.player_count or 1
     local multiplier = tonumber( GlobalsGetValue( "HEARTS_MORE_EXTRA_HP_MULTIPLIER", "1" ) )
+    local min_hp_to_add = 0.16 * multiplier
 
     if (damagemodels ~= nil) then
         for i, damagemodel in ipairs(damagemodels) do
@@ -168,7 +169,11 @@ function PlayerHeartPickup(perk, userId)
             local max_hp = ComponentGetValue2(damagemodel, "max_hp")
             local added = 1 * multiplier
             if (GameHasFlagRun("NT_sync_hearts")) then
-                added = math.max(0.16 ,(1 / (playercount)) * multiplier)
+                local expected_max_hp = min_hp_to_add
+                if(playercount > 0) then
+                    expected_max_hp = (1 / (playercount)) * multiplier
+                end
+                added = max_hp + math.max(min_hp_to_add , expected_max_hp)
             end
             max_hp = max_hp + added
 
@@ -183,6 +188,11 @@ function PlayerHeartPickup(perk, userId)
     end
     GameTriggerMusicCue("item")
     GamePrint(GameTextGet("$noitatogether_player_got_heart", player_name))
+    if playercount == 0 then
+        description = GameTextGet("$noitatogether_heart_blocked_playercount")
+        print_error(description)
+        GamePrint(description)
+    end
 end
 
 function PlayerOrbPickup(id, userId)
