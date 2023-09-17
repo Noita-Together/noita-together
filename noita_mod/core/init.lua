@@ -66,6 +66,21 @@ function is_valid_entity(entity_id)
     return entity_id ~= nil and entity_id ~= 0
 end
 
+--option to disable progress tracking, thanks dextercd for suggestion
+function SetProgressDisable(b)
+    if b then
+        GameAddFlagRun("NT_option_disable_progress")
+        GameAddFlagRun("no_progress_flags_perk")
+        GameAddFlagRun("no_progress_flags_animal")
+        GameAddFlagRun("no_progress_flags_action")
+    else
+        GameRemoveFlagRun("NT_option_disable_progress")
+        GameRemoveFlagRun("no_progress_flags_perk")
+        GameRemoveFlagRun("no_progress_flags_animal")
+        GameRemoveFlagRun("no_progress_flags_action")
+    end
+end
+
 function OnWorldPreUpdate()
     dofile("mods/noita-together/files/scripts/ui.lua")
 end
@@ -209,6 +224,12 @@ function OnPlayerSpawned(player_entity)
     if (ModSettingGet("noita-together.NT_HINTS")) then
         EntityLoad("mods/noita-together/files/entities/start_run_hint.xml", res_x - 45, res_y + 30)
     end
+
+    --option to disable progress tracking, thanks dextercd for suggestion
+    if (ModSettingGet("noita-together.NT_NO_STAT_PROGRESS") and not GameHasFlagRun("no_progress_flags_perk")) then
+        --nt print_error("Adding no_progress flags, option enabled and flags dont exist already")
+        SetProgressDisable(true)
+    end
 end
 
 function OnPausePreUpdate()
@@ -247,4 +268,16 @@ end
 function OnWorldInitialized()
     --Moved this into OnWorldInitialized, it is inconsistent when included directly in init.lua 
     dofile("mods/noita-together/files/ws/ws.lua")
+end
+
+--used to detect settings changes
+--wiki: OnModSettingsChanged "Note: This callback doesn't appear to work. Modders have resorted to using OnPausedChanged instead to detect potential settings changes."
+function OnPausedChanged(is_paused, is_inventory_paused)
+    if not ModSettingGet("noita-together.NT_NO_STAT_PROGRESS") and GameHasFlagRun("NT_option_disable_progress") then
+        --nt print_error("Removing no_progress flags, option disabled")
+        SetProgressDisable(false)
+    elseif ModSettingGet("noita-together.NT_NO_STAT_PROGRESS") and not GameHasFlagRun("NT_option_disable_progress") then
+        --nt print_error("Addding no_progress flags, option enabled")
+        SetProgressDisable(true)
+    end
 end
