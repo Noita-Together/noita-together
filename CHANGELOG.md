@@ -23,6 +23,7 @@
 - Update extra max HP and better max HP pickups to no longer cause infinite health on client sync issues (does not fix the bug, but logs when it breaks, and gives the user the min HP from the heart)
 - Better extra max HP gives more health at its minimum point
 - Extra max HP minimum health given now scales with stronger hearts
+- Add option to disable perk/spell/enemy progress in NT mod settings
 
 # Noita Together Nemesis
 
