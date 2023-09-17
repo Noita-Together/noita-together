@@ -19,6 +19,7 @@
 - Renamed some UI text relating to messages
 - Show proper sampo name when picked up by other players
 - Update protobuf files :)
+- Alternate message when other player picks up sampo when we already have ours
 
 # Noita Together Nemesis
 
