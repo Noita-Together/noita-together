@@ -209,6 +209,13 @@ function OnPlayerSpawned(player_entity)
     if (ModSettingGet("noita-together.NT_HINTS")) then
         EntityLoad("mods/noita-together/files/entities/start_run_hint.xml", res_x - 45, res_y + 30)
     end
+
+    --option to disable progress tracking, thanks dextercd for suggestion
+    if (ModSettingGet("noita-together.NT_NO_STAT_PROGRESS")) then
+        GameAddFlagRun("no_progress_flags_perk")
+        GameAddFlagRun("no_progress_flags_animal")
+        GameAddFlagRun("no_progress_flags_action")
+    end
 end
 
 function OnPausePreUpdate()
