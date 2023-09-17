@@ -20,6 +20,7 @@
 - Show proper sampo name when picked up by other players
 - Update protobuf files :)
 - Alternate message when other player picks up sampo when we already have ours
+- Update extra max HP and better max HP pickups to no longer cause infinite health on client sync issues (does not fix the bug, but logs when it breaks, and gives the user the min HP from the heart)
 
 # Noita Together Nemesis
 

@@ -48,6 +48,7 @@ noitatogether_angered_gods_subtitle,Good luck,,,,,,,,,,,,subtitle of message whe
 noitatogether_player_got_heart,$0 picked up a heart,,,,,,,,,,,,message when player picks up a heart,
 noitatogether_player_got_orb_had,$0 found an orb of knowledge you had already found,,,,,,,,,,,,message when player picks up an orb you already found,
 noitatogether_player_got_orb,$0 found an orb of knowledge,,,,,,,,,,,,message when player picks up an orb,
+noitatogether_heart_blocked_playercount,Unable to calculate proper health increase. Gave the min hp increase (bug),,,,,,,,,,,,message when player can't benefit from hearts,
 noitatogether_player_died,$0 died,,,,,,,,,,,,message when player died generically,
 noitatogether_run_end_lowhp_title,Not enough life force,,,,,,,,,,,,title of message when run ends due to respawn penalty dropping hp too low,
 noitatogether_run_end_lowhp_subtitle,Your teammate stays dead and the run ends,,,,,,,,,,,,subtitle of message when run ends due to respawn penalty dropping hp too low,
