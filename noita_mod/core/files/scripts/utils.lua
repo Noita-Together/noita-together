@@ -173,7 +173,7 @@ function PlayerHeartPickup(perk, userId)
                 if(playercount > 0) then
                     expected_max_hp = (1 / (playercount)) * multiplier
                 end
-                added = max_hp + math.max(min_hp_to_add , expected_max_hp)
+                added = math.max(min_hp_to_add , expected_max_hp)
             end
             max_hp = max_hp + added
 
