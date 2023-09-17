@@ -9,6 +9,7 @@ function shared_heart(entity_item, entity_who_picked, name)
     local max_hp_old = 0
     local max_hp = 0
     local multiplier = tonumber( GlobalsGetValue( "HEARTS_MORE_EXTRA_HP_MULTIPLIER", "1" ) )
+    local min_hp_to_add = 0.16 * multiplier
 
     local x, y = EntityGetTransform(entity_item)
     local playercount = NT.player_count
@@ -17,7 +18,11 @@ function shared_heart(entity_item, entity_who_picked, name)
             max_hp = tonumber(ComponentGetValue(damagemodel, "max_hp"))
             max_hp_old = max_hp
             if (GameHasFlagRun("NT_sync_hearts")) then
-                max_hp = max_hp + math.max(0.16 ,(1 / (playercount)) * multiplier)
+                local expected_max_hp = min_hp_to_add
+                if(playercount > 0) then
+                    expected_max_hp = (1 / (playercount)) * multiplier
+                end
+                max_hp = max_hp + math.max(min_hp_to_add , expected_max_hp)
             else
                 max_hp = max_hp + 1 * multiplier
             end
@@ -39,6 +44,11 @@ function shared_heart(entity_item, entity_who_picked, name)
     end
 
     GamePrintImportant("$log_heart", description)
+    if playercount == 0 then
+        description = GameTextGet("$noitatogether_heart_blocked_playercount")
+        print_error(description)
+        GamePrint(description)
+    end
     GameTriggerMusicCue("item")
     EntityKill(entity_item)
 end

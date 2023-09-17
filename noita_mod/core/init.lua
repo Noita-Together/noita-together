@@ -158,6 +158,7 @@ function OnWorldPostUpdate()
                 local sampo_check = CheckSampoStatus()
                 if (sampo_check) then SpawnSampo() end
             end
+--             TODO how do we handle player count potentially being out of sync here? How does this happen?
             if (NT.sampo_pickup and NT.player_count == NT.players_sampo and NT.boss_fight == false) then
                 StartBossFight()
             end
