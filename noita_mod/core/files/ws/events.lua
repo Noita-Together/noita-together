@@ -53,11 +53,14 @@ customEvents = {
             orbs_for_name = 13
         end
 
+        --use a different message key if we already got our sampo
+        local sampo_basemsgkey = NT.sampo_pickup and "$noitatogether_player_got_mcguffin" or "$noitatogether_player_got_mcguffin_waiting"
+        
         local sampo_message = nil
         if orbs >= 13 then --show exact orb count, no longer uniquely named
-            sampo_message = GameTextGet("$noitatogether_player_got_mcguffin_orbs", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)), tostring(orbs))
+            sampo_message = GameTextGet(sampo_basemsgkey .. "_orbs", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)), tostring(orbs))
         else
-            sampo_message = GameTextGet("$noitatogether_player_got_mcguffin", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)))
+            sampo_message = GameTextGet(sampo_basemsgkey, player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)))
         end
         GamePrint(sampo_message)
     end,
