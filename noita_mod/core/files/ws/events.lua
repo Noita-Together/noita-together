@@ -1,5 +1,6 @@
 dofile( "data/scripts/perks/perk.lua" )
 dofile( "mods/noita-together/files/scripts/hourglass_events.lua")
+dofile( "mods/noita-together/files/scripts/util/player_ghost_cosmetics.lua")
 
 customEvents = {
     PlayerPOI = function(data)
@@ -82,7 +83,7 @@ customEvents = {
         UpdatePlayerGhost(data)
     end,
     PlayerCosmeticFlags = function(data)
-        UpdatePlayerGhostCosmetic(data)
+        StorePlayerGhostCosmetic(data, true)
     end,
     SecretHourglass = HandleHourglassEvent
 }
@@ -192,6 +193,10 @@ wsEvents = {
             location = "Mountain",
             sampo = false,
             inven = {},
+            --cached entity ID for player ghost - check before any use!
+            ghostEntityId = 0,
+            --player cosmetic (crown,amulet,?) tracking
+            cosmeticFlags = {},
             --reasonable start for health check values
             HealthCheck = { lastPosUpdate = GameGetFrameNum() }
         }
