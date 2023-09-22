@@ -12,6 +12,8 @@ function SpawnPlayerGhosts(player_list)
             player.ghostEntityId = nil 
             --apply cosmetics, finding ghost in process
             SetPlayerGhostCosmetics(userId, nil)
+            --refresh inventory
+            SetPlayerGhostInventory(userId, nil)
         end
     end
 end
@@ -39,6 +41,8 @@ function SpawnPlayerGhost(player, userId)
     player.ghostEntityId = ghost
     --apply cosmetics (if known)
     SetPlayerGhostCosmetics(userId, ghost)
+    --refresh inventory
+    SetPlayerGhostInventory(userId, nil)
     --return reference to created ghost
     return ghost
 end
@@ -98,22 +102,64 @@ function MovePlayerGhost(data)
     end
 end
 
-function UpdatePlayerGhost(data)
-    local ghosts = EntityGetWithTag("nt_ghost")
-    local stuff = {}
-    local inven = ","
-    for i, wand in ipairs(data.inven) do
-        inven = inven .. "," .. tostring(wand.stats.inven_slot) .. "," .. wand.stats.sprite .. ","
-    end
-    for _, ghost in pairs(ghosts) do
+--utility function to get the ghost entity for a particular player, tries cached value then checks all ghosts
+function GetPlayerGhost(userId)
+    --store/fetch player ghost's entity from its PlayerList object
+    local eid = PlayerList[userId].ghostEntityId
+    if eid ~= 0 and EntityHasTag(eid, "nt_ghost") then
         local id_comp = get_variable_storage_component(ghost, "userId")
-        local userId = ComponentGetValue2(id_comp, "value_string")
-        if (userId == data.userId) then
-            local dest = get_variable_storage_component(ghost, "inven")
-            ComponentSetValue2(dest, "value_string", inven)
-            break
+        local entityUserId = ComponentGetValue2(id_comp, "value_string")
+
+        if entityUserId == userId then
+            --nt print_error("GetPlayerGhost: use cached ghost " .. eid .. " for userId " .. userId)
+            return eid
         end
     end
+
+    --ghostEntityId was not the ghost, need to check all ghosts
+    local ghosts = EntityGetWithTag("nt_ghost")
+
+    for _, ghost in pairs(ghosts) do
+        local id_comp = get_variable_storage_component(ghost, "userId")
+        local entityUserId = ComponentGetValue2(id_comp, "value_string")
+
+        if entityUserId == userId then
+            --cache this value for later calls
+            PlayerList[userId].ghostEntityId = ghost
+            --nt print_error("GetPlayerGhost: caching ghost " .. ghost .. " for userId " .. userId)
+            return ghost
+        end
+    end
+
+    --failed to find
+    --nt print_error("GetPlayerGhost failed to find for userId " .. userId)
+    return nil
+end
+
+--set inventory on a player's ghost
+--userId is the player userid, non-nil
+--ghost is the ghost entity, if nil try to find it
+function SetPlayerGhostInventory(userId, ghost)
+    --nt print_error("SetPlayerGhostInventory: ghost " .. (ghost or "(nil)") .. ", userId " .. userId)
+
+    --get player ghost entity
+    if not ghost then
+        ghost = GetPlayerGhost(userId)
+
+        if not ghost then
+            --nt print_error("SetPlayerGhostInventory: failed to find player's ghost???")
+            --should we print a real error?
+            return
+        end
+    end
+
+    local inven = ","
+    for i, wand in ipairs(PlayerList[userId].inven) do
+        inven = inven .. "," .. tostring(wand.stats.inven_slot) .. "," .. wand.stats.sprite .. ","
+    end
+
+    local inventoryVSComp = get_variable_storage_component(ghost, "inven")
+    ComponentSetValue2(inventoryVSComp, "value_string", inven)
 end
 
 --PLAYER GHOST COSMETICS
@@ -151,40 +197,6 @@ function StorePlayerGhostCosmetic(data, refresh)
     else
         --nt print_error("StorePlayerGhostCosmetic: invalid userId " .. data.userId)
     end
-end
-
---utility function to get the ghost entity for a particular player, tries cached value then checks all ghosts
-function GetPlayerGhost(userId)
-    --store/fetch player ghost's entity from its PlayerList object
-    local eid = PlayerList[userId].ghostEntityId
-    if eid ~= 0 and EntityHasTag(eid, "nt_ghost") then
-        local id_comp = get_variable_storage_component(ghost, "userId")
-        local entityUserId = ComponentGetValue2(id_comp, "value_string")
-
-        if entityUserId == userId then
-            --nt print_error("GetPlayerGhost: use cached ghost " .. eid .. " for userId " .. userId)
-            return eid
-        end
-    end
-
-    --ghostEntityId was not the ghost, need to check all ghosts
-    local ghosts = EntityGetWithTag("nt_ghost")
-
-    for _, ghost in pairs(ghosts) do
-        local id_comp = get_variable_storage_component(ghost, "userId")
-        local entityUserId = ComponentGetValue2(id_comp, "value_string")
-
-        if entityUserId == userId then
-            --cache this value for later calls
-            PlayerList[userId].ghostEntityId = ghost
-            --nt print_error("GetPlayerGhost: caching ghost " .. ghost .. " for userId " .. userId)
-            return ghost
-        end
-    end
-
-    --failed to find
-    --nt print_error("GetPlayerGhost failed to find for userId " .. userId)
-    return nil
 end
 
 --set cosmetics on a player's ghost

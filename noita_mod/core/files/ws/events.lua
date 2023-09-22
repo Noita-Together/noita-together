@@ -1,6 +1,6 @@
 dofile( "data/scripts/perks/perk.lua" )
 dofile( "mods/noita-together/files/scripts/hourglass_events.lua")
-dofile( "mods/noita-together/files/scripts/util/player_ghost_cosmetics.lua")
+dofile( "mods/noita-together/files/scripts/util/player_ghosts.lua")
 
 customEvents = {
     PlayerPOI = function(data)
@@ -80,7 +80,8 @@ customEvents = {
         local inven = jankson.decode(data.inven)
         PlayerList[data.userId].inven = inven
         data.inven = inven
-        UpdatePlayerGhost(data)
+        SetPlayerGhostInventory(data.userId)
+        --StorePlayerGhostInventory(data)
     end,
     PlayerCosmeticFlags = function(data)
         StorePlayerGhostCosmetic(data, true)
