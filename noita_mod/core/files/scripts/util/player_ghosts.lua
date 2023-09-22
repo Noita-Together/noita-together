@@ -221,23 +221,3 @@ function SetPlayerGhostCosmetics(userId, ghost)
         EntitySetComponentsWithTagEnabled(ghost, flag, true)
     end
 end
-
---not used?
-function SetAllPlayerGhostCosmetics()
-    --nt print_error("SetAllPlayerGhostCosmetics")
-    local ghosts = EntityGetWithTag("nt_ghost")
-
-    for _, ghost in pairs(ghosts) do
-        local id_comp = get_variable_storage_component(ghost, "userId")
-        local userId = ComponentGetValue2(id_comp, "value_string")
-        local playerEntry = PlayerList[userId]
-        if playerEntry then
-            for __, flag in pairs(playerEntry.cosmeticFlags or {}) do
-                EntitySetComponentsWithTagEnabled( ghost, flag, true )
-            end
-            --cache the ghost id for this player for later use
-            playerEntry.ghostEntityId = ghost
-            break
-        end
-    end
-end
