@@ -298,7 +298,7 @@ if not initialized then
                     GuiImage(gui, next_id(), nx + nox, ny + nyx, SpellSprites[value.gameId].sprite, 1, 0.8, 0.8)
                     --This doesnt show charges if it was put in with unlimited spells, but it will come out full anyway
                     --TODO this doesnt look nice because the text is large compared to the spell icons. Also its not the same font as used on vanilla spell icons
-                    if value.usesRemaining >= 0 then
+                    if value.usesRemaining and value.usesRemaining >= 0 then
                         GuiText(gui, nx + nox + 1, ny + nyx - 8, value.usesRemaining)
                     end
                     nox = nox + 15
