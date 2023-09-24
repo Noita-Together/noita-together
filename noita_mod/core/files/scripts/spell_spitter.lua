@@ -79,7 +79,7 @@ function SpawnFlask(contents, x,y)
 end
 
 function SpawnPowderStash(contents, x,y)
-    local flask = EntityLoad("mods/noita-together/files/entities/empty_powder_stash.xml", x, y)
+    local flask = EntityLoad("mods/noita-together/files/entities/powder_stash_bank.xml", x, y)
     for i, inv in ipairs(contents) do
         AddMaterialInventoryMaterial(flask, CellFactory_GetName(inv.id), inv.amount)
     end
