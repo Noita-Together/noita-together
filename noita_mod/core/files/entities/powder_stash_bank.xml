@@ -1,0 +1,11 @@
+<Entity>
+	<Base file="data/entities/items/pickup/powder_stash.xml">
+        <!-- leave FIRST lua component alone -->
+        <LuaComponent 
+        ></LuaComponent>
+        <!-- SECOND lua component needs to be disabled -->
+		<LuaComponent 
+			_enabled="0"
+		></LuaComponent>
+	</Base>
+</Entity>
