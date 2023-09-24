@@ -42,7 +42,7 @@ function SpawnPlayerGhost(player, userId)
     --apply cosmetics (if known)
     SetPlayerGhostCosmetics(userId, ghost)
     --refresh inventory
-    SetPlayerGhostInventory(userId, nil)
+    SetPlayerGhostInventory(userId, ghost)
     --return reference to created ghost
     return ghost
 end
@@ -105,9 +105,9 @@ end
 --utility function to get the ghost entity for a particular player, tries cached value then checks all ghosts
 function GetPlayerGhost(userId)
     --store/fetch player ghost's entity from its PlayerList object
-    local eid = PlayerList[userId].ghostEntityId
+    local eid = PlayerList[userId].ghostEntityId or 0
     if eid ~= 0 and EntityHasTag(eid, "nt_ghost") then
-        local id_comp = get_variable_storage_component(ghost, "userId")
+        local id_comp = get_variable_storage_component(eid, "userId")
         local entityUserId = ComponentGetValue2(id_comp, "value_string")
 
         if entityUserId == userId then
