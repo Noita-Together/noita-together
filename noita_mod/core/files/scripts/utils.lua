@@ -5,6 +5,9 @@ if not async then
     dofile("mods/noita-together/files/scripts/coroutines.lua")
 end
 
+--util includes
+dofile("mods/noita-together/files/scripts/util/player_ghosts.lua")
+
 function GetPlayer()
     local player = EntityGetWithTag("player_unit") or nil
     if player ~= nil then
@@ -215,112 +218,6 @@ function PlayerOrbPickup(id, userId)
             EntitySetTransform(orb, x, y)
         end
     )
-end
-
-function SpawnPlayerGhosts(player_list)
-    for userId, player in pairs(player_list) do
-        SpawnPlayerGhost(player, userId)
-    end
-end
-
-function SpawnPlayerGhost(player, userId)
-    local ghost = EntityLoad("mods/noita-together/files/entities/ntplayer.xml", 0, 0)
-    AppendName(ghost, player.name)
-    local vars = EntityGetComponent(ghost, "VariableStorageComponent")
-    for _, var in pairs(vars) do
-        local name = ComponentGetValue2(var, "name")
-        if (name == "userId") then
-            ComponentSetValue2(var, "value_string", userId)
-        end
-        if (name == "inven") then
-            ComponentSetValue2(var, "value_string", json.encode(PlayerList[userId].inven))
-        end
-    end
-    if (player.x ~= nil and player.y ~= nil) then
-        EntitySetTransform(ghost, player.x, player.y)
-    end
-end
-
-function DespawnPlayerGhosts()
-    local ghosts = EntityGetWithTag("nt_ghost")
-    for _, eid in pairs(ghosts) do
-        EntityKill(eid)
-    end
-end
-
-function DespawnPlayerGhost(userId)
-    local ghosts = EntityGetWithTag("nt_ghost")
-    for _, ghost in pairs(ghosts) do
-        local vars = EntityGetComponent(ghost, "VariableStorageComponent")
-        for _, var in pairs(vars) do
-            local name = ComponentGetValue2(var, "name")
-            if (name == "userId") then
-                local id = ComponentGetValue2(var, "value_string")
-                if (id == userId) then EntityKill(ghost) end
-            end
-        end
-    end
-end
-
-function TeleportPlayerGhost(data)
-    local ghosts = EntityGetWithTag("nt_ghost")
-
-    for _, ghost in pairs(ghosts) do
-        local id_comp = get_variable_storage_component(ghost, "userId")
-        local userId = ComponentGetValue2(id_comp, "value_string")
-        if (userId == data.userId) then
-            EntitySetTransform(ghost, data.x, data.y)
-            break
-        end
-    end
-end
-
-function MovePlayerGhost(data)
-    local ghosts = EntityGetWithTag("nt_ghost")
-
-    for _, ghost in pairs(ghosts) do
-        local id_comp = get_variable_storage_component(ghost, "userId")
-        local userId = ComponentGetValue2(id_comp, "value_string")
-        if (userId == data.userId) then
-            local dest = get_variable_storage_component(ghost, "dest")
-            
-            ComponentSetValue2(dest, "value_string", data.jank)
-            break
-        end
-    end
-end
-
-function UpdatePlayerGhost(data)
-    local ghosts = EntityGetWithTag("nt_ghost")
-    local stuff = {}
-    local inven = ","
-    for i, wand in ipairs(data.inven) do
-        inven = inven .. "," .. tostring(wand.stats.inven_slot) .. "," .. wand.stats.sprite .. ","
-    end
-    for _, ghost in pairs(ghosts) do
-        local id_comp = get_variable_storage_component(ghost, "userId")
-        local userId = ComponentGetValue2(id_comp, "value_string")
-        if (userId == data.userId) then
-            local dest = get_variable_storage_component(ghost, "inven")
-            ComponentSetValue2(dest, "value_string", inven)
-            break
-        end
-    end
-end
-
-function UpdatePlayerGhostCosmetic(data)
-    local ghosts = EntityGetWithTag("nt_ghost")
-
-    for _, ghost in pairs(ghosts) do
-        local id_comp = get_variable_storage_component(ghost, "userId")
-        local userId = ComponentGetValue2(id_comp, "value_string")
-        if (userId == data.userId) then
-            for __, flag in pairs(data.flags) do
-                EntitySetComponentsWithTagEnabled( ghost, flag, true )
-            end
-            break
-        end
-    end
 end
 
 function AppendName(entity, name)
