@@ -11,6 +11,13 @@ mod_settings =
         scope=MOD_SETTING_SCOPE_RUNTIME
 	},
 	{
+		id = "NT_NO_STAT_PROGRESS",
+		ui_name = "Disable progress",
+		ui_description = "Disable progress tracking of perks, spells and enemies",
+		value_default = false,
+        scope=MOD_SETTING_SCOPE_RUNTIME
+	},
+	{
 		id = "NT_GHOST_OPACITY",
 		ui_name = "Player ghost opacity",
 		value_default = 1.0,

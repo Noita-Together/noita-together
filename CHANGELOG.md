@@ -19,6 +19,14 @@
 - Renamed some UI text relating to messages
 - Show proper sampo name when picked up by other players
 - Update protobuf files :)
+- Alternate message when other player picks up sampo when we already have ours
+- Update extra max HP and better max HP pickups to no longer cause infinite health on client sync issues (does not fix the bug, but logs when it breaks, and gives the user the min HP from the heart)
+- Better extra max HP gives more health at its minimum point
+- Extra max HP minimum health given now scales with stronger hearts
+- Add option to disable perk/spell/enemy progress in NT mod settings
+- Fix issues where player ghost cosmetics and other functionality broke after hiding ghosts and showing again. See [noita-together/pull/86](https://github.com/Noita-Together/noita-together/pull/86) for implementation details (mods will want to use the new functions) 
+- Fix broken ui when inspecting other players wands (regression from showing spell charges in related UI)
+- Fix potion/bag issues when withdrawing from bank preventing new beta features, and other stuff [noita-together/pull/88](https://github.com/Noita-Together/noita-together/pull/88) for more details
 
 # Noita Together Nemesis
 
