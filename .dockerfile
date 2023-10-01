@@ -4,4 +4,5 @@ WORKDIR ./noita-together
 RUN npm install pm2 -g
 ADD . .
 RUN yarn install
+RUN yarn buildServer
 CMD ["pm2-runtime", "./ecosystem.config.js"]

@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "serve-http": "ts-node nt-webserver.ts",
+    "serve-http": "next start",
     "serve-websocket": "ts-node nt-websocket.ts",
     "serverInitOnce": "node create-jwt-secret.js",
     "serveDev": "ts-node-dev server.ts",

@@ -5,7 +5,7 @@ const ws = require("ws")
 
 export type StatusApiResponse = {
     message: string,
-    uptime: string,
+    uptime?: string,
     error?: string
 }
 

@@ -15,6 +15,7 @@
     "server-http": "yarn workspace nt-web-app serve-http",
     "server-ws": "yarn workspace nt-web-app serve-websocket",
     "serverDev": "yarn workspace nt-web-app serveDev",
+    "buildServer": "yarn workspace nt-web-app build",
     "buildClient": "yarn workspace nt-app electron:build",
     "regenerate-proto-experimental": "pbjs -t static-module --ts --no-comments --no-delimited --out websocket/messages.ts websocket/messages.proto",
     "regenerate-proto-server": "pbjs -t static-module --wrap es6 --no-comments --no-delimited --out nt-web-app/websocket/messages.js protobuf/messages.proto && pbjs -t static-module --no-delimited protobuf/messages.proto | pbts -o nt-web-app/websocket/messages.d.ts -",
