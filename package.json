@@ -14,6 +14,7 @@
     "serverInitOnce": "yarn workspace nt-web-app serverInitOnce",
     "server-http": "yarn workspace nt-web-app serve-http",
     "server-ws": "yarn workspace nt-web-app serve-websocket",
+    "server-init-db": "yarn workspace nt-web-app init-db",
     "serverDev": "yarn workspace nt-web-app serveDev",
     "buildServer": "yarn workspace nt-web-app build",
     "buildClient": "yarn workspace nt-app electron:build",
