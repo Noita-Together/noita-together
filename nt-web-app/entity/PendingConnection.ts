@@ -2,7 +2,7 @@ import {BaseEntity, Column, Entity, PrimaryColumn} from "typeorm"
 import * as crypto from "crypto";
 import {Socket} from "net";
 
-@Entity({name: "pending-connection", database: "nt-user", synchronize: true})
+@Entity({name: "pending-connection", synchronize: true})
 export class PendingConnection extends BaseEntity{
     @PrimaryColumn()
     id: string
