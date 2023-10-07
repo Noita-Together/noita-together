@@ -2,7 +2,7 @@ import {Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn} from 
 
 export type LoginProvider = 'local'|'twitch'
 
-@Entity({name: "user", database: "nt-user", synchronize: true})
+@Entity({name: "user", database: process.env.DATABASE_NAME, synchronize: true})
 export class User{
     @PrimaryColumn()
     id: string
