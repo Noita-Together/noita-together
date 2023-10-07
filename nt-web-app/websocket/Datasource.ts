@@ -2,35 +2,31 @@ import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { User } from "../entity/User"
 import {PendingConnection} from "../entity/PendingConnection";
-import {RoomStats, UserStats, EnemyKillCount, ItemPickupEvent, SessionStats} from "../entity/RunStatistics";
+// import {RoomStats, UserStats, EnemyKillCount, ItemPickupEvent, SessionStats} from "../entity/RunStatistics";
 
 const userDataSource = new DataSource({
-    type: "sqlite",
-    database: "user.sqlite",
-    entities: [User],
-    synchronize: true,
+    type: 'postgres',
+    host: process.env.DATABASE_HOST,
+    password: process.env.DATABASE_SECRET,
+    username: process.env.DATABASE_USERNAME,
+    port: parseInt(process.env.DATABASE_PORT ?? "0"),
+    entities: [User, PendingConnection],
     logging: false,
 })
 
-const pendingUsersDatasource = new DataSource({
-    type: "sqlite",
-    database: "pendingUserConnections.sqlite",
-    entities: [PendingConnection],
-    synchronize: true,
-    logging: false,
-})
-
-const roomStatsDatasource = new DataSource({
-    type: "sqlite",
-    database: "roomStats.sqlite",
-    entities: [RoomStats, UserStats, EnemyKillCount, ItemPickupEvent, SessionStats],
-    synchronize: true,
-    logging: false,
-})
+//TODO we need to make this create itself in postgres
+// const roomStatsDatasource = new DataSource({
+//     type: "postgres",
+//     host: process.env.DATABASE_HOST,
+//     password: process.env.DATABASE_SECRET,
+//     username: process.env.DATABASE_USERNAME,
+//     port: parseInt(process.env.DATABASE_PORT ?? "0"),
+//     entities: [RoomStats, UserStats, EnemyKillCount, ItemPickupEvent, SessionStats],
+//     logging: false,
+// })
 
 const userDataSourceConnection = userDataSource.initialize()
-const pendingUsersDatasourceConnection = pendingUsersDatasource.initialize()
-const roomStatsDatasourceConnection = roomStatsDatasource.initialize()
+// const roomStatsDatasourceConnection = roomStatsDatasource.initialize()
 
 const UserDatasource = (): Promise<null|DataSource> => {
     return userDataSourceConnection
@@ -40,20 +36,18 @@ const UserDatasource = (): Promise<null|DataSource> => {
         })
 }
 
-const PendingConnectionDatasource = (): Promise<null|DataSource> => {
-    return pendingUsersDatasourceConnection
-        .catch((error) => {
-            console.log(error)
-            return Promise.resolve(null)
-        })
+const RoomStatsDatasource = (): Promise<null|DataSource> => {
+    return Promise.resolve(null)
+    // return roomStatsDatasourceConnection
+    //     .catch((error) => {
+    //         console.log(error)
+    //         return Promise.resolve(null)
+    //     })
 }
 
-const RoomStatsDatasource = (): Promise<null|DataSource> => {
-    return roomStatsDatasourceConnection
-        .catch((error) => {
-            console.log(error)
-            return Promise.resolve(null)
-        })
+const initDBs = async ()=> {
+    await userDataSource.initialize()
+    await userDataSource.synchronize(true)
 }
 
 // to initialize initial connection with the database, register all entities
@@ -62,6 +56,6 @@ const RoomStatsDatasource = (): Promise<null|DataSource> => {
 
 export {
     UserDatasource,
-    PendingConnectionDatasource,
-    RoomStatsDatasource
+    RoomStatsDatasource,
+    initDBs
 }

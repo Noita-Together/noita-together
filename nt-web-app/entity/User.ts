@@ -2,7 +2,7 @@ import {Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn} from 
 
 export type LoginProvider = 'local'|'twitch'
 
-@Entity()
+@Entity({name: "user", database: "nt-user", synchronize: true})
 export class User{
     @PrimaryColumn()
     id: string
@@ -40,10 +40,10 @@ export class User{
         this._access = role;
     }
 
-    @CreateDateColumn({ type: "datetime" })
+    @CreateDateColumn({ type: "timestamp without time zone" })
     user_since?: Date;
 
-    @UpdateDateColumn({ type: "datetime" })
+    @UpdateDateColumn({ type: "timestamp without time zone" })
     updated_at?: Date;
 
     uaccess?: number

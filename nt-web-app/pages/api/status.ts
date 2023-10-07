@@ -5,7 +5,7 @@ const ws = require("ws")
 
 export type StatusApiResponse = {
     message: string,
-    uptime: string,
+    uptime?: string,
     error?: string
 }
 
@@ -17,7 +17,7 @@ export default async function handler(
         let client = new ws(`ws://localhost:5466/uptime`)
         client.on('unexpected-response',(_: ClientRequest, mes: IncomingMessage)=>{
             if(mes.statusCode === 200){
-                res.status(200).json({ message: 'UP', uptime: mes.statusMessage??'??' })
+                res.status(200).json({ message: 'ONLINE', uptime: mes.statusMessage??'??' })
                 resolve(true)
             }
             try {
@@ -36,7 +36,7 @@ export default async function handler(
     }).then(()=>{
 
     }).catch((e)=>{
-        res.status(500).json({ message: 'DOWN', uptime: '0', error: e.message })
+        res.status(500).json({ message: 'DOWN', error: e.message })
     })
 
 }

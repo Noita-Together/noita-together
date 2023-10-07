@@ -16,7 +16,9 @@ export default function Home() {
            setServerStatus(status)
          })
   }, [])
-
+  let serverStatusText = '...'
+  if(serverStatus?.error || serverStatus === null) serverStatusText = "OFFLINE"
+  else serverStatusText = serverStatus?.message ?? "???"
   return (
     <>
       <Head>
@@ -36,7 +38,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div title={`Online since ${serverStatus?.uptime ?? '???'}`}>Server Status: {serverStatus ? 'ONLINE' : serverStatus === undefined ? '...' : 'OFFLINE'}</div>
+          <div title={`Online since ${serverStatus?.uptime ?? '???'}`} style={{color: serverStatusText === "ONLINE" ? "white" : "red"}}>Server Status: {serverStatusText}</div>
 
           {/*<div className={styles.center}>
           <div>

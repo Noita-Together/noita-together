@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import {PendingConnection} from "../entity/PendingConnection";
-import {PendingConnectionDatasource, UserDatasource} from "./Datasource";
+import {UserDatasource} from "./Datasource";
 import {User} from "../entity/User";
 import {createAccessToken, createRefreshToken} from "../utils/jwtUtils";
 import {getUsersById} from "../utils/TwitchUtils";
@@ -17,10 +17,11 @@ class AuthWebsocket {
     constructor() {
         this.server = new WebSocket.Server({noServer: true, perMessageDeflate: false})
         this.pendingConnections = {}
-        PendingConnectionDatasource()
-            .then((db) => this.pendingConnectionRepository = db?.getRepository(PendingConnection))
         UserDatasource()
-            .then((db) => this.userRepository = db?.getRepository(User))
+            .then((db) => {
+                this.userRepository = db?.getRepository(User)
+                this.pendingConnectionRepository = db?.getRepository(PendingConnection)
+            })
 
         this.timeout = setTimeout(this.CheckUsers, 5000)
 

@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios';
-import {UserDatasource, PendingConnectionDatasource} from "../../../websocket/Datasource";
+import {UserDatasource} from "../../../websocket/Datasource";
 import {defaultRoles, User} from "../../../entity/User";
 import {getUser} from "../../../utils/TwitchUtils";
 import {createAccessToken, createRefreshToken} from "../../../utils/jwtUtils";
@@ -54,14 +54,7 @@ export default async function handler(
             return
         }
         const repo = db.getRepository(User)
-
-        const dbPendingConnection = await PendingConnectionDatasource()
-        if(!dbPendingConnection){
-            res.status(500).json({ error: 'Failed to retrieve tokens :(' });
-            console.log('Failed to retrieve tokens :(')
-            return
-        }
-        const repoPendingConnection = dbPendingConnection.getRepository(PendingConnection)
+        const repoPendingConnection = db.getRepository(PendingConnection)
 
         const user = await repo.findOneBy({
             id: userData.id,

@@ -6,7 +6,7 @@ import {TwitchDecodedToken} from "shared-lib/types/Twitch"
 import Lobby from "./lobby";
 
 import axios from "axios";
-import {PendingConnectionDatasource, UserDatasource} from "./Datasource";
+import {UserDatasource} from "./Datasource";
 import {defaultRoles, RoleImpl, User} from "../entity/User";
 import {PendingConnection} from "../entity/PendingConnection";
 import AuthSocket from "./authWebsocket";
@@ -14,14 +14,12 @@ import {Socket} from "net";
 import fs from "fs";
 
 const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
-const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID as string
 
-if(!TWITCH_CLIENT_ID) throw new Error("Unable to load .env!")
+if(!SECRET_ACCESS) throw new Error("Unable to load .env!")
 
 const timeStart = Date.now()
 
 const userDatasource = UserDatasource()
-const pendingConnectionDatasource = PendingConnectionDatasource()
 
 class NoitaTogetherWebsocket{
     readonly port?
@@ -81,7 +79,7 @@ class NoitaTogetherWebsocket{
     }
 
     private static async CreatePendingConnection(socket: Socket): Promise<PendingConnection|null>{
-        const db = await pendingConnectionDatasource
+        const db = await userDatasource
         if(!db) return null
         const pendingConnection = new PendingConnection(socket)
         await pendingConnection.save()
@@ -108,6 +106,13 @@ class NoitaTogetherWebsocket{
                 }
 
                 if(token.startsWith('deviceAuth')){
+                    if (true) { //not working well right now
+                        console.log(`HTTP/1.1 501 Not Implemented`)
+                        socket.write('HTTP/1.1 501 Not Implemented\r\n\r\n')
+                        socket.destroy()
+                        return
+                    }
+
                     const pendingConnection = await NoitaTogetherWebsocket.CreatePendingConnection(socket)
                     if (!pendingConnection) {
                         console.log(`HTTP/1.1 500 Internal Server Error`)

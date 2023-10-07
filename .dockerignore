@@ -1,0 +1,10 @@
+noita_mod
+flutter
+.idea
+.yarn/cache
+nt-app/node_modules
+nt-web-app/node_modules
+shared-lib/node_modules
+node_modules
+**/.next
+nt-app/dist_electron

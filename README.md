@@ -57,6 +57,13 @@ yarn install
 yarn server
 ```
 
+Using dockerfile to test pm2:
+```
+docker build .
+```
+Then you want to start the container, binding port 3000 and port 5466
+https://docs.docker.com/engine/reference/commandline/run/
+
 #### Updating the protobuf file
 
 Please only make changes at `protobuf/messages.proto`
