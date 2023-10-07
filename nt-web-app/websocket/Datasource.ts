@@ -5,6 +5,8 @@ import {PendingConnection} from "../entity/PendingConnection";
 // import {RoomStats, UserStats, EnemyKillCount, ItemPickupEvent, SessionStats} from "../entity/RunStatistics";
 
 const userDataSource = new DataSource({
+    database: process.env.DATABASE_NAME,
+    ssl: { ca: process.env.DATABASE_CA_CERT },
     type: 'postgres',
     host: process.env.DATABASE_HOST,
     password: process.env.DATABASE_SECRET,
