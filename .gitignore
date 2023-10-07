@@ -10,6 +10,7 @@ nt-backend/.env
 nt-web-app/.env
 nt-app/.env
 .env.*.local
+.run/
 
 # Log files
 npm-debug.log*
