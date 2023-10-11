@@ -146,7 +146,7 @@ if not hourglassEventHandlers then
     assert(RegisterHourglassEvent("speed", "magic_liquid_movement_faster", function(player, triggered_by_name, data)
         local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_movement_faster.xml")
         local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
-        ComponentSetValue2(effect_comp, "frames", 60*45)
+        ComponentSetValue2(effect_comp, "frames", 60*120)
         EntityAddComponent2(effect_entity, "UIIconComponent", {
             icon_sprite_file = "data/ui_gfx/status_indicators/movement_faster.png",
             name = GameTextGet("$noitatogether_hourglass_buff_speed_name"),
