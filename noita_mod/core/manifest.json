@@ -53,7 +53,7 @@
     "files/scripts/death_cam2.lua": "739687d0a28bd87cdf9814f6c6069eb6f878e17f0888a061a06ca885bf55976c",
     "files/scripts/disabled_sampo.lua": "5edfa29cf328831b78497c55f15a5ab97abc23b69c41c2cc9e41521568f4a2a4",
     "files/scripts/entity_translations.lua": "52bccea5bc099cfa15c6490f8c02f394e79cafe77107bbb2c9a9bf4bcbc6e5b1",
-    "files/scripts/hourglass_events.lua": "24dc96d4f2cc5b51be5bb4bf3886318ce97a02cfcb1899a8020f698d75803af8",
+    "files/scripts/hourglass_events.lua": "64fa5f24398baaa5ac6dab8646e8a892cc6ed0f7b98c4e9f3713d4e15492552f",
     "files/scripts/item_list.lua": "d294d6624e3d358058efea679d04cfffbc9c880734d182b61863028476168c08",
     "files/scripts/json.lua": "c3b9ffb973d71479a5d76b783386a5c7dab084cf93811f766c46a73190e29a9f",
     "files/scripts/json_unjank.lua": "992c876154cf78df86be4bc28c76e1aa5e8fcbc841582c5122bebc8ef41e0a3a",
@@ -178,5 +178,5 @@
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "faa39b004b7d48b506edeb7f65b5730585a921d5226a7a376bc38a9f1a8be71f"
   },
-  "buildDate": "2023-09-25T01:33:31.967Z"
+  "buildDate": "2023-10-14T05:40:52.155Z"
 }

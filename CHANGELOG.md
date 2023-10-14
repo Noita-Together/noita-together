@@ -27,6 +27,7 @@
 - Fix issues where player ghost cosmetics and other functionality broke after hiding ghosts and showing again. See [noita-together/pull/86](https://github.com/Noita-Together/noita-together/pull/86) for implementation details (mods will want to use the new functions) 
 - Fix broken ui when inspecting other players wands (regression from showing spell charges in related UI)
 - Fix potion/bag issues when withdrawing from bank preventing new beta features, and other stuff [noita-together/pull/88](https://github.com/Noita-Together/noita-together/pull/88) for more details
+- Raise secret hourglass acceleratium time to 2 min [noita-together/pull/91](https://github.com/Noita-Together/noita-together/pull/91) 
 
 # Noita Together Nemesis
 
