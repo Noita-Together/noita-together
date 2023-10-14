@@ -4,7 +4,7 @@ const ws = require("ws")
 const {encodeLobbyMsg, encodeGameMsg, decode} = require("./handlers/messageHandler")
 const appEvent = require("./appEvent")
 const noita = require("./noita")
-const host = `ws://${process.env.VUE_APP_HOSTNAME_WS}${process.env.VUE_APP_WS_PORT}/`
+const host = `wss://${process.env.VUE_APP_HOSTNAME_WS}`
 const print = true
 module.exports = (data) => {
     const user = { userId: data.id, name: data.display_name }
