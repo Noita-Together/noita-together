@@ -126,6 +126,7 @@ class Room {
                 return replaceDataTemplate[key] !== undefined ? replaceDataTemplate[key] : `{${key}}`;;
             });
             fs.writeFileSync(path.join(baseDir, 'stats-final.html'), fullHtml, 'utf-8')
+            fs.writeFileSync(path.join(baseDir, 'stats-final.json'), JSON.stringify(stats, undefined, 2), 'utf-8')
         } catch (e) {
             console.error('failed to generate stats!')
             console.error(e)
@@ -171,7 +172,7 @@ class Room {
         if (this.gamemode === 0) {//Coop
             this.SendStats()
             if(this.GenerateHtmlStats()){
-                this.SysMsg(`Stats for run can be found at ${process.env.OAUTH_REDIRECT_URI}/room/stats/${this.id}/${this.session_id}`)
+                this.SysMsg(`Stats for run can be found at ${process.env.OAUTH_REDIRECT_URI}/api/stats/${this.id}/${this.session_id}/html`)
             }
             else{
                 this.SysMsg(`Stats for run failed to generate :(. Have a raw JSON of the data instead`)

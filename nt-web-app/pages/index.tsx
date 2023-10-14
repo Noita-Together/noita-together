@@ -48,7 +48,7 @@ export default function Home() {
 
           <div className={styles.grid}>
             <a
-                href="https://github.com/SkyeOfBreeze/noita-together"
+                href="https://github.com/Noita-Together/noita-together/releases"
                 className={styles.card}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -62,7 +62,7 @@ export default function Home() {
             </a>
 
             <a
-                href="https://github.com/soler91/noita-together/wiki"
+                href="https://github.com/Noita-Together/noita-together/wiki"
                 className={styles.card}
                 target="_blank"
                 rel="noopener noreferrer"
