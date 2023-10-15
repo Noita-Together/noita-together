@@ -1,6 +1,5 @@
 dofile( "data/scripts/perks/perk.lua" )
 dofile( "mods/noita-together/files/scripts/hourglass_events.lua")
-dofile( "mods/noita-together/files/scripts/util/player_ghosts.lua")
 
 customEvents = {
     PlayerPOI = function(data)
