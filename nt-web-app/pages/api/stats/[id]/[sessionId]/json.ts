@@ -12,17 +12,13 @@ export default async function handler(
     console.log(req)
     // Read the HTML file and serve it
     const filePath = path.join(__dirname, `../../../../../../../.storage/stats/${req.query.id}/${req.query.sessionId}/stats-final.json`);
-    fs.readFile(filePath, 'utf-8', (err, data) => {
-        if (err) {
-            console.error('Error reading file:', err);
-            res.statusCode = 404;
-            res.end('404 stats not found');
-        } else {
-            // Replace any dynamic values in the HTML file with room_id and session_id
-            // const modifiedData = data.replace('[room_id]', room_id).replace('[session_id]', session_id);
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(data);
-        }
-    });
-
+    if(!fs.existsSync(filePath)){
+        console.error(`Error reading stats file: ${filePath}`);
+        res.statusCode = 404;
+        res.end('404 stats not found');
+        return
+    }
+    const data = fs.createReadStream(filePath, 'utf-8');
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    data.pipe(res);
 }
