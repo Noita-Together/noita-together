@@ -126,7 +126,7 @@ class Room {
                 return replaceDataTemplate[key] !== undefined ? replaceDataTemplate[key] : `{${key}}`;;
             });
             fs.writeFileSync(path.join(baseDir, 'stats-final.html'), fullHtml, 'utf-8')
-            fs.writeFileSync(path.join(baseDir, 'stats-final.json'), JSON.stringify(stats, undefined, 2), 'utf-8')
+            // TODO fs.writeFileSync(path.join(baseDir, 'stats-final.json'), JSON.stringify(userData, undefined, 2), 'utf-8')
         } catch (e) {
             console.error('failed to generate stats!')
             console.error(e)
