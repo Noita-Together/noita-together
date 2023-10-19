@@ -101,7 +101,7 @@ export default async function handler(
     } catch (error) {
         // Handle error response
         console.error('Error fetching tokens');
-        console.error(error.code ?? error);
+        //TODO log the error in a way that does not spam the console or leak secrets
         res.status(500).json({ error: 'Failed to retrieve tokens :(' });
     }
     console.log('/api/auth/code: End')
