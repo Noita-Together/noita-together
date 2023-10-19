@@ -151,8 +151,61 @@ module.exports = (data) => {
         unready()
     })
 
+    const lastSent = {
+        x: NaN,
+        y: NaN,
+        armR: NaN,
+        armScaleY: NaN,
+        scaleX: NaN,
+        anim: NaN,
+        held: NaN,
+    };
+    const round = (value, factor) => factor === 0 ? Math.round(value) : Math.round(value*factor)/factor;
+    const same = (a, b) =>
+        a.x === b.x &&
+        a.y === b.y &&
+        a.armR === b.armR &&
+        a.armScaleY === b.armScaleY &&
+        a.scaleX === b.scaleX &&
+        a.anim === b.anim &&
+        a.held === b.held;
+
     noita.on("PlayerMove", (event) => {
-        const msg = encodeGameMsg("cPlayerMove", event)
+        const frames = event.frames;
+        if (!Array.isArray(frames) || frames.length === 0) return;
+
+        // transmitted position updates don't reframe the screen, so the subtle
+        // tweening of the visual frame doesn't matter. we only care roughly about
+        // where the arm is pointed, so we'll round the armR value to something sane.
+        // we'll do the same with position; we're not interested in spamming messages
+        // for every fraction of a pixel moved.
+
+        const {
+            x,
+            y,
+            armR,
+            armScaleY,
+            scaleX,
+            anim,
+            held,
+        } = frames[frames.length-1];
+
+        const frame = {
+            x: round(x, 0),
+            y: round(y, 0),
+            armR: round(armR, 100),
+            armScaleY: armScaleY,
+            scaleX: scaleX,
+            anim: anim,
+            held: held,
+        };
+
+        // with our rough values, we'll see if we're telling the lobby
+        // anything new - and if not, do nothing
+        if (same(lastSent, frame)) return;
+        Object.assign(lastSent, frame);
+
+        const msg = encodeGameMsg("cPlayerMove", {frames: [frame]})
         sendMsg(msg)
     })
 
