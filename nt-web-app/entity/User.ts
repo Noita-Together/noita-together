@@ -2,6 +2,9 @@ import {Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn} from 
 
 export type LoginProvider = 'local'|'twitch'
 
+/**
+ * @module DBUser
+ */
 @Entity({name: "user", synchronize: true})
 export class User{
     @PrimaryColumn()

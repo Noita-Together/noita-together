@@ -1,22 +1,70 @@
 import {decode} from "../messageHandler";
 import {noop} from "./LobbyUtils"
 
+/**
+ * @module LobbyUser
+ */
 class User {
+    /**
+     * @type {boolean}
+     */
+    isAlive = true;
+    /**
+     * @type {number}
+     */
+    rateLimit = 0;
+    /**
+     * @type {{x: number, y: number}}
+     */
+    position = {x: 0, y: 0};
+    /**
+     * @type {boolean}
+     */
+    ready = false;
+    /**
+     * @type {any|null}
+     */
+    cacheReady = null;
+    /**
+     * @type {any|null}
+     */
+    modCheck = null;
+    /**
+     * @type {string}
+     */
+    id;
+    /**
+     * @type {string}
+     */
+    name;
+    /**
+     * @type {number}
+     */
+    uaccess;
+    /**
+     * @type {InstanceType<WebSocket.WebSocket>}
+     */
+    socket;
+    /**
+     * @type {Room|null}
+     */
+    room = null;
+    /**
+     * @type {Lobby}
+     */
+    lobby;
+    /**
+     * @type {any[]}
+     */
+    wsQueue = [];
+
     constructor(id, name, uaccess, socket, lobby) {
-        this.isAlive = true
-        this.rateLimit = 0
-        this.position = { x: 0, y: 0 }
-        this.ready = false
-        this.cacheReady = null
-        this.modCheck = null
         this.id = id
         this.name = name
         this.uaccess = uaccess
         this.socket = socket
-        this.room = null
         this.lobby = lobby
-        this.wsQueue = []
-        /*
+                /*
         this.deQueue = setInterval(() => {
             this.Queue()
         }, 1000)

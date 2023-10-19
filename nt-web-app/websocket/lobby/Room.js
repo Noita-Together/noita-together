@@ -68,12 +68,19 @@ class Room {
         }
     }
 
-    BroadcastTo(data, to, ignoreId) {
+    /**
+     * Broadcast to a list of users
+     * @param data {any}
+     * @param users {module:LobbyUser.User[]}
+     * @param ignoreId
+     * @constructor
+     */
+    BroadcastTo(data, users, ignoreId) {
         const list = MakeFrame(data)
-        this.users.forEach(user => {
-            if (to.indexOf(user.id) === -1 || user.id === ignoreId) { return }
-            user.Write(list)
-        })
+        for (const roomUser of users) {
+            if(roomUser.id === ignoreId) return
+            roomUser.Write(list)
+        }
     }
 
     Broadcast(data, ignoreId) {//
@@ -372,15 +379,15 @@ class Room {
         const sendBigTo = []
         const distSquaredThreshold = 400*400
         const { position } = user
-        for (const [userId, u] of this.users) {
+        for (const [, u] of this.users) {
             const x = u.position.x - position.x
             const y = u.position.y - position.y
             const distSquared = x * x + y * y
             if (distSquared < distSquaredThreshold) {
-                sendBigTo.push(userId)
+                sendBigTo.push(u)
             }
             else {
-                sendSmallTo.push(userId)
+                sendSmallTo.push(u)
             }
         }
 

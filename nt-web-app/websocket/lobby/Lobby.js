@@ -149,7 +149,7 @@ class Lobby {
             user.Send(msg)
             return
         }
-        const { name, password, gamemode, maxUsers } = payload
+        const { name, password, gamemode, maxUsers, locked } = payload
         if (user.uaccess > 0 && !name.trim() || !validator.isAscii(name.trim())) {
             const msg = encodeLobbyMsg("sRoomCreateFailed", { reason: "Invalid room name." })
             user.Send(msg)
@@ -157,7 +157,7 @@ class Lobby {
         }
         const pwd = password && validator.isAscii(password)
 
-        const room = new Room(uuidv4(), name, pwd ? password : "", user, maxUsers, gamemode, false, this, this.statsController)
+        const room = new Room(uuidv4(), name, pwd ? password : "", user, maxUsers, gamemode, !!locked, this, this.statsController)
         this.rooms.set(room.id, room)
         user.room = room
         const msg = encodeLobbyMsg("sRoomCreated", {

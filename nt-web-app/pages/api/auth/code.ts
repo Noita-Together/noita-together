@@ -100,7 +100,8 @@ export default async function handler(
         }
     } catch (error) {
         // Handle error response
-        console.error(error);
+        console.error('Error fetching tokens');
+        console.error(error.code ?? error);
         res.status(500).json({ error: 'Failed to retrieve tokens :(' });
     }
     console.log('/api/auth/code: End')
