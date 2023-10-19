@@ -313,7 +313,7 @@ export default new Vuex.Store({
             state.lobbies = payload
         },
         setRoom: (state, payload) => {
-            state.room = payload
+            state.room = Object.assign(state.room, payload);
             for (const user of state.room.users) {
                 user.color = randomColor()
             }
@@ -323,7 +323,7 @@ export default new Vuex.Store({
             state.room = Object.assign(room, payload)
         },
         roomFlagsUpdated: (state, payload) => {
-            const mode = state.room.gamemode
+            const mode = state.room.gamemode || 0
             const fDefaults = state.defaultFlags[mode]
             if (!fDefaults) { return }
             state.roomFlags = payload.flags.map(val => {
@@ -448,7 +448,7 @@ export default new Vuex.Store({
             commit("setLoading", true)
             ipcRenderer.send("CLIENT_MESSAGE", { key: "cRoomCreate", payload })
             ipcRenderer.once("sRoomCreated", (event, data) => {
-                commit("setDefaultFlags", data.gamemode)
+                commit("setDefaultFlags", data.gamemode || 0)
                 commit("setRoom", data)
                 commit("setLoading", false)
                 dispatch("sendFlags")
