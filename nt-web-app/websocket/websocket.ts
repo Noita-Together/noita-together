@@ -22,7 +22,7 @@ const timeStart = Date.now()
 const userDatasource = UserDatasource()
 
 class NoitaTogetherWebsocket{
-    readonly port?
+    readonly port?: string|number
     readonly offlineCode?: string|null
     private wsServer?: Server|null
 
@@ -32,7 +32,7 @@ class NoitaTogetherWebsocket{
      * @param offlineCode The code for the user to input to join the lobby of a private instance. If not provided,
      *  socket defaults to twitch authentication mode
      */
-    constructor(port = 5466, offlineCode?: string) {
+    constructor(port: string|number|undefined = 5466, offlineCode?: string) {
         this.port = port
         this.offlineCode = offlineCode
     }

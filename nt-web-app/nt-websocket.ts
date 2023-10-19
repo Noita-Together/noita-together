@@ -25,5 +25,5 @@ try {
     console.error(e)
 }
 
-const websocket = new NoitaTogetherWebsocket()
+const websocket = new NoitaTogetherWebsocket(process.env.LOBBY_WEBSOCKET_PORT) //if env is not defined, will default to port in class constructor
 websocket.startServer()
