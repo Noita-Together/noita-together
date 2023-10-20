@@ -1,7 +1,7 @@
 
 # Noita Together
 Play alone together
-[click here to downloads](https://github.com/soler91/noita-together/releases)
+[click here to downloads](https://github.com/Noita-Together/noita-together/releases)
 
 ## What is Noita Together?
 Noita Together is an attempt to bring a slight multiplayer aspect to the game, think of it more like everyone is in different dimensions yet you can still see other players and somewhat interact with each other you can not directly affect other player's worlds
