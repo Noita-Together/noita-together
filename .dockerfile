@@ -1,8 +1,11 @@
 FROM node:16.20.2-buster
-RUN which yarn
+ARG UID=0
+ARG GID=0
+RUN npm install -g pm2
+RUN [ $GID > 0 ] && [ $UID > 0 ] && groupadd -g $GID nginx && useradd -u $UID -g $GID -m -d /noita-together -s /usr/sbin/nologin nginx
+USER $UID:$GID
 WORKDIR ./noita-together
-RUN npm install pm2 -g
-ADD . .
+ADD --chown=$UID:$GID . .
 RUN yarn install
 RUN yarn buildServer
-CMD ["pm2-runtime", "./ecosystem.config.js"]
+CMD ["bash", "-c", "rm -f /srv/socket/noita-together/noita-together.sock && pm2-runtime ./ecosystem.config.js"]

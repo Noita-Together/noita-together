@@ -77,9 +77,9 @@ class Room {
      */
     BroadcastTo(data, users, ignoreId) {
         const list = MakeFrame(data)
-        for (const roomUser of users) {
-            if(roomUser.id === ignoreId) return
-            roomUser.Write(list)
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].id === ignoreId) continue
+            users[i].Write(list)
         }
     }
 
