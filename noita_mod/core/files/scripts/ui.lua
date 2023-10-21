@@ -875,7 +875,7 @@ if not initialized then
 
         --check if we are currently hovering any textinputs and lock/unlock player controls as needed
         --don't need to do this unless the run is actually started
-        if (NT.run_started) then 
+        if (NT ~= nil and NT.run_started) then 
             local is_hovering_textbox = is_hovering_bank_filter or is_hovering_bank_gold or is_hovering_message_input
 
             if (is_hovering_textbox and not was_hovering_textbox) then
@@ -945,5 +945,3 @@ if not initialized then
         GuiIdPop(gui)
     end
 end
-
-draw_gui()
