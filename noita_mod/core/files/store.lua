@@ -28,6 +28,6 @@ if (NT.initialized ~= true) then
     NT.gold_queue = 0
 
     --"Health Check" values for making sure we're running OK
-    NT.HealthCheck = {}
-    NT.HealthCheck.AsyncLoopLastFrame = -1
+    NT.HealthCheck = {AsyncLoopLastFrame=-1} --accessing table members when global store is not ready breaks random scripts...
+    --NT.HealthCheck.AsyncLoopLastFrame = -1 --aka dont do this, do the above
 end

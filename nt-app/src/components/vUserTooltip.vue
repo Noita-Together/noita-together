@@ -44,7 +44,7 @@ export default {
             matches: {
                 version: {
                     hostMsg: "User is not on the same mod version.",
-                    userMsg: "You are not in the samge game branch as the host.",
+                    userMsg: "You are not in the same game branch as the host.",
                 },
                 beta: {
                     hostMsg: "User is not in the same game branch.",
