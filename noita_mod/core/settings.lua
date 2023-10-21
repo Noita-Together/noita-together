@@ -31,7 +31,7 @@ mod_settings =
 		ui_name = "Enable Logger (Debug)",
 		ui_description = "Enable debug logging. logger.txt lives in the Noita install directory.\nIt is NOT automatically shared with NT developers.",
 		value_default = true,
-        scope=MOD_SETTING_SCOPE_RESTART
+        scope=MOD_SETTING_SCOPE_RUNTIME_RESTART --this doesnt actually seem to prompt the user to restart the game though ??
 	},
 }
 
