@@ -16,7 +16,7 @@ export default {
     },
     data() {
         return {
-            contributorUrl: "https://github.com/SkyeOfBreeze/noita-together/",
+            contributorUrl: "https://github.com/Noita-Together/noita-together/",
             version: "0"
         }
     },
