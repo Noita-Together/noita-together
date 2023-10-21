@@ -26,6 +26,13 @@ mod_settings =
 		value_display_multiplier = 100,
         scope=MOD_SETTING_SCOPE_RUNTIME
 	},
+	{
+		id = "NT_ENABLE_LOGGER",
+		ui_name = "Enable Logger (Debug)",
+		ui_description = "Enable debug logging. logger.txt lives in the Noita install directory.\nIt is NOT automatically shared with NT developers.",
+		value_default = true,
+        scope=MOD_SETTING_SCOPE_RESTART
+	},
 }
 
 function ModSettingsUpdate( init_scope )

@@ -1,3 +1,9 @@
+--enable logger (allow opt out in settings)
+--do it first so it logs other errors in init?
+if(ModSettingGet("noita-together.NT_ENABLE_LOGGER")) then
+    ModMagicNumbersFileAdd("mods/noita-together/files/magic_numbers/enable_logger.xml")
+end
+
 if not async then
     dofile("mods/noita-together/files/scripts/coroutines.lua")
 end
