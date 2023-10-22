@@ -143,6 +143,9 @@ wsEvents = {
         PopulateSpellList()
     end,
     PlayerMove = function(data)
+        if not PlayerList[data.userId] then
+            return
+        end
         local last = data.frames[math.floor(#data.frames/2)]
         PlayerList[data.userId].x = last.x
         PlayerList[data.userId].y = last.y
@@ -154,6 +157,9 @@ wsEvents = {
         end
     end,
     PlayerPos = function(data)
+        if not PlayerList[data.userId] then
+            return
+        end
         PlayerList[data.userId].x = data.x
         PlayerList[data.userId].y = data.y
         PlayerList[data.userId].scale_x = 1
