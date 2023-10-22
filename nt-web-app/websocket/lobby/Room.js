@@ -3,6 +3,7 @@ import {encodeGameMsg, encodeLobbyMsg} from "../messageHandler";
 import {v4 as uuidv4} from "uuid";
 import * as fs from 'fs'
 import path from "path";
+import {StaticStatsPageGenerator} from "../stats/StaticStatsPageGenerator";
 
 class Room {
     /**
@@ -104,56 +105,6 @@ class Room {
         this.Broadcast(msg)
     }
 
-    GenerateHtmlStats(){
-        try {
-            const baseDir = path.join(__dirname, `../../.storage/stats/${this.id}/${this.session_id}/`)
-            const templateHtml = path.join(__dirname, `../stats/template.html`)
-            const templateUserHtml = path.join(__dirname, `../stats/template-segment-user.html`)
-            if (!fs.existsSync(templateHtml) || !fs.existsSync(templateUserHtml)) {
-                // noinspection ExceptionCaughtLocallyJS
-                throw new Error('Unable to locate template HTML file')
-            }
-            let fullHtml = fs.readFileSync(templateHtml, 'utf-8')
-            const userHtmlSegment = fs.readFileSync(templateUserHtml, 'utf-8')
-            if (!fs.existsSync(baseDir)) fs.mkdirSync(baseDir, {recursive: true})
-            const stats = this.stats
-            const userData = []
-            Object.values(stats.users).forEach((user) => {
-                console.log(JSON.stringify(user))
-                const data = userHtmlSegment.replace(/{([^{}]+)}/g, function (keyExpr, key) {
-                    return user[key] !== undefined ? user[key] : `{${key}}`;
-                });
-                userData.push(data)
-            })
-            const replaceDataTemplate = {
-                'INSERT_STATS_HERE': userData.join(''),
-                'room-name': stats.roomName
-            }
-            fullHtml = fullHtml.replace(/{([^{}]+)}/g, function (keyExpr, key) {
-                return replaceDataTemplate[key] !== undefined ? replaceDataTemplate[key] : `{${key}}`;;
-            });
-            fs.writeFileSync(path.join(baseDir, 'stats-final.html'), fullHtml, 'utf-8')
-            // TODO fs.writeFileSync(path.join(baseDir, 'stats-final.json'), JSON.stringify(userData, undefined, 2), 'utf-8')
-        } catch (e) {
-            console.error('failed to generate stats!')
-            console.error(e)
-            return false
-        }
-        return true
-    }
-
-    DeleteHtmlStats(id){
-        const baseDir = path.join(__dirname, `../../.storage/stats/${this.id}/`)
-        try {
-            if (fs.existsSync(baseDir)) {
-                fs.rmSync(baseDir, {recursive: true})
-            }
-        } catch (e) {
-            console.error(`Failed to delete html stats for room ${id}`)
-            console.error(e)
-        }
-    }
-
     UpdateFlags(payload) {
         console.log(`${this.id} : UpdateFlags : ${JSON.stringify(payload.flags)}`)
         const msg = encodeLobbyMsg("sRoomFlagsUpdated", payload)
@@ -178,7 +129,7 @@ class Room {
 
         if (this.gamemode === 0) {//Coop
             this.SendStats()
-            if(this.GenerateHtmlStats()){
+            if(StaticStatsPageGenerator.GenerateHtmlStats(this.id, this.session_id, this.stats)){
                 this.SysMsg(`Stats for run can be found at ${process.env.OAUTH_REDIRECT_URI}/api/stats/${this.id}/${this.session_id}/html`)
             }
             else{
@@ -344,7 +295,7 @@ class Room {
             user.room = null
         })
         this.lobby.DeleteRoom(this.id)
-        this.DeleteHtmlStats(this.id)
+        StaticStatsPageGenerator.DeleteHtmlStats(this.id)
     }
 
     Rebroadcast(serverKey, payload, user, options = { ignoreSelf: false, ownerOnly: false, toHost: false }) {

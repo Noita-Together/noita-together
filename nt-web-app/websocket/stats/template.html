@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <script type="text/javascript" src="chrome-extension://mdnleldcmiljblolnjhpnblkcekpdkpa/libs/customElements.js"
         class="__REQUESTLY__SCRIPT"></script>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>SkyeOfBreeze's room</title>
+    <title>{room-name}</title>
     <style>.content {
         display: flex;
         align-content: center;
@@ -135,16 +135,23 @@
                 one from current row and one from the next: */
                 x = rows[i].getElementsByTagName("TD")[n];
                 y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                var xValue = parseInt(x.innerHTML)
+                var yValue = parseInt(y.innerHTML)
+                if(isNaN(xValue) || isNaN(yValue)){
+                    xValue = x.innerHTML.toLowerCase()
+                    yValue = y.innerHTML.toLowerCase()
+                }
                 /* Check if the two rows should switch place,
                 based on the direction, asc or desc: */
                 if (dir === "asc") {
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    if (xValue > yValue) {
                         // If so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
                     }
                 } else if (dir === "desc") {
-                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    if (xValue < yValue) {
                         // If so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
