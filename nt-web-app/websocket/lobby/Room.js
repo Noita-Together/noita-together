@@ -1,9 +1,8 @@
 import {MakeFrame} from "./LobbyUtils";
 import {encodeGameMsg, encodeLobbyMsg} from "../messageHandler";
 import {v4 as uuidv4} from "uuid";
-import * as fs from 'fs'
-import path from "path";
 import {StaticStatsPageGenerator} from "../stats/StaticStatsPageGenerator";
+import { PlayerPositions } from "./player_positions";
 
 class Room {
     /**
@@ -35,6 +34,7 @@ class Room {
         this.users.forEach(user => {
             this.ResetUserStats(user)
         })
+        this.playerPositions = new PlayerPositions()
     }
 
     SanitizeCapacity(cap) {
@@ -84,13 +84,19 @@ class Room {
         }
     }
 
-    Broadcast(data, ignoreId) {//
+    Broadcast(data, ignoreId) {
         const list = MakeFrame(data)
 
         this.users.forEach(user => {
             if (user.id === ignoreId) { return }
             user.Write(list)
         })
+    }
+
+    BroadcastPlayerPositions(buf) {
+        for (var i = 0; i < this.users.length; i++) {
+            this.users[i].Send(buf);
+        }
     }
 
     SysMsg(message, announcement) {
@@ -116,6 +122,7 @@ class Room {
     StartRun() {
         console.log(`${this.id} : StartRun`)
         this.inProgress = true
+        this.playerPositions.start((buf) => this.BroadcastPlayerPositions(buf));
         const msg = encodeLobbyMsg("sHostStart", { forced: false })
         this.Broadcast(msg)
     }
@@ -123,6 +130,7 @@ class Room {
     FinishRun() {
         console.log(`${this.id} : FinishRun`)
         this.inProgress = false
+        this.playerPositions.stop();
         this.users.forEach(u => {
             u.FinishRun()
         })
@@ -317,33 +325,14 @@ class Room {
     }
 
     cPlayerMove(payload, user) {
-        if (!this.inProgress) { return } //TODO Error? run not started yet
-        if (payload.frames.length === 0) { return }
-        const last = payload.frames[payload.frames.length - 1]
-        if (last) {
-            user.position.x = last.x
-            user.position.y = last.y
-        }
-        const small = encodeGameMsg("sPlayerPos", { userId: user.id, x: user.position.x, y: user.position.y })
-        const big = encodeGameMsg("sPlayerMove", { userId: user.id, ...payload })
-        const sendSmallTo = []
-        const sendBigTo = []
-        const distSquaredThreshold = 400*400
-        const { position } = user
-        for (const [, u] of this.users) {
-            const x = u.position.x - position.x
-            const y = u.position.y - position.y
-            const distSquared = x * x + y * y
-            if (distSquared < distSquaredThreshold) {
-                sendBigTo.push(u)
-            }
-            else {
-                sendSmallTo.push(u)
-            }
-        }
+        // this method no longer sends data; we'll still store the most recent position update even
+        // if the room isn't "inProgress" yet.
+        // // if (!this.inProgress) { return } //TODO Error? run not started yet
 
-        this.BroadcastTo(small, sendSmallTo, user.id)
-        this.BroadcastTo(big, sendBigTo, user.id)
+        if (payload.frames.length === 0) { return }
+
+        const last = payload.frames[payload.frames.length - 1]
+        this.playerPositions.push(user.id, encodeGameMsg("sPlayerMove", { userId: user.id, frames: [last] }))
     }
 
     cPlayerUpdate(payload, user) {
