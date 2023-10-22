@@ -1,4 +1,4 @@
-// ts-node .\StaticStatsPage.test.ts
+// ts-node .\StaticStatsPageTest.ts
 //file output: nt-web-app/.storage/stats/deadbeef/eadg-beaf/stats-final.html
 
 import {StaticStatsPageGenerator} from "./StaticStatsPageGenerator";

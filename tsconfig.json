@@ -18,6 +18,6 @@
     "jsx": "preserve",
     "incremental": true,
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "include": ["nt-web-app/next-env.d.ts", "nt-web-app/**/*.ts", "nt-web-app/**/*.tsx", "jest.config.ts"],
+  "exclude": ["**/node_modules"]
 }
