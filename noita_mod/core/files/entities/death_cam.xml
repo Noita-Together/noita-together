@@ -15,8 +15,8 @@
     offset_x ="100"
     offset_y ="20"
     has_special_scale="1" 
-    special_scale_x = "0.95",
-    special_scale_y = "0.95",
+    special_scale_x = "0.95"
+    special_scale_y = "0.95"
     image_file="data/fonts/font_pixel_white.xml"
     is_text_sprite="1" 
     kill_entity_after_finished="0" 
@@ -36,8 +36,8 @@
     offset_x ="220"
     offset_y ="10"
     has_special_scale="1" 
-    special_scale_x = "0.8",
-    special_scale_y = "0.8",
+    special_scale_x = "0.8"
+    special_scale_y = "0.8"
     image_file="data/fonts/font_pixel_white.xml"
     is_text_sprite="1" 
     kill_entity_after_finished="0" 
