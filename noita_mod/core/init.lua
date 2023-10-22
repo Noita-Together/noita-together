@@ -4,9 +4,18 @@ if(ModSettingGet("noita-together.NT_ENABLE_LOGGER")) then
     ModMagicNumbersFileAdd("mods/noita-together/files/magic_numbers/enable_logger.xml")
 end
 
+---------------------------
+-- lua dofile "includes" --
+---------------------------
 if not async then
     dofile("mods/noita-together/files/scripts/coroutines.lua")
-end
+end 
+dofile_once("mods/noita-together/files/scripts/utils.lua")
+dofile_once("mods/noita-together/files/scripts/ui.lua")
+
+-----------------
+-- lua appends --
+-----------------
 local pregen_wand_biomes = {
     "data/scripts/biomes/coalmine.lua",
     "data/scripts/biomes/coalmine_alt.lua",
@@ -37,11 +46,14 @@ ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/file
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
 
---Append our translations to the game
+-----------------------------------------
+-- Append our translations to the game --
+-----------------------------------------
 local TRANSLATIONS_FILE = "data/translations/common.csv"
 local translations = ModTextFileGetContent(TRANSLATIONS_FILE) .. ModTextFileGetContent("mods/noita-together/files/translations/translations.csv")
 ModTextFileSetContent(TRANSLATIONS_FILE, translations)
 
+--TODO what is all this? can we move it somewhere?
 HideGhosts = false
 HideChat = false
 PlayerRadar = true
@@ -88,7 +100,8 @@ function SetProgressDisable(b)
 end
 
 function OnWorldPreUpdate()
-    dofile("mods/noita-together/files/scripts/ui.lua")
+    --tick UI
+    draw_gui()
 end
 
 loc_tracker = {}
