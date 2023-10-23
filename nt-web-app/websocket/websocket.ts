@@ -40,7 +40,7 @@ class NoitaTogetherWebsocket{
     startServer(){
         this.wsServer = http.createServer()
         this.wsServer.listen(this.port, () => {
-            console.log("Running.")
+            console.log("Listening on", this.port)
             this.subscribeEvents()
         })
     }
