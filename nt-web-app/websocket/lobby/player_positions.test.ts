@@ -6,7 +6,8 @@ describe('PlayerPosition', () => {
   it('end to end test', () => {
     jest.useFakeTimers();
 
-    const move = (userId: string, n: number): NT.IEnvelope => ({
+    const frame = (n: number): NT.IPlayerFrame => ({ x: n, y: n });
+    const envelope = (userId: string, n: number): NT.IEnvelope => ({
       gameAction: { sPlayerMove: { userId, frames: [{ x: n, y: n }] } },
     });
 
@@ -15,10 +16,10 @@ describe('PlayerPosition', () => {
 
     pp.start(buf => cb(NT.Envelope.toObject(decode(buf))), 100);
 
-    pp.push('1', move('1', 1));
-    pp.push('2', move('2', 2));
+    pp.pushFrame('1', frame(1));
+    pp.pushFrame('2', frame(2));
     // new update from same player id replaces old one
-    pp.push('1', move('1', 3));
+    pp.pushFrame('1', frame(3));
 
     // no messages until time has passed
     jest.advanceTimersByTime(99);
@@ -28,14 +29,14 @@ describe('PlayerPosition', () => {
     expect(cb).toHaveBeenCalledTimes(1);
     expect(cb).toHaveBeenCalledWith({
       isMultiple: true,
-      list: [move('1', 3), move('2', 2)],
+      list: [envelope('1', 3), envelope('2', 2)],
     });
 
     jest.advanceTimersByTime(100);
     // no updates = no messages sent
     expect(cb).toHaveBeenCalledTimes(1);
 
-    pp.push('2', move('2', 4));
+    pp.pushFrame('2', frame(4));
 
     jest.advanceTimersByTime(100);
     expect(cb).toHaveBeenCalledTimes(2);
@@ -44,7 +45,7 @@ describe('PlayerPosition', () => {
     // correctly cleared
     expect(cb).toHaveBeenCalledWith({
       isMultiple: true,
-      list: [move('2', 4)],
+      list: [envelope('2', 4)],
     });
 
     jest.useRealTimers();

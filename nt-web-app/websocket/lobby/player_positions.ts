@@ -20,13 +20,13 @@ export class PlayerPositions {
    * @param userId ID of the user to whom this position belongs
    * @param encoded Encoded protobuf data, ready-to-send
    */
-  push(userId: string, frame: NT.IEnvelope): void {
+  pushFrame(userId: string, frame: NT.IPlayerFrame): void {
     // TODO: game sends messages even when nothing has changed. we can avoid the
     // encoding overhead if we put a stop to that.
 
     // encodeListItem wraps the envelope into the repeated "list" field id so
     // that it can be concatenated after serialization
-    var encoded = encodeListItem(frame);
+    var encoded = encodeListItem({ gameAction: { sPlayerMove: { userId, frames: [frame] } } });
     if (!encoded) return;
 
     var last = this.playerIdx[userId];

@@ -331,7 +331,7 @@ class Room {
 
         if (payload.frames.length === 0) { return }
         // push last (most recent) frame in the list to be broadcast to players
-        this.playerPositions.push(user.id, {gameAction: {sPlayerMove: {frames: payload.frames.slice(-1)}}});
+        this.playerPositions.pushFrame(user.id, payload.frames[payload.frames.length-1]);
     }
 
     cPlayerUpdate(payload, user) {
