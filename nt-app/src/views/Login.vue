@@ -24,10 +24,13 @@
 
 <script>
 import { shell, ipcRenderer } from "electron"
+
+const loginUrl = process.env.VUE_APP_LOBBY_SERVER_LOGIN_URL || `${process.env.VUE_APP_HOSTNAME}/auth/login`
+
 export default {
   data() {
     return {
-      loginUrl: `${process.env.VUE_APP_HOSTNAME}/auth/login`,
+      loginUrl,
       remember: false,
       clicked: false,
     }
