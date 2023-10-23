@@ -1,15 +1,15 @@
-import { encode } from '../messageHandler';
+import { encode, encodeListItem } from '../messageHandler';
+import { NT } from '../messages';
 
 const DEFAULT_UPDATE_INTERVAL = 250;
-
-const MULTIPLE_HEADER = (() => {
-  const header = encode({ multiple: true });
-  if (!header) throw new Error('Failed to encode MULTIPLE_HEADER');
+const ENVELOPE_MESSAGE_HEADER = (() => {
+  const header = encode({ isMultiple: true });
+  if (!header) throw new Error("Can't create Envelope list header??");
   return header;
 })();
 
 export class PlayerPositions {
-  private pending: Uint8Array[] = [MULTIPLE_HEADER];
+  private pending: Uint8Array[] = [ENVELOPE_MESSAGE_HEADER];
   private playerIdx: Record<string, number> = {};
   private playerNoIdx: Record<string, number> = {};
   private timer: NodeJS.Timeout | undefined;
@@ -20,11 +20,15 @@ export class PlayerPositions {
    * @param userId ID of the user to whom this position belongs
    * @param encoded Encoded protobuf data, ready-to-send
    */
-  push(userId: string, encoded: Uint8Array | undefined): void {
-    if (!encoded) return;
-
+  push(userId: string, frame: NT.IEnvelope): void {
     // TODO: game sends messages even when nothing has changed. we can avoid the
     // encoding overhead if we put a stop to that.
+
+    // encodeListItem wraps the envelope into the repeated "list" field id so
+    // that it can be concatenated after serialization
+    var encoded = encodeListItem(frame);
+    if (!encoded) return;
+
     var last = this.playerIdx[userId];
     if (last === undefined) {
       // haven't seen this user before, record them in the "reset" object
@@ -47,7 +51,7 @@ export class PlayerPositions {
     this.stop();
 
     this.timer = setInterval(() => {
-      if (this.pending.length === 0) return;
+      if (this.pending.length <= 1) return;
 
       broadcast(Buffer.concat(this.pending));
       this.pending.length = 1;

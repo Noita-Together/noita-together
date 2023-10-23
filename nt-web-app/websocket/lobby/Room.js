@@ -330,9 +330,8 @@ class Room {
         // // if (!this.inProgress) { return } //TODO Error? run not started yet
 
         if (payload.frames.length === 0) { return }
-
-        const last = payload.frames[payload.frames.length - 1]
-        this.playerPositions.push(user.id, encodeGameMsg("sPlayerMove", { userId: user.id, frames: [last] }))
+        // push last (most recent) frame in the list to be broadcast to players
+        this.playerPositions.push(user.id, payload.frames[payload.frames.length - 1]);
     }
 
     cPlayerUpdate(payload, user) {
