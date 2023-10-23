@@ -12,6 +12,7 @@ export const NT = $root.NT = (() => {
     NT.Envelope = (function() {
 
         function Envelope(properties) {
+            this.list = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -20,11 +21,13 @@ export const NT = $root.NT = (() => {
 
         Envelope.prototype.gameAction = null;
         Envelope.prototype.lobbyAction = null;
+        Envelope.prototype.multiple = null;
+        Envelope.prototype.list = $util.emptyArray;
 
         let $oneOfFields;
 
         Object.defineProperty(Envelope.prototype, "kind", {
-            get: $util.oneOfGetter($oneOfFields = ["gameAction", "lobbyAction"]),
+            get: $util.oneOfGetter($oneOfFields = ["gameAction", "lobbyAction", "multiple"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -39,6 +42,11 @@ export const NT = $root.NT = (() => {
                 $root.NT.GameAction.encode(message.gameAction, writer.uint32(10).fork()).ldelim();
             if (message.lobbyAction != null && Object.hasOwnProperty.call(message, "lobbyAction"))
                 $root.NT.LobbyAction.encode(message.lobbyAction, writer.uint32(402).fork()).ldelim();
+            if (message.multiple != null && Object.hasOwnProperty.call(message, "multiple"))
+                writer.uint32(800).bool(message.multiple);
+            if (message.list != null && message.list.length)
+                for (let i = 0; i < message.list.length; ++i)
+                    $root.NT.Envelope.encode(message.list[i], writer.uint32(810).fork()).ldelim();
             return writer;
         };
 
@@ -54,6 +62,14 @@ export const NT = $root.NT = (() => {
                     break;
                 case 50:
                     message.lobbyAction = $root.NT.LobbyAction.decode(reader, reader.uint32());
+                    break;
+                case 100:
+                    message.multiple = reader.bool();
+                    break;
+                case 101:
+                    if (!(message.list && message.list.length))
+                        message.list = [];
+                    message.list.push($root.NT.Envelope.decode(reader, reader.uint32()));
                     break;
                 default:
                     reader.skipType(tag & 7);
@@ -85,6 +101,22 @@ export const NT = $root.NT = (() => {
                         return "lobbyAction." + error;
                 }
             }
+            if (message.multiple != null && message.hasOwnProperty("multiple")) {
+                if (properties.kind === 1)
+                    return "kind: multiple values";
+                properties.kind = 1;
+                if (typeof message.multiple !== "boolean")
+                    return "multiple: boolean expected";
+            }
+            if (message.list != null && message.hasOwnProperty("list")) {
+                if (!Array.isArray(message.list))
+                    return "list: array expected";
+                for (let i = 0; i < message.list.length; ++i) {
+                    let error = $root.NT.Envelope.verify(message.list[i]);
+                    if (error)
+                        return "list." + error;
+                }
+            }
             return null;
         };
 
@@ -102,6 +134,18 @@ export const NT = $root.NT = (() => {
                     throw TypeError(".NT.Envelope.lobbyAction: object expected");
                 message.lobbyAction = $root.NT.LobbyAction.fromObject(object.lobbyAction);
             }
+            if (object.multiple != null)
+                message.multiple = Boolean(object.multiple);
+            if (object.list) {
+                if (!Array.isArray(object.list))
+                    throw TypeError(".NT.Envelope.list: array expected");
+                message.list = [];
+                for (let i = 0; i < object.list.length; ++i) {
+                    if (typeof object.list[i] !== "object")
+                        throw TypeError(".NT.Envelope.list: object expected");
+                    message.list[i] = $root.NT.Envelope.fromObject(object.list[i]);
+                }
+            }
             return message;
         };
 
@@ -109,6 +153,8 @@ export const NT = $root.NT = (() => {
             if (!options)
                 options = {};
             let object = {};
+            if (options.arrays || options.defaults)
+                object.list = [];
             if (message.gameAction != null && message.hasOwnProperty("gameAction")) {
                 object.gameAction = $root.NT.GameAction.toObject(message.gameAction, options);
                 if (options.oneofs)
@@ -118,6 +164,16 @@ export const NT = $root.NT = (() => {
                 object.lobbyAction = $root.NT.LobbyAction.toObject(message.lobbyAction, options);
                 if (options.oneofs)
                     object.kind = "lobbyAction";
+            }
+            if (message.multiple != null && message.hasOwnProperty("multiple")) {
+                object.multiple = message.multiple;
+                if (options.oneofs)
+                    object.kind = "multiple";
+            }
+            if (message.list && message.list.length) {
+                object.list = [];
+                for (let j = 0; j < message.list.length; ++j)
+                    object.list[j] = $root.NT.Envelope.toObject(message.list[j], options);
             }
             return object;
         };

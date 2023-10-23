@@ -10,6 +10,12 @@ export namespace NT {
 
         /** Envelope lobbyAction */
         lobbyAction?: (NT.ILobbyAction|null);
+
+        /** Envelope multiple */
+        multiple?: (boolean|null);
+
+        /** Envelope list */
+        list?: (NT.IEnvelope[]|null);
     }
 
     /** Represents an Envelope. */
@@ -27,8 +33,14 @@ export namespace NT {
         /** Envelope lobbyAction. */
         public lobbyAction?: (NT.ILobbyAction|null);
 
+        /** Envelope multiple. */
+        public multiple?: (boolean|null);
+
+        /** Envelope list. */
+        public list: NT.IEnvelope[];
+
         /** Envelope kind. */
-        public kind?: ("gameAction"|"lobbyAction");
+        public kind?: ("gameAction"|"lobbyAction"|"multiple");
 
         /**
          * Creates a new Envelope instance using the specified properties.

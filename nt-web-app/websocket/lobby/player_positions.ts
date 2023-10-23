@@ -1,7 +1,15 @@
+import { encode } from '../messageHandler';
+
 const DEFAULT_UPDATE_INTERVAL = 250;
 
+const MULTIPLE_HEADER = (() => {
+  const header = encode({ multiple: true });
+  if (!header) throw new Error('Failed to encode MULTIPLE_HEADER');
+  return header;
+})();
+
 export class PlayerPositions {
-  private pending: Uint8Array[] = [];
+  private pending: Uint8Array[] = [MULTIPLE_HEADER];
   private playerIdx: Record<string, number> = {};
   private playerNoIdx: Record<string, number> = {};
   private timer: NodeJS.Timeout | undefined;
@@ -42,7 +50,7 @@ export class PlayerPositions {
       if (this.pending.length === 0) return;
 
       broadcast(Buffer.concat(this.pending));
-      this.pending.length = 0;
+      this.pending.length = 1;
       Object.assign(this.playerIdx, this.playerNoIdx);
     }, interval);
   }
