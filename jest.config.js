@@ -4,4 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['./nt-web-app'],
   testMatch: ['**/*.test.ts'],
+  transform: {
+    'websocket/messages\\.js$': 'ts-jest',
+  },
 };
