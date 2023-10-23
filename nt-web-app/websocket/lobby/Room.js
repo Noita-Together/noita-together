@@ -94,9 +94,9 @@ class Room {
     }
 
     BroadcastPlayerPositions(buf) {
-        for (var i = 0; i < this.users.length; i++) {
-            this.users[i].Send(buf);
-        }
+        this.users.forEach(user => {
+            user.Send(buf)
+        });
     }
 
     SysMsg(message, announcement) {
