@@ -21,13 +21,13 @@ export const NT = $root.NT = (() => {
 
         Envelope.prototype.gameAction = null;
         Envelope.prototype.lobbyAction = null;
-        Envelope.prototype.multiple = null;
+        Envelope.prototype.isMultiple = null;
         Envelope.prototype.list = $util.emptyArray;
 
         let $oneOfFields;
 
         Object.defineProperty(Envelope.prototype, "kind", {
-            get: $util.oneOfGetter($oneOfFields = ["gameAction", "lobbyAction", "multiple"]),
+            get: $util.oneOfGetter($oneOfFields = ["gameAction", "lobbyAction", "isMultiple"]),
             set: $util.oneOfSetter($oneOfFields)
         });
 
@@ -42,8 +42,8 @@ export const NT = $root.NT = (() => {
                 $root.NT.GameAction.encode(message.gameAction, writer.uint32(10).fork()).ldelim();
             if (message.lobbyAction != null && Object.hasOwnProperty.call(message, "lobbyAction"))
                 $root.NT.LobbyAction.encode(message.lobbyAction, writer.uint32(402).fork()).ldelim();
-            if (message.multiple != null && Object.hasOwnProperty.call(message, "multiple"))
-                writer.uint32(800).bool(message.multiple);
+            if (message.isMultiple != null && Object.hasOwnProperty.call(message, "isMultiple"))
+                writer.uint32(800).bool(message.isMultiple);
             if (message.list != null && message.list.length)
                 for (let i = 0; i < message.list.length; ++i)
                     $root.NT.Envelope.encode(message.list[i], writer.uint32(810).fork()).ldelim();
@@ -64,7 +64,7 @@ export const NT = $root.NT = (() => {
                     message.lobbyAction = $root.NT.LobbyAction.decode(reader, reader.uint32());
                     break;
                 case 100:
-                    message.multiple = reader.bool();
+                    message.isMultiple = reader.bool();
                     break;
                 case 101:
                     if (!(message.list && message.list.length))
@@ -101,12 +101,12 @@ export const NT = $root.NT = (() => {
                         return "lobbyAction." + error;
                 }
             }
-            if (message.multiple != null && message.hasOwnProperty("multiple")) {
+            if (message.isMultiple != null && message.hasOwnProperty("isMultiple")) {
                 if (properties.kind === 1)
                     return "kind: multiple values";
                 properties.kind = 1;
-                if (typeof message.multiple !== "boolean")
-                    return "multiple: boolean expected";
+                if (typeof message.isMultiple !== "boolean")
+                    return "isMultiple: boolean expected";
             }
             if (message.list != null && message.hasOwnProperty("list")) {
                 if (!Array.isArray(message.list))
@@ -134,8 +134,8 @@ export const NT = $root.NT = (() => {
                     throw TypeError(".NT.Envelope.lobbyAction: object expected");
                 message.lobbyAction = $root.NT.LobbyAction.fromObject(object.lobbyAction);
             }
-            if (object.multiple != null)
-                message.multiple = Boolean(object.multiple);
+            if (object.isMultiple != null)
+                message.isMultiple = Boolean(object.isMultiple);
             if (object.list) {
                 if (!Array.isArray(object.list))
                     throw TypeError(".NT.Envelope.list: array expected");
@@ -165,10 +165,10 @@ export const NT = $root.NT = (() => {
                 if (options.oneofs)
                     object.kind = "lobbyAction";
             }
-            if (message.multiple != null && message.hasOwnProperty("multiple")) {
-                object.multiple = message.multiple;
+            if (message.isMultiple != null && message.hasOwnProperty("isMultiple")) {
+                object.isMultiple = message.isMultiple;
                 if (options.oneofs)
-                    object.kind = "multiple";
+                    object.kind = "isMultiple";
             }
             if (message.list && message.list.length) {
                 object.list = [];

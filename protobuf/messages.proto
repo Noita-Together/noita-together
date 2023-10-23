@@ -5,18 +5,21 @@ message Envelope {
     oneof kind {
         GameAction game_action = 1;
         LobbyAction lobby_action = 50;
-        // we need a way to identify when this message
-        // is a header to multiple Envelope messages that
-        // is mutually exclusive with the other uses
-        bool multiple = 100;
+        // it is _valid_ for both game_action and list.kind.game_action
+        // to exist concurrently, but we'll introduce the convention that
+        // we may only consume "list" when "is_multiple" is true. this
+        // ensures that while we can't strictly validate our expectations
+        // at the proto level, we can do so at the business logic level
+        bool is_multiple = 100;
     }
     // serialized proto data can be concatenated, but it's not
     // self-delimiting. since websockets delimit / frame their
-    // payloads, we need to prefix multiple Envelope messages
-    // that have been concatenated in a single WS message with
-    // a header telling the proto parser to treat them as
-    // repeated. this allows us to "cheat" and get the effect
-    // without redesigning the Envelope type.
+    // payloads, if we send a websocket message whose contents
+    // are concatenated serialized protobuf data, we require a
+    // way to "tell" the decoding side what we've done.
+    //
+    // we accomplish that here by adding a field to Envelope
+    // for which the concatenated serialized data will be valid
     //
     // https://github.com/protocolbuffers/protobuf/issues/9257
     repeated Envelope list = 101;
