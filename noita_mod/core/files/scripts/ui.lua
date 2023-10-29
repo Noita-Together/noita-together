@@ -446,15 +446,18 @@ if not initialized then
         local ret = {}
 
         for _, item in ipairs(BankItems) do
-            if ((selectedTab == "wands" or selectedTab == "all") and item.stats ~= nil) then
+            --not sure if we really need to explicitly check all of these but may as well for now
+            if (selectedTab == "all") and (item.stats or item.gameId or item.path or item.content) then
                 table.insert(idk, item)
-            elseif ((selectedTab == "spells" or selectedTab == "all") and item.gameId ~= nil) then
+            elseif ((selectedTab == "wands") and item.stats ~= nil) then
+                table.insert(idk, item)
+            elseif ((selectedTab == "spells") and item.gameId ~= nil) then
                 local spell = SpellSprites[item.gameId] or InvalidSpellSprite
                 --ACTION_TYPE_OTHER = 5
                 if (tabToggles[selectedTab][(spell.type or 5) + 1].enabled) then
                     table.insert(idk, item)
                 end
-            elseif ((selectedTab == "items" or selectedTab == "all") and (item.path ~= nil or item.content ~= nil)) then
+            elseif ((selectedTab == "items") and (item.path ~= nil or item.content ~= nil)) then
                 table.insert(idk, item)
             end
         end
@@ -477,9 +480,9 @@ if not initialized then
             if (item.gameId ~= nil) then -- spell
                 local spell = SpellSprites[item.gameId] or InvalidSpellSprite
                 if (string.find(string.lower(spell.name), string.lower(filterkey))) then
-                    if (selectedTab == "spells") then
+                    --if (selectedTab == "spells") then
                         table.insert(ret, item)
-                    end
+                    --end
                 end
             elseif (item.stats ~= nil) then -- wand
                 local found = false
