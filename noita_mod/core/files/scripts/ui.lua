@@ -480,9 +480,7 @@ if not initialized then
             if (item.gameId ~= nil) then -- spell
                 local spell = SpellSprites[item.gameId] or InvalidSpellSprite
                 if (string.find(string.lower(spell.name), string.lower(filterkey))) then
-                    --if (selectedTab == "spells") then
-                        table.insert(ret, item)
-                    --end
+                    table.insert(ret, item)
                 end
             elseif (item.stats ~= nil) then -- wand
                 local found = false
