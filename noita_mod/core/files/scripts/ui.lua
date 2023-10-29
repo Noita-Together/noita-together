@@ -30,6 +30,14 @@ if not initialized then
     local numbers = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"}
     local alphabet = {"q","w","e","r","t","y","u","i","o","p","a","s","d","f","g","h","j","k","l","z","x","c","v","b","n","m"}
 
+    --"invalid/unknown spell" used for UI display when someone put a spell we dont have (mods or beta) into the bank
+    InvalidSpellSprite = {
+        name = "$noitatogether_bank_illegal_spell",
+        sprite = "mods/noita-together/files/ui/illegal_spell.png",
+        type = 5, --ACTION_TYPE_OTHER = 5
+        nt_illegal = true
+    }
+
     local is_hovering_message_input = false --flag if hovering over message input textbox
     local is_hovering_bank_filter = false --flag if hovering over bank filter textbox
     local is_hovering_bank_gold = false --flag if hovering over bank gold textbox
@@ -278,6 +286,7 @@ if not initialized then
             nyx = nyx + 10
             local always_casts = item.alwaysCast or {}
             local deck = item.deck or {}
+            local illegal = false
             if (#always_casts > 0) then
                 GuiZSetForNextWidget(gui, 5)
                 GuiText(gui, nx + 5, ny + nyx, "$inventory_alwayscasts")
@@ -285,7 +294,9 @@ if not initialized then
                 for index, value in ipairs(always_casts) do
                     if (value.gameId ~= "0") then
                         GuiZSetForNextWidget(gui, 5)
-                        GuiImage(gui, next_id(), nx + nox, ny + nyx, SpellSprites[value.gameId].sprite, 1, 0.8, 0.8)
+                        local spell = SpellSprites[value.gameId] or InvalidSpellSprite
+                        illegal = illegal or spell.nt_illegal
+                        GuiImage(gui, next_id(), nx + nox, ny + nyx, spell.sprite, 1, 0.8, 0.8)
                         nox = nox + 15
                     end
                 end
@@ -295,7 +306,9 @@ if not initialized then
             for index, value in ipairs(deck) do
                 if (value.gameId ~= "0") then
                     GuiZSetForNextWidget(gui, 5)
-                    GuiImage(gui, next_id(), nx + nox, ny + nyx, SpellSprites[value.gameId].sprite, 1, 0.8, 0.8)
+                    local spell = SpellSprites[value.gameId] or InvalidSpellSprite
+                    illegal = illegal or spell.nt_illegal
+                    GuiImage(gui, next_id(), nx + nox, ny + nyx, spell.sprite, 1, 0.8, 0.8)
                     --This doesnt show charges if it was put in with unlimited spells, but it will come out full anyway
                     --TODO this doesnt look nice because the text is large compared to the spell icons. Also its not the same font as used on vanilla spell icons
                     if value.usesRemaining and value.usesRemaining >= 0 then
@@ -308,6 +321,14 @@ if not initialized then
                     end
                 end
             end
+
+            --display illegal message if any of the spells were illegal
+            --TODO this doesnt scale the UI to fit the text...
+            if illegal and not force then
+                nox = 5
+                nyx = nyx + 20
+                GuiTextMultiLine(gui, nx + nox, ny + nyx, GameTextGet("$noitatogether_bank_illegal_wand"))
+            end
         end
     end
 
@@ -319,12 +340,16 @@ if not initialized then
             if (player ~= nil) then
                 spell_description = spell_description .. "\n" .. GameTextGet("$noitatogether_sent_by_player", player.name)
             end
-            local spell = SpellSprites[item.gameId]
+            local spell = SpellSprites[item.gameId] or InvalidSpellSprite
+            if spell.nt_illegal then
+                spell_description = item.gameId .. "\n" .. spell_description .. "\n" .. GameTextGet("$noitatogether_bank_illegal_spell_desc")
+            end
             GuiImage(gui, next_id(), x +2, y +2,  spell.sprite, 1,1,1)--SpellSprites[item.gameId], 1)
             GuiTooltip(gui, spell.name, spell_description)
             --This doesnt show charges if it was put in with unlimited spells, but it will come out full anyway
-            --TODO this is not the same font as used on vanilla spell icons???
-            if item.usesRemaining >= 0 then
+            --TODO this is not the same font as used on vanilla spel icons???
+            --ignore for the dummy illegal spell, even if the banked item has a charge count
+            if not spell.nt_illegal and item.usesRemaining >= 0 then
                 GuiText(gui, x+1, y, item.usesRemaining)
             end
         elseif (item.stats ~= nil) then --wand
@@ -360,6 +385,23 @@ if not initialized then
         end
     end
 
+    local function test_wand_spells_legal(t)
+        if (not t) or (#t == 0) then
+            return true --no spells is still legal i guess
+        end
+
+        for index, value in ipairs(t) do
+            if (value.gameId ~= "0") then
+                if not SpellSprites[value.gameId] then
+                    return false --illegal!
+                end
+            end
+        end
+
+        --no problems
+        return true
+    end
+
     local function draw_bank_item(x, y, i)
         local item_offset = i + bank_offset * 40
         local item = filteredItems[item_offset]
@@ -370,7 +412,26 @@ if not initialized then
         GuiZSetForNextWidget(gui, 9)
         if (GuiImageButton(gui, next_id(), x, y, "", "mods/noita-together/files/ui/slot.png")) then
             if (item ~= nil) then
-                SendWsEvent({event="PlayerTake", payload={id=item.id}})
+                --check for illegal items
+                local legal = true
+
+                --spells
+                if item.gameId ~= nil and not SpellSprites[item.gameId] then
+                   legal = false
+                end
+
+                --wands
+                if item.stats ~= nil then
+                    legal = legal and test_wand_spells_legal(item.alwaysCasts) and test_wand_spells_legal(item.deck)
+                end
+
+                --TODO flasks
+
+                if legal then
+                    SendWsEvent({event="PlayerTake", payload={id=item.id}})    
+                else
+                    GamePrint(GameTextGet("$noitatogether_bank_take_item_failed")) 
+                end
             end
         end
     end
@@ -388,8 +449,9 @@ if not initialized then
             if ((selectedTab == "wands" or selectedTab == "all") and item.stats ~= nil) then
                 table.insert(idk, item)
             elseif ((selectedTab == "spells" or selectedTab == "all") and item.gameId ~= nil) then
-                local spell = SpellSprites[item.gameId]
-                if (tabToggles[selectedTab][spell.type + 1].enabled) then
+                local spell = SpellSprites[item.gameId] or InvalidSpellSprite
+                --ACTION_TYPE_OTHER = 5
+                if (tabToggles[selectedTab][(spell.type or 5) + 1].enabled) then
                     table.insert(idk, item)
                 end
             elseif ((selectedTab == "items" or selectedTab == "all") and (item.path ~= nil or item.content ~= nil)) then
@@ -413,7 +475,7 @@ if not initialized then
 
         for _, item in ipairs(idk) do
             if (item.gameId ~= nil) then -- spell
-                local spell = SpellSprites[item.gameId]
+                local spell = SpellSprites[item.gameId] or InvalidSpellSprite
                 if (string.find(string.lower(spell.name), string.lower(filterkey))) then
                     if (selectedTab == "spells") then
                         table.insert(ret, item)
@@ -422,7 +484,7 @@ if not initialized then
             elseif (item.stats ~= nil) then -- wand
                 local found = false
                 for _, action in ipairs(item.alwaysCast or {}) do
-                    local spell = SpellSprites[action.gameId]
+                    local spell = SpellSprites[action.gameId] or InvalidSpellSprite
                     if (spell ~= nil) then
                         if (string.find(string.lower(spell.name), string.lower(filterkey))) then
                             found = true
@@ -430,7 +492,7 @@ if not initialized then
                     end
                 end
                 for _, action in ipairs(item.deck or {}) do
-                    local spell = SpellSprites[action.gameId]
+                    local spell = SpellSprites[action.gameId] or InvalidSpellSprite
                     if (spell ~= nil) then
                         if (string.find(string.lower(spell.name), string.lower(filterkey))) then
                             found = true
