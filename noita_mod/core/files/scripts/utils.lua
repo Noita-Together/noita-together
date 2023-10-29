@@ -877,3 +877,15 @@ function DoFungalShift(from, to)
 		end
 	end
 end
+
+--helper function because GuiText doesn't handle newlines ??? 
+function GuiTextMultiLine(gui, x, y, text)
+    local dy = 0
+    for line in string.gmatch(text, "[^\n]+") do
+        GuiText(gui, x, y+dy, line)
+        dy = dy + 10
+    end
+
+    --return dy, could be useful for determining how much y-distance we used
+    return dy
+end
