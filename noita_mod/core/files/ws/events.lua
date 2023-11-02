@@ -64,6 +64,9 @@ customEvents = {
         end
         GamePrint(sampo_message)
     end,
+    --util/coop_boss_fight.lua is available in this context from ws.lua?
+    CoopSampoUnlock = CoopSampoUnlock,
+    CoopBossFightStart = CoopBossFightStart,
     PlayerMove = function(data)
         --[[
         local md = GetStuff(ConvertStrToTable(data.movement))

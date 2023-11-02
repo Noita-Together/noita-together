@@ -173,14 +173,17 @@ function OnWorldPostUpdate()
             if (_start_run and not started) then
                 StartRun()
             end
-            if (NT.sampo_proximity) then
+
+            --BOSS FIGHT CHECK
+            CoopBossFightTick()
+            --[[if (NT.sampo_proximity) then
                 local sampo_check = CheckSampoStatus()
                 if (sampo_check) then SpawnSampo() end
             end
 --             TODO how do we handle player count potentially being out of sync here? How does this happen?
             if (NT.sampo_pickup and NT.player_count == NT.players_sampo and NT.boss_fight == false) then
                 StartBossFight()
-            end
+            end]]
         end
         local player = GetPlayer()
         local frame = GameGetFrameNum()

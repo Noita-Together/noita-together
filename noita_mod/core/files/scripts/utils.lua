@@ -6,7 +6,8 @@ if not async then
 end
 
 --util includes
-dofile("mods/noita-together/files/scripts/util/player_ghosts.lua")
+dofile("mods/noita-together/files/scripts/util/player_ghosts.lua") --TODO make this a dofile_once ???
+dofile_once("mods/noita-together/files/scripts/util/coop_boss_fight.lua")
 
 function GetPlayer()
     local player = EntityGetWithTag("player_unit") or nil
@@ -492,42 +493,6 @@ function IsPlayerDead()
             end
         end
     end
-end
-
-function CheckSampoStatus()
-    local disabled_sampo = EntityGetWithTag("disabled_sampo")[1]
-    if (disabled_sampo == nil) then
-        return false
-    end
-    local enable_sampo = true
-    local x, y = EntityGetTransform(disabled_sampo)
-    --print("player list " .. tostring(#PlayerList))
-    for _, player in pairs(PlayerList) do
-        local distance = 999
-        distance = math.abs(x - player.x) + math.abs(y - player.y)
-        
-        if (distance >= 200) then 
-            return false
-        end
-    end
-
-    return enable_sampo
-end
-
-function SpawnSampo()
-    local disabled_sampo = EntityGetWithTag("disabled_sampo")[1]
-    if (disabled_sampo == nil) then
-        return false
-    end
-    local x, y = EntityGetTransform(disabled_sampo)
-    EntityKill(disabled_sampo)
-    NT.sampo_proximity = false
-    local has_platform = RaytracePlatforms(x,y, x, y + 50)
-    --print("has platform " .. tostring(has_platform))
-    if (not has_platform) then
-        EntityLoad( "mods/noita-together/files/entities/sampo/platform.xml", x, y + 50)
-    end
-    EntityLoad( "data/entities/animals/boss_centipede/sampo.xml", x, y )
 end
 
 function StartBossFight()
