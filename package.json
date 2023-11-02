@@ -8,11 +8,10 @@
     "nt-app/",
     "nt-web-app/",
     "nt-server/",
-    "nextron/",
     "shared-lib/"
   ],
   "scripts": {
-    "client": "yarn workspace nt-app start",
+    "client": "yarn workspace nt-app dev",
     "clientOld": "yarn workspace nt-app-old electron:serve",
     "serverInitOnce": "yarn workspace nt-web-app serverInitOnce",
     "server-http": "yarn workspace nt-web-app serve-http",

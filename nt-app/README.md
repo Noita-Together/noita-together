@@ -39,3 +39,7 @@ $ yarn dev (or `npm run dev` or `pnpm run dev`)
 # production build
 $ yarn build (or `npm run build` or `pnpm run build`)
 ```
+
+### Component Documentation
+
+[Storybook](https://storybook.chakra-ui.com/?path=/settings/about)
