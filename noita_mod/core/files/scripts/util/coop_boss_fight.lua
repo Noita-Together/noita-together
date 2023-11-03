@@ -6,28 +6,47 @@ function CoopBossFightStart(data)
     --print_error("CoopBossFightStart")
     if not GameHasFlagRun("NT_final_boss_active") then
         GameAddFlagRun("NT_final_boss_active")
-        print_error("TODO start the boss fight :)")
-        GamePrintImportant("TODO Boss Fight", "Oops this doesnt work yet :)")
+        --nt print_error("start the boss fight")
+        local x, y = GetPlayerPos()
+        GameTriggerMusicFadeOutAndDequeueAll( 10.0 )
+        GamePlaySound( "data/audio/Desktop/event_cues.bank", "event_cues/sampo_pick/create", x, y )
+        GameTriggerMusicEvent( "music/boss_arena/battle", false, x, y )
+        SetRandomSeed( x, y )
+        GlobalsSetValue( "FINAL_BOSS_ACTIVE", "1" )
+        
+        local entities = EntityGetWithTag( "sampo_or_boss" )
+        if ( #entities == 0 ) then
+            return
+        end
+        
+        for key,entity_id in pairs(entities) do
+            if EntityHasTag( entity_id, "boss_centipede" ) then
+                EntitySetComponentsWithTagEnabled( entity_id, "disabled_at_start", true )
+                EntitySetComponentsWithTagEnabled( entity_id, "enabled_at_start", false )
+                PhysicsSetStatic( entity_id, false )
+                EntityAddTag( entity_id, "boss_centipede_active" )
+                
+                local child_entities = EntityGetAllChildren( entity_id )
+                local child_to_remove = 0
+                
+                if ( child_entities ~= nil ) then
+                    for i,child_id in ipairs( child_entities ) do
+                        EntityHasTag( child_id, "protection" )
+                        child_to_remove = child_id
+                    end
+                end
+                
+                if ( child_to_remove ~= 0 ) then
+                    EntityKill( child_to_remove )
+                end
+            end
+        end
     end
 end
 
 function CoopSampoUnlock(data)
     --print_error("CoopSampoUnlock")
     if not GameHasFlagRun("NT_unlocked_sampo") then
-        --(old code: replace the disabled sampo with the real sampo)
-        --[[local disabled_sampo = EntityGetWithTag("disabled_sampo")[1]
-        if (disabled_sampo == nil) then
-            return false
-        end
-        local x, y = EntityGetTransform(disabled_sampo)
-        EntityKill(disabled_sampo)
-        local has_platform = RaytracePlatforms(x,y, x, y + 50)
-        --print("has platform " .. tostring(has_platform))
-        if (not has_platform) then
-            EntityLoad( "mods/noita-together/files/entities/sampo/platform.xml", x, y + 50)
-        end
-        EntityLoad( "data/entities/animals/boss_centipede/sampo.xml", x, y )]]--
-        
         --trigger new sampo aura transition
         local sampo_aura = EntityGetWithTag("nt_sampo_aura")[1]
         if sampo_aura then
@@ -39,42 +58,108 @@ function CoopSampoUnlock(data)
 
         --
         GameAddFlagRun("NT_unlocked_sampo")
+    elseif GameHasFlagRun("NT_got_sampo") then --cant pick up sampo before it unlocks anyway
+        --send sampo pickup state in response
+        SendWsEvent({event="CustomModEvent", payload={name="CoopSampoPickup",orbs=NT.sampo_orbs}})
     end
 end
 
+--call when another player sends sampo picked up reply
+function CoopSampoPickup(data)
+    print_error("CoopSampoPickup")
+    local player = PlayerList[data.userId]
+    if not player then return end
+    
+    if not player.sampo then
+        print_error("player " .. player.name .. " got mcguffin with " .. (data.orbs or 0) .. " orbz")
+        --Populate this with the particular version they actually got, for flexing purposes :)
+        local orbs = data.orbs or 0
+        local orbs_for_name = orbs
+
+        if( orbs_for_name < 0 ) then
+            orbs_for_name = 0
+        elseif ( orbs_for_name > 33 ) then
+            orbs_for_name = 33
+        elseif( orbs_for_name > 13 ) then --nothing between 13 and 33
+            orbs_for_name = 13
+        end
+
+        --use a different message key if we already got our sampo
+        local sampo_basemsgkey = GameHasFlagRun("NT_got_sampo") and "$noitatogether_player_got_mcguffin" or "$noitatogether_player_got_mcguffin_waiting"
+        
+        local sampo_message = nil
+        if orbs >= 13 then --show exact orb count, no longer uniquely named
+            sampo_message = GameTextGet(sampo_basemsgkey .. "_orbs", player.name, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)), tostring(orbs))
+        else
+            sampo_message = GameTextGet(sampo_basemsgkey, player.name, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)))
+        end
+        GamePrint(sampo_message)
+
+        player.sampo = true
+
+        if GameHasFlagRun("NT_is_host") and CoopCheckAllSampos() and not GameHasFlagRun("NT_final_boss_active") then
+            CoopBossFightStart()
+            SendWsEvent({event="CustomModEvent", payload={name="CoopBossFightStart"}})
+            print_error("send CoopBossFightStart (in handler)")
+        end
+    end
+end
+
+--return true if all players have sampo picked up
+function CoopCheckAllSampos()
+    if not GameHasFlagRun("NT_got_sampo") then
+        return false
+    end
+
+    --check who has picked up sampo
+    for userId, entry in pairs(PlayerList) do
+        if not entry.sampo then --set by picked-up-sampo event
+            return false
+        end
+    end
+
+    return true
+end
+
 function CoopBossFightTick()
+    --want boss fight to start basically instantly, so check this frequently
+    --we are host, sampo is unlocked, but fight has not started yet
+    --this part only really runs if we are the host and pick up the sampo last :)
+    if GameHasFlagRun("NT_is_host") and GameHasFlagRun("NT_unlocked_sampo") and (not GameHasFlagRun("NT_final_boss_active")) then
+        if CoopCheckAllSampos() then --everyone has sampo, start the boss fight
+            CoopBossFightStart()
+            SendWsEvent({event="CustomModEvent", payload={name="CoopBossFightStart"}})
+            print_error("send CoopBossFightStart (in tick)")
+        end
+    end
+
     --update infrequently
     if (GameGetFrameNum() % 60) == 0 then
-        --release me
+        --re-send boss fight trigger periodically if active
         if GameHasFlagRun("NT_final_boss_active") then
             if GameHasFlagRun("NT_is_host") then
-                --periodically send kolmi start message to make sure everyone gets it
+                --periodically re-send kolmi start message to make sure everyone gets it
                 SendWsEvent({event="CustomModEvent", payload={name="CoopBossFightStart"}})
                 print_error("send CoopBossFightStart")
             end
-        else            
+        else --boss fight not active yet
             if GameHasFlagRun("NT_unlocked_sampo") then
-                --check who has picked up sampo
-                local sampos = true
+                if GameHasFlagRun("NT_is_host") then
+                    --periodically send unlock message to make sure everyone gets it
+                    SendWsEvent({event="CustomModEvent", payload={name="CoopSampoUnlock"}})
+                    print_error("send CoopSampoUnlock")
+                end
+
+                --count number of players with sampo
+                local sampo_count = (GameHasFlagRun("NT_got_sampo") and 1) or 0
                 for userId, entry in pairs(PlayerList) do
-                    if not entry.sampo then --set by picked-up-sampo event
-                        sampos = false
+                    if entry.sampo then --set by picked-up-sampo event
+                        sampo_count = sampo_count + 1
                     end
                 end
 
-                if sampos then --everyone has sampo, start sending the boss fight start
-                    if GameHasFlagRun("NT_is_host") then
-                        CoopBossFightStart()
-                        SendWsEvent({event="CustomModEvent", payload={name="CoopBossFightStart"}})
-                        print_error("send CoopBossFightStart")
-                    end
-                else --not everyone has sampo yet
-                    if GameHasFlagRun("NT_is_host") then
-                        --periodically send unlock message to make sure everyone gets it
-                        SendWsEvent({event="CustomModEvent", payload={name="CoopSampoUnlock"}})
-                        print_error("send CoopSampoUnlock")
-                    end
-                end
+                --TODO do something with this, like display it somewhere
+                print_error("" .. sampo_count .. " players have the sampo")
             else
                 --get the disabled sampo
                 local entities = EntityGetWithTag("disabled_sampo")
@@ -96,8 +181,8 @@ function CoopBossFightTick()
                         print_error("send CoopSampoUnlock")
                     end
                 else 
-                    --update notice on hidden sampo
-                    print_error("dont unlock sampo yet")
+                    --TODO update display
+                    print_error("dont unlock sampo yet, only " .. sampo_near .. " players nearby")
                 end
             end
         end
