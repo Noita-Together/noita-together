@@ -1,6 +1,6 @@
-appId: com.example.nextron
-productName: My Nextron App
-copyright: Copyright © 2018 Yoshihide Shiono
+appId: com.noitatogether.electron
+productName: Noita Together
+copyright: Copyright © 2023 Noita Together
 directories:
   output: dist
   buildResources: resources
@@ -9,4 +9,7 @@ files:
     filter:
       - package.json
       - app
+protocols:
+  name: Noita Together
+  schemes: [noitatogether]
 publish: null

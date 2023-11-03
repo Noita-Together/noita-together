@@ -18,6 +18,14 @@ export default function HomePage() {
         return () => clearTimeout(time)
     }, [])
 
+    const [messages, setMessages] = React.useState('')
+    React.useEffect(() => {
+        window.ipc.on('login-event', (messages: string) => {
+            console.log(`We got a login event of ${messages}`)
+            setMessages(messages)
+        })
+    }, [])
+
     return (
         <React.Fragment>
             <Head>
@@ -46,6 +54,9 @@ export default function HomePage() {
                 {/*https://chakra-ui.com/docs/styled-system/style-props*/}
                 <Text fontSize={32}>
                     Noita Together
+                </Text>
+                <Text>
+                    {messages}
                 </Text>
                 <SlideFade in={isLoading}>
                     <Spinner color="orange.500" size="xl" thickness='6px'/>
