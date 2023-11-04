@@ -34,47 +34,10 @@ customEvents = {
             end
         end
     end,
-    SampoPickup = function (data)
-        local player = PlayerList[data.userId].name
-        if (player ~= nil) then
-            PlayerList[data.userId].sampo = true
-        end
-        NT.players_sampo = NT.players_sampo + 1
-        
-        --Populate this with the particular version they actually got, for flexing purposes :)
-        local orbs = data.orbs or 0
-        local orbs_for_name = orbs
-
-        if( orbs_for_name < 0 ) then
-            orbs_for_name = 0
-        elseif ( orbs_for_name > 33 ) then
-            orbs_for_name = 33
-        elseif( orbs_for_name > 13 ) then --nothing between 13 and 33
-            orbs_for_name = 13
-        end
-
-        --use a different message key if we already got our sampo
-        local sampo_basemsgkey = NT.sampo_pickup and "$noitatogether_player_got_mcguffin" or "$noitatogether_player_got_mcguffin_waiting"
-        
-        local sampo_message = nil
-        if orbs >= 13 then --show exact orb count, no longer uniquely named
-            sampo_message = GameTextGet(sampo_basemsgkey .. "_orbs", player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)), tostring(orbs))
-        else
-            sampo_message = GameTextGet(sampo_basemsgkey, player, GameTextGet("$item_mcguffin_" .. tostring(orbs_for_name)))
-        end
-        GamePrint(sampo_message)
-    end,
-    PlayerMove = function(data)
-        --[[
-        local md = GetStuff(ConvertStrToTable(data.movement))
-        if (md ~= nil) then
-            PlayerList[data.userId].x = md.x
-            PlayerList[data.userId].y = md.y
-            PlayerList[data.userId].scale_x = md.scaleX
-            MovePlayerGhost(data)
-        end
-        ]]
-    end,
+    --util/coop_boss_fight.lua is available in this context from ws.lua
+    CoopSampoPickup = CoopSampoPickup,
+    CoopSampoUnlock = CoopSampoUnlock,
+    CoopBossFightStart = CoopBossFightStart,
     PlayerInven = function(data)
         local inven = jankson.decode(data.inven)
         PlayerList[data.userId].inven = inven
@@ -138,7 +101,7 @@ wsEvents = {
     RequestGameInfo = function(data)
         local seed = StatsGetValue("world_seed")
         local mods = ModGetActiveModIDs()
-        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.11.1", beta=GameIsBetaBuild()}})
+        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.12.0", beta=GameIsBetaBuild()}})
         SendWsEvent({event="RequestPlayerList", payload={}})
         PopulateSpellList()
     end,

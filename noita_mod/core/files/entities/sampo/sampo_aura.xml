@@ -1,0 +1,52 @@
+<Entity tags="teleportable_NOT,nt_sampo_aura">
+    <LuaComponent 
+		_enabled="1"
+		_tags="nt_aura_script"
+		script_source_file="mods/noita-together/files/scripts/sampo/sampo_aura.lua" 
+		execute_every_n_frame="2"
+		>
+	</LuaComponent>
+
+	<LuaComponent 
+		_enabled="1"
+		_tags="nt_fake_attractor_hack"
+		script_source_file="mods/noita-together/files/scripts/sampo/sampo_aura_attractor_fix.lua" 
+		execute_every_n_frame="30"
+		>
+	</LuaComponent>
+
+    <ParticleEmitterComponent 
+		emitted_material_name="spark_white"
+		gravity.y="0.0"
+		lifetime_min="1.0"
+		lifetime_max="2.0"
+		count_min="8"
+		count_max="10"
+		render_on_grid="1"
+		fade_based_on_lifetime="1"
+		area_circle_radius.min="190"
+		area_circle_radius.max="200"
+		cosmetic_force_create="1"
+		airflow_force="0.05"
+		airflow_time="0.01"
+		airflow_scale="0.05"
+		emission_interval_min_frames="1"
+		emission_interval_max_frames="1"
+		emit_cosmetic_particles="1"
+		is_emitting="1" 
+		draw_as_long="1"
+		attractor_force="1"
+		collide_with_gas_and_fire="0"
+		collide_with_grid="0"
+		render_ultrabright="1"
+		velocity_always_away_from_center="-50"
+		>
+	</ParticleEmitterComponent>
+
+	<ParticleEmitterComponent 
+		_enabled=0
+		_tags="nt_fake_attractor_hack"
+		attractor_force="1"
+		>
+	</ParticleEmitterComponent>
+</Entity>
