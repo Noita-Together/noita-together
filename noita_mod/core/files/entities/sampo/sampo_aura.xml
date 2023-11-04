@@ -1,8 +1,17 @@
 <Entity tags="teleportable_NOT,nt_sampo_aura">
     <LuaComponent 
 		_enabled="1"
-		script_source_file="mods/noita-together/files/scripts/sampo_aura.lua" 
-		execute_every_n_frame="1"
+		_tags="nt_aura_script"
+		script_source_file="mods/noita-together/files/scripts/sampo/sampo_aura.lua" 
+		execute_every_n_frame="2"
+		>
+	</LuaComponent>
+
+	<LuaComponent 
+		_enabled="1"
+		_tags="nt_fake_attractor_hack"
+		script_source_file="mods/noita-together/files/scripts/sampo/sampo_aura_attractor_fix.lua" 
+		execute_every_n_frame="30"
 		>
 	</LuaComponent>
 
@@ -31,6 +40,13 @@
 		collide_with_grid="0"
 		render_ultrabright="1"
 		velocity_always_away_from_center="-50"
+		>
+	</ParticleEmitterComponent>
+
+	<ParticleEmitterComponent 
+		_enabled=0
+		_tags="nt_fake_attractor_hack"
+		attractor_force="1"
 		>
 	</ParticleEmitterComponent>
 </Entity>

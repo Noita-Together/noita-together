@@ -1,9 +1,9 @@
 local entity_id = GetUpdatedEntityID()
-local lua_component = EntityGetFirstComponent(entity_id, "LuaComponent")
+local lua_component = EntityGetFirstComponent(entity_id, "LuaComponent", "nt_aura_script")
 local particle_emitter_component = EntityGetFirstComponent(entity_id, "ParticleEmitterComponent")
 --local variable_storage_component = EntityGetFirstComponent(entity_id, "VariableStorageComponent")
 
-if particle_emitter_component then
+if particle_emitter_component then    
     --oneshot fix attractor_force then disable script for now
     local force = ComponentGetValue2(particle_emitter_component, "attractor_force")
     if force > 0 then
