@@ -66,12 +66,12 @@ end
 
 --call when another player sends sampo picked up reply
 function CoopSampoPickup(data)
-    print_error("CoopSampoPickup")
+    --print_error("CoopSampoPickup")
     local player = PlayerList[data.userId]
     if not player then return end
     
     if not player.sampo then
-        print_error("player " .. player.name .. " got mcguffin with " .. (data.orbs or 0) .. " orbz")
+        --nt print_error("player " .. player.name .. " got mcguffin with " .. (data.orbs or 0) .. " orbz")
         --Populate this with the particular version they actually got, for flexing purposes :)
         local orbs = data.orbs or 0
         local orbs_for_name = orbs
@@ -100,7 +100,7 @@ function CoopSampoPickup(data)
         if GameHasFlagRun("NT_is_host") and CoopCheckAllSampos() and not GameHasFlagRun("NT_final_boss_active") then
             CoopBossFightStart()
             SendWsEvent({event="CustomModEvent", payload={name="CoopBossFightStart"}})
-            print_error("send CoopBossFightStart (in handler)")
+            --nt print_error("send CoopBossFightStart (in handler)")
         end
     end
 end
@@ -129,7 +129,7 @@ function CoopBossFightTick()
         if CoopCheckAllSampos() then --everyone has sampo, start the boss fight
             CoopBossFightStart()
             SendWsEvent({event="CustomModEvent", payload={name="CoopBossFightStart"}})
-            print_error("send CoopBossFightStart (in tick)")
+            --print_error("send CoopBossFightStart (in tick)")
         end
     end
 
@@ -140,14 +140,14 @@ function CoopBossFightTick()
             if GameHasFlagRun("NT_is_host") then
                 --periodically re-send kolmi start message to make sure everyone gets it
                 SendWsEvent({event="CustomModEvent", payload={name="CoopBossFightStart"}})
-                print_error("send CoopBossFightStart")
+                --print_error("send CoopBossFightStart")
             end
         else --boss fight not active yet
             if GameHasFlagRun("NT_unlocked_sampo") then
                 if GameHasFlagRun("NT_is_host") then
                     --periodically send unlock message to make sure everyone gets it
                     SendWsEvent({event="CustomModEvent", payload={name="CoopSampoUnlock"}})
-                    print_error("send CoopSampoUnlock")
+                    --print_error("send CoopSampoUnlock")
                 end
 
                 --count number of players with sampo
@@ -159,7 +159,7 @@ function CoopBossFightTick()
                 end
 
                 --TODO do something with this, like display it somewhere
-                print_error("" .. sampo_count .. " players have the sampo")
+                --print_error("" .. sampo_count .. " players have the sampo")
             else
                 --get the disabled sampo
                 local entities = EntityGetWithTag("disabled_sampo")
@@ -171,18 +171,18 @@ function CoopBossFightTick()
                 --can't calculate yet (not loaded in?)
                 if sampo_near < 0 or sampo_far < 0 then return end
     
-                print_error("sampo " .. sampo_near .. " " .. sampo_far .. " " .. (1 + #PlayerList))
+                --print_error("sampo " .. sampo_near .. " " .. sampo_far .. " " .. (1 + #PlayerList))
     
                 if sampo_far == 0 and sampo_near > 0 then
                     --host determines when sampo should unlock
                     if GameHasFlagRun("NT_is_host") then
                         CoopSampoUnlock()
                         SendWsEvent({event="CustomModEvent", payload={name="CoopSampoUnlock"}})
-                        print_error("send CoopSampoUnlock")
+                        --nt print_error("send CoopSampoUnlock")
                     end
                 else 
                     --TODO update display
-                    print_error("dont unlock sampo yet, only " .. sampo_near .. " players nearby")
+                    --print_error("dont unlock sampo yet, only " .. sampo_near .. " players nearby")
                 end
             end
         end
