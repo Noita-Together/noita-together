@@ -4,13 +4,18 @@ const ws = require("ws")
 const {encodeLobbyMsg, encodeGameMsg, decode} = require("./handlers/messageHandler")
 const appEvent = require("./appEvent")
 const noita = require("./noita")
-const host = `wss://${process.env.VUE_APP_HOSTNAME_WS}`
+
+const host = (() => {
+    const prefix = process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || `wss://${process.env.VUE_APP_HOSTNAME_WS}` || 'wss://noitatogether.com/ws/'
+    return prefix.endsWith('/') ? prefix : `${prefix}/`
+})();
+
 const print = true
 module.exports = (data) => {
     const user = { userId: data.id, name: data.display_name }
     noita.setUser({ userId: user.userId, name: user.name, host: false })
     let isHost = false
-    console.log(`Connect to ws ${host}`)
+    console.log(`Connect to lobby server ${host}`)
     let client = new ws(`${host}${data.token}`)
     const lobby = {
         sHostStart: (payload) => {
@@ -84,32 +89,42 @@ module.exports = (data) => {
         client = null
     })
 
+    function handleMessage(msg) {
+        const {gameAction, lobbyAction} = msg
+        let payload
+        let key
+        if (gameAction) {
+            key = Object.keys(gameAction)[0]
+            payload = gameAction[key]
+            if (key === "sChat") { appEvent(key, payload) }
+            if (key === "sStatUpdate") { appEvent(key, payload) }
+            if (typeof noita[key] == "function") {
+                noita[key](payload)
+            }
+        }
+        else if (lobbyAction) {
+            key = Object.keys(lobbyAction)[0]
+            payload = lobbyAction[key]
+            if (key && payload) {
+                if (typeof lobby[key] == "function") { lobby[key](payload) }
+                appEvent(key, payload)
+            }
+        }
+        //if (["sPlayerMove", "sPlayerUpdate", "sChat"].indexOf(key) > -1) { return }
+        //console.log(`[SERVER ${key}]`)
+        //console.log(payload)
+        //console.log()
+    }
     client.on("message", (data) => {
         try {
-            const { gameAction, lobbyAction } = decode(data)
-            let payload
-            let key
-            if (gameAction) {
-                key = Object.keys(gameAction).shift()
-                payload = gameAction[key]
-                if (key === "sChat") { appEvent(key, payload) }
-                if (key === "sStatUpdate") { appEvent(key, payload) }
-                if (typeof noita[key] == "function") {
-                    noita[key](payload)
+            const msg = decode(data)
+            if (msg.isMultiple && Array.isArray(msg.list)) {
+                for (const item of msg.list) {
+                    handleMessage(item)
                 }
+            } else {
+                handleMessage(msg)
             }
-            else if (lobbyAction) {
-                key = Object.keys(lobbyAction).shift()
-                payload = lobbyAction[key]
-                if (key && payload) {
-                    if (typeof lobby[key] == "function") { lobby[key](payload) }
-                    appEvent(key, payload)
-                }
-            }
-            //if (["sPlayerMove", "sPlayerUpdate", "sChat"].indexOf(key) > -1) { return }
-            //console.log(`[SERVER ${key}]`)
-            //console.log(payload)
-            //console.log()
         } catch (error) {
             //eugh
             console.log(error)
