@@ -21,11 +21,10 @@ function item_pickup( entity_item, entity_who_picked, name )
             PhysicsSetStatic( entity_id, false )
         end
     end
-    if (not NT.sampo_pickup) then
-        NT.sampo_pickup = true
-        NT.players_sampo = NT.players_sampo + 1
-        local queue = json.decode(NT.wsQueue)
-        table.insert(queue, {event="CustomModEvent", payload={name="SampoPickup",orbs=GameGetOrbCountThisRun()}})
-        NT.wsQueue = json.encode(queue)
-    end
+    
+    NT.sampo_orbs = GameGetOrbCountThisRun()
+    local queue = json.decode(NT.wsQueue)
+    table.insert(queue, {event="CustomModEvent", payload={name="CoopSampoPickup",orbs=NT.sampo_orbs}})
+    NT.wsQueue = json.encode(queue)
+    GameAddFlagRun("NT_got_sampo")
 end
