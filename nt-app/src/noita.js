@@ -367,12 +367,13 @@ class NoitaGame extends EventEmitter {
     sPlayerPickup(message) {
         const player = message.userId == this.user.userId ? this.user : this.players[message.userId]
         const type = message.kind.case
-        const payload = message.kind.payload
+        const payload = message.kind.value
+        if (!type || !payload) return;
 
         if (player) {
             sysMsg(`${player.name} picked up a ${type}.`)
         }
-        if (payload.userId == this.user.userId) { return }
+        if (message.userId == this.user.userId) { return }
         this.sendEvt("PlayerPickup", {userId: message.userId, [type]: payload})
     }
     sPlayerDeath(payload) {
