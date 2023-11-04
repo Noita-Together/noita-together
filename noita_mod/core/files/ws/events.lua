@@ -38,17 +38,6 @@ customEvents = {
     CoopSampoPickup = CoopSampoPickup,
     CoopSampoUnlock = CoopSampoUnlock,
     CoopBossFightStart = CoopBossFightStart,
-    PlayerMove = function(data)
-        --[[
-        local md = GetStuff(ConvertStrToTable(data.movement))
-        if (md ~= nil) then
-            PlayerList[data.userId].x = md.x
-            PlayerList[data.userId].y = md.y
-            PlayerList[data.userId].scale_x = md.scaleX
-            MovePlayerGhost(data)
-        end
-        ]]
-    end,
     PlayerInven = function(data)
         local inven = jankson.decode(data.inven)
         PlayerList[data.userId].inven = inven
@@ -112,7 +101,7 @@ wsEvents = {
     RequestGameInfo = function(data)
         local seed = StatsGetValue("world_seed")
         local mods = ModGetActiveModIDs()
-        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.11.1", beta=GameIsBetaBuild()}})
+        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.12.0", beta=GameIsBetaBuild()}})
         SendWsEvent({event="RequestPlayerList", payload={}})
         PopulateSpellList()
     end,
