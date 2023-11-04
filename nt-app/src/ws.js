@@ -89,41 +89,35 @@ module.exports = (data) => {
         client = null
     })
 
-    function handleMessage(msg) {
-        const {gameAction, lobbyAction} = msg
-        let payload
-        let key
-        if (gameAction) {
-            key = Object.keys(gameAction)[0]
-            payload = gameAction[key]
-            if (key === "sChat") { appEvent(key, payload) }
-            if (key === "sStatUpdate") { appEvent(key, payload) }
-            if (typeof noita[key] == "function") {
-                noita[key](payload)
-            }
-        }
-        else if (lobbyAction) {
-            key = Object.keys(lobbyAction)[0]
-            payload = lobbyAction[key]
-            if (key && payload) {
-                if (typeof lobby[key] == "function") { lobby[key](payload) }
-                appEvent(key, payload)
-            }
-        }
-        //if (["sPlayerMove", "sPlayerUpdate", "sChat"].indexOf(key) > -1) { return }
-        //console.log(`[SERVER ${key}]`)
-        //console.log(payload)
-        //console.log()
-    }
     client.on("message", (data) => {
         try {
             const msg = decode(data)
-            if (msg.isMultiple && Array.isArray(msg.list)) {
-                for (const item of msg.list) {
-                    handleMessage(item)
-                }
-            } else {
-                handleMessage(msg)
+            if (!msg) return;
+
+            const actionType = msg.kind.case
+            const action = msg.kind.value.action.case
+            const payload = msg.kind.value.action.value
+
+            if (!actionType || !action || !payload) {
+                console.error(`Failed to decode message actionType=${actionType} action=${action} payload=${payload}`)
+                return
+            }
+
+            switch (actionType) {
+                case 'gameAction':
+                    if (action === "sChat") { appEvent(action, payload) }
+                    if (action === "sStatUpdate") { appEvent(action, payload) }
+                    if (typeof noita[action] == "function") {
+                        noita[action](payload)
+                    }
+                    break;
+                case 'lobbyAction':
+                    if (typeof lobby[action] == "function") { lobby[action](payload) }
+                    appEvent(action, payload)
+                    break;
+                default:
+                    console.log('Unknown Envelope case: '+msg.kind.case)
+                    break;
             }
         } catch (error) {
             //eugh
@@ -177,7 +171,19 @@ module.exports = (data) => {
     })
 
     noita.on("PlayerPickup", (event) => {
-        const msg = encodeGameMsg("cPlayerPickup", event)
+        /** @type {import('./gen/messages_pb').ClientPlayerPickup} */
+        const payload = {}
+
+        if (event.heart) {
+            payload.case = 'heart'
+            payload.value = event.heart
+        }
+        else if (event.orb) {
+            payload.case = 'orb'
+            payload.value = event.orb
+        }
+
+        const msg = encodeGameMsg("cPlayerPickup", { kind: payload })
         sendMsg(msg)
     })
 
@@ -216,24 +222,26 @@ module.exports = (data) => {
     })
 
     noita.on("SendItems", (event) => {
+        /** @type {import('./gen/messages_pb').ClientPlayerAddItem} */
         const payload = {}
+
         if (event.spells) {
-            const spells = event.spells.map(mapSpells)
-            payload.spells = { list: spells }
+            payload.case = 'spells'
+            payload.value = { list: event.spells.map(mapSpells) }
         }
         else if (event.flasks) {
-            const flasks = event.flasks.map(mapFlasks)
-            payload.flasks = { list: flasks }
+            payload.case = 'flasks'
+            payload.value = { list: event.flasks.map(mapFlasks) }
         }
         else if (event.wands) {
-            const wands = event.wands.map(mapWands)
-            payload.wands = { list: wands }
+            payload.case = 'wands'
+            payload.value = { list: event.wands.map(mapWands) }
         }
         else if (event.objects) {
-            const objects = event.objects.map(mapObjects)
-            payload.objects = { list: objects }
+            payload.case = 'objects'
+            payload.value = { list: event.objects.map(mapObjects) }
         }
-        const msg = encodeGameMsg("cPlayerAddItem", payload)
+        const msg = encodeGameMsg("cPlayerAddItem", {item: payload})
         sendMsg(msg)
     })
 
