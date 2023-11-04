@@ -1,53 +1,61 @@
-const path = require("path");
-const protobuf = require("protobufjs");
-
-//const root = protobuf.loadSync(path.join(__static, "./messages.proto"))
-const root = protobuf.loadSync(path.join(__static, "./messages.proto"))
-const proto = root.lookupType("Envelope");
+/** @type {import('../gen/messages_pb')} */
+const { Envelope } = require('../gen/messages_pb.js');
 
 function decode(buf) {
-    try {
-        const decoded = proto.decode(buf);
-        const error = proto.verify(decoded);
-        if (error) {
-            throw error;
-        } else {
-            return decoded;
-        }
-    } catch (err) {
-        console.log(`Something fked up decoding ${err}`);
-    }
+  try {
+    return Envelope.fromBinary(buf);
+  } catch (err) {
+    console.log(`Something fked up decoding ${err}`);
+  }
 }
 
+/**
+ * @param {import('../gen/messages_pb').Envelope} obj
+ * @returns
+ */
 function encode(obj) {
-    try {
-        const error = proto.verify(obj);
-        if (error) {
-            throw error;
-        } else {
-            const encoded = proto.encode(obj).finish();
-            return encoded;
-        }
-    } catch (err) {
-        console.log(`Something fked up encoding ${err}`);
-    }
+  try {
+    return new Envelope(obj).toBinary();
+  } catch (err) {
+    console.log(`Something fked up encoding ${err}`);
+  }
 }
 
 function encodeGameMsg(type, data) {
-    const payload = { gameAction: {} };
-    payload.gameAction[type] = data;
-    return encode(payload);
+  /** @type {import('../gen/messages_pb').GameAction} */
+  const gameAction = {
+    action: {
+      case: type,
+      value: data,
+    },
+  };
+  return encode({
+    kind: {
+      case: 'gameAction',
+      value: gameAction,
+    },
+  });
 }
 
 function encodeLobbyMsg(type, data) {
-    const payload = { lobbyAction: {} };
-    payload.lobbyAction[type] = data;
-    return encode(payload);
+  /** @type {import('../gen/messages_pb').LobbyAction} */
+  const lobbyAction = {
+    action: {
+      case: type,
+      value: data,
+    },
+  };
+  return encode({
+    kind: {
+      case: 'lobbyAction',
+      value: lobbyAction,
+    },
+  });
 }
 
 module.exports = {
-    decode,
-    encode,
-    encodeGameMsg,
-    encodeLobbyMsg
+  decode,
+  encode,
+  encodeGameMsg,
+  encodeLobbyMsg,
 };

@@ -314,18 +314,16 @@ class NoitaGame extends EventEmitter {
             }
         }
     }
-    sPlayerAddItem(payload) {
-        const data = { flasks: payload.flasks, spells: payload.spells, wands: payload.wands, objects: payload.objects }
-        const items = []
+    /**
+     * @param {import('./gen/messages_pb').ServerPlayerAddItem} message
+     */
+    sPlayerAddItem(message) {
+        const key = message.item.case
+        const payload = message.item.value
+        if (!payload) return
 
-        for (const key in data) {
-            if (!data[key]) { continue }
-            for (const item of data[key].list) {
-                this.bank[key].push(item)
-                items.push(item)
-            }
-        }
-
+        const items = payload.list
+        Array.prototype.push.apply(this.bank[key], items)
         this.sendEvt("UserAddItems", { userId: payload.userId, items })//filter later?
     }
     sPlayerAddGold(payload) {
@@ -363,13 +361,19 @@ class NoitaGame extends EventEmitter {
         }
         this.emit("HostTake", { userId: payload.userId, id: payload.id, success: false })
     }
-    sPlayerPickup(payload) {
-        const player = payload.userId == this.user.userId ? this.user : this.players[payload.userId]
+    /**
+     * @param {import('./gen/messages_pb').ServerPlayerPickup} message
+     */
+    sPlayerPickup(message) {
+        const player = message.userId == this.user.userId ? this.user : this.players[message.userId]
+        const type = message.kind.case
+        const payload = message.kind.payload
+
         if (player) {
-            sysMsg(`${player.name} picked up a ${payload.heart ? "heart" : "orb"}.`)
+            sysMsg(`${player.name} picked up a ${type}.`)
         }
         if (payload.userId == this.user.userId) { return }
-        this.sendEvt("PlayerPickup", payload)
+        this.sendEvt("PlayerPickup", {userId: message.userId, [type]: payload})
     }
     sPlayerDeath(payload) {
         const player = payload.userId == this.user.userId ? this.user : this.players[payload.userId]
