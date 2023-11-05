@@ -97,7 +97,7 @@ if not hourglassEventHandlers then
         local effect_entity = EntityLoad("mods/noita-together/files/effects/weak_ambrosia.xml", x, y)
         EntityAddChild(player, effect_entity)
         EntityAddComponent2(effect_entity, "UIIconComponent", {
-            icon_sprite_file = "data/ui_gfx/status_indicators/protection_all.png",
+            icon_sprite_file = "mods/noita-together/files/ui_gfx/status_indicators/nt_hourglass_protection_half.png",
             name = GameTextGet("$noitatogether_hourglass_buff_protection_name"),
             description = GameTextGet("$noitatogether_hourglass_buff_protection_desc", triggered_by_name),
             display_above_head = true,
