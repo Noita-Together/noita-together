@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron'
 
 const handler = {
+  invoke: (channel: string, ...args: any[]): Promise<any> => ipcRenderer.invoke(channel, ...args),
   send(channel: string, value: unknown) {
     ipcRenderer.send(channel, value)
   },
@@ -13,6 +14,7 @@ const handler = {
       ipcRenderer.removeListener(channel, subscription)
     }
   },
+  beginTwitchLogin: (returningUser): void => ipcRenderer.send('beginTwitchLogin', returningUser),
 }
 
 contextBridge.exposeInMainWorld('ipc', handler)

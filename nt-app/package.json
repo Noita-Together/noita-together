@@ -12,7 +12,13 @@
   },
   "dependencies": {
     "electron-serve": "^1.2.0",
-    "electron-store": "^8.1.0"
+    "electron-store": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "keytar": "^7.9.0",
+    "protobufjs": "^7.2.5",
+    "uuid": "^9.0.1",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "@chakra-ui/icons": "^2.1.1",
@@ -25,6 +31,7 @@
     "@types/react-dom": "^18.0.0",
     "electron": "27.0.3",
     "electron-builder": "24.6.4",
+    "express": "^4.18.2",
     "framer-motion": "^6.5.1",
     "next": "12.3.4",
     "nextron": "^8.12.0",

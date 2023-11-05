@@ -4,25 +4,30 @@ import Image from 'next/image'
 import {Button, Collapse, SlideFade, Spinner} from '@chakra-ui/react'
 import {Flex, Text} from '@chakra-ui/react'
 import {DarkModeSwitch} from '../components/DarkModeSwitch'
+import {ServerConfig} from "../../main/background";
 
 export default function HomePage() {
 
     const [isLoading, setLoading] = useState(true)
     const [isLoggingIn, setLoggingIn] = useState(false)
     const [showLoginButton, setShowLoginButton] = useState(false)
-    useEffect(() => {
-        const time = setTimeout(() => {
-            setShowLoginButton(true)
-            setLoading(false)
-        }, 1000)
-        return () => clearTimeout(time)
-    }, [])
+    // useEffect(() => {
+    //     const time = setTimeout(() => {
+    //         setShowLoginButton(true)
+    //         setLoading(false)
+    //     }, 1000)
+    //     return () => clearTimeout(time)
+    // }, [])
 
     const [messages, setMessages] = React.useState('')
     React.useEffect(() => {
         window.ipc.on('login-event', (messages: string) => {
             console.log(`We got a login event of ${messages}`)
             setMessages(messages)
+        })
+        window.ipc.on('configuration', (configuration: ServerConfig) => {
+            setShowLoginButton(true)
+            setLoading(false)
         })
     }, [])
 
@@ -62,7 +67,10 @@ export default function HomePage() {
                     <Spinner color="orange.500" size="xl" thickness='6px'/>
                 </SlideFade>
                 <Collapse in={showLoginButton} animateOpacity>
-                    <Button bg="#6441a5" isLoading={isLoggingIn} color="white" loadingText='logging in with browser' title="(dummy button)" onClick={()=>setLoggingIn(true)}>Login with Twitch</Button>
+                    <Button bg="#6441a5" isLoading={isLoggingIn} color="white" loadingText='logging in with browser' title="(dummy button)" onClick={() => {
+                        setShowLoginButton(true)
+                        window.ipc.beginTwitchLogin(false)
+                    }}>Login with Twitch</Button>
                 </Collapse>
             </Flex>
         </React.Fragment>

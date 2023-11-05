@@ -1,7 +1,10 @@
 import path from 'path'
-import {app, BrowserWindow, ipcMain} from 'electron'
+import {app, BrowserWindow, ipcMain, shell} from 'electron'
 import serve from 'electron-serve'
 import {createWindow} from './helpers'
+import * as process from "process";
+import {authHandler} from "./helpers/auth-handler";
+import {WebsocketLobby} from "./websocket-lobby";
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -11,10 +14,18 @@ if (isProd) {
     app.setPath('userData', `${app.getPath('userData')} (development)`)
 }
 
-let token = null
+export interface ServerConfig{
+    login_entry: string,
+    api: string,
+    ws: string,
+    is_ws_secure: string
+}
+
+let lobbyWS: WebsocketLobby | null = null
 
 let windowIsReady: boolean = false
 let mainWindow: BrowserWindow | null = null
+let defaultConfig: ServerConfig | null
 
 const getMainWindowWhenReady = async () => {
         if (!windowIsReady) {
@@ -59,6 +70,12 @@ const getMainWindowWhenReady = async () => {
         await mainWindow.loadURL(`http://localhost:${port}/home`)
         mainWindow.webContents.openDevTools()
     }
+    fetch('https://raw.githubusercontent.com/Noita-Together/noita-together/main/default-server-config.json')
+        .then(r => r.json())
+        .then(json => {
+            defaultConfig = json
+            mainWindow.webContents.send('configuration', defaultConfig)
+        })
 })()
 
 app.on('second-instance', async (_event, args) => {
@@ -72,8 +89,10 @@ app.on('second-instance', async (_event, args) => {
         const urlPath = url.split('noitatogether://')[1]
         if(urlPath.startsWith('oauth/token/success')){
             mainWindow.webContents.send('login-event', 'success')
-            token = urlPath.split('oauth/token/success?token=')[1]
-            logEverywhere(`browser-data token is ${token}`) // TODO TODO TODO DO NOT MERGE TO PRODUCTION
+            // token = urlPath.split('oauth/token/success?token=')[1]
+            await authHandler.save(url)
+            logEverywhere(`browser-data token is something`)
+            lobbyWS = new WebsocketLobby(authHandler.accessToken, defaultConfig)
         }
         else if(urlPath.startsWith('oauth/token/failed')){
             mainWindow.webContents.send('login-event', 'failed')
@@ -93,11 +112,17 @@ app.on('open-url', async (_event, url) => {
 })
 
 app.on('window-all-closed', () => {
+    lobbyWS?.close()
     app.quit()
 })
 
 ipcMain.on('message', async (event, arg) => {
     event.reply('message', `${arg} World!`)
+})
+
+ipcMain.on('beginTwitchLogin', (event, returningUser) => {
+    console.log(`Login with ${process.env.ELECTRON_WEBPACK_APP_LOGIN_URI}`)
+    authHandler.doFreshLogin(defaultConfig)
 })
 
 // Log both at dev console and at running node console instance
