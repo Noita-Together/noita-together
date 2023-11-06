@@ -12,6 +12,7 @@ module.exports = (data) => {
     let isHost = false
     console.log(`Connect to ws ${host}`)
     let client = new ws(`${host}${data.token}`)
+    
     const lobby = {
         sHostStart: (payload) => {
             if (isHost) {
@@ -155,7 +156,14 @@ module.exports = (data) => {
     })
 
     noita.on("PlayerMove", (event) => {
-        const msg = encodeGameMsg("cPlayerMove", event)
+        // don't send empty move updates. don't know why this happens...
+        if (!event || !event.frames || event.frames.length === 0) return;
+        
+        if (event && event.frames && event.frames.length > 0) {
+            const {x, y} = event.frames[event.frames.length-1];
+            noita.setLastPosition(x, y);
+        }
+        const msg = encodeGameMsg("playerMove", event)
         sendMsg(msg)
     })
 

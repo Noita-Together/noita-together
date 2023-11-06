@@ -1,5 +1,5 @@
-/** @type {import('../gen/messages_pb')} */
-const { Envelope } = require('../gen/messages_pb.js');
+/** @type {import('../gen/alt_pb')} */
+const { Envelope } = require('../gen/alt_pb.js');
 
 function decode(buf) {
   try {

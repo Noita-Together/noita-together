@@ -23,6 +23,9 @@ function rotLerp(a, b, weight) {
     const shortest = ((a - b) + Math.PI) % pi2 - Math.PI
     return b + (shortest * weight) % pi2
 }
+
+const distSquaredThreshold = 400 * 400;
+
 class NoitaGame extends EventEmitter {
     constructor() {
         super()
@@ -48,9 +51,18 @@ class NoitaGame extends EventEmitter {
             gold: 0
         }
         this.onDeathKick = false
+        this.lastX = 0;
+        this.lastY = 0;
         ipcMain.once("game_listen", () => {
             this.gameListen()
         })
+    }
+
+    setLastPosition(x, y) {
+        if (typeof x === 'number' && typeof y === 'number') {
+            this.lastX = x;
+            this.lastY = y;
+        }
     }
 
     isConnectionLocalhost(ws) {
@@ -241,11 +253,28 @@ class NoitaGame extends EventEmitter {
         }
     }
 
-    sPlayerMove(payload) {
+    playerMove(payload) {
         try {
             if (payload.userId == this.user.userId || !this.client) {
                 return
             }
+            // convert PlayerMove -> PlayerPosition when the player in question is too far
+            // away from us. this saves client resources by not "replaying" the movements
+            // of players we can't see
+            if (payload.frames && payload.frames.length > 0) {
+                const mid = payload.frames[Math.floor(payload.frames.length/2)]
+                const dist = (mid.x-this.lastX)**2 + (mid.y-this.lastY)**2
+                if (dist > distSquaredThreshold) {
+                    this.sendEvt("PlayerPos", {
+                        userId: payload.userId,
+                        x: mid.x,
+                        y: mid.y,
+                    })
+                    return
+                }
+            }
+
+            // normal frame behavior instead
             const frames = []
             for (const [index, current] of payload.frames.entries()) {
                 frames.push(current)
@@ -271,12 +300,12 @@ class NoitaGame extends EventEmitter {
             console.log(error)
         }
     }
-    sPlayerPos(payload) {
-        if (payload.userId == this.user.userId || !this.client) {
-            return
-        }
-        this.sendEvt("PlayerPos", payload)
-    }
+    // sPlayerPos(payload) {
+    //     if (payload.userId == this.user.userId || !this.client) {
+    //         return
+    //     }
+    //     this.sendEvt("PlayerPos", payload)
+    // }
     sPlayerUpdate(payload) {
         if (payload.userId == this.user.userId) {
             return
