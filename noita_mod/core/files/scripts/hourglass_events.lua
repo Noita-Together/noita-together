@@ -143,8 +143,9 @@ if not hourglassEventHandlers then
         end
     end))
 
+    --accel boosts your speed (only)
     assert(RegisterHourglassEvent("speed", "magic_liquid_movement_faster", function(player, triggered_by_name, data)
-        local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_movement_faster.xml")
+        local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_movement_faster_2x.xml")
         local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
         ComponentSetValue2(effect_comp, "frames", 60*120)
         EntityAddComponent2(effect_entity, "UIIconComponent", {
@@ -156,5 +157,37 @@ if not hourglassEventHandlers then
             is_perk = false
         })
         GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", triggered_by_name), "$noitatogether_hourglass_speed_subtitle")
+    end))
+
+    --levitatium boosts your levitation (only)
+    assert(RegisterHourglassEvent("levitation", "magic_liquid_faster_levitation", function(player, triggered_by_name, data)
+        local effect_entity = LoadGameEffectEntityTo(player, "data/entities/misc/effect_faster_levitation.xml")
+        local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
+        ComponentSetValue2(effect_comp, "frames", 60*120)
+        EntityAddComponent2(effect_entity, "UIIconComponent", {
+            icon_sprite_file = "data/ui_gfx/status_indicators/faster_levitation.png",
+            name = GameTextGet("$noitatogether_hourglass_buff_levitatium_name"),
+            description = GameTextGet("$noitatogether_hourglass_buff_levitatium_desc", triggered_by_name),
+            display_above_head = true,
+            display_in_hud = true,
+            is_perk = false
+        })
+        GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", triggered_by_name), "$noitatogether_hourglass_levitatium_subtitle")
+    end))
+
+    --hastium boosts both levitation and speed
+    assert(RegisterHourglassEvent("speed_and_levitation", "magic_liquid_faster_levitation_and_movement", function(player, triggered_by_name, data)
+        local effect_entity = LoadGameEffectEntityTo(player, "mods/noita-together/files/effects/hourglass_hastium.xml")
+        local effect_comp = EntityGetFirstComponent(effect_entity, "GameEffectComponent")
+        ComponentSetValue2(effect_comp, "frames", 60*120)
+        EntityAddComponent2(effect_entity, "UIIconComponent", {
+            icon_sprite_file = "mods/noita-together/files/ui_gfx/status_indicators/nt_hourglass_speed_levitation.png",
+            name = GameTextGet("$noitatogether_hourglass_buff_hastium_name"),
+            description = GameTextGet("$noitatogether_hourglass_buff_hastium_desc", triggered_by_name),
+            display_above_head = true,
+            display_in_hud = true,
+            is_perk = false
+        })
+        GamePrintImportant(GameTextGet("$noitatogether_hourglass_boost_title", triggered_by_name), "$noitatogether_hourglass_hastium_subtitle")
     end))
 end
