@@ -31,8 +31,10 @@ function CoopBossFightStart(data)
                 
                 if ( child_entities ~= nil ) then
                     for i,child_id in ipairs( child_entities ) do
-                        EntityHasTag( child_id, "protection" )
-                        child_to_remove = child_id
+                        -- fix
+						if EntityHasTag( child_id, "protection" ) then
+							child_to_remove = child_id
+						end
                     end
                 end
                 
@@ -41,6 +43,21 @@ function CoopBossFightStart(data)
                 end
             end
         end
+
+        --reference used to locate falling rock entities
+        local reference = EntityGetWithTag( "reference" )
+        if( #reference == 0 ) then
+            print_error("(NT) boss - couldn't find reference")
+            return
+        end
+        local reference_id = reference[1]
+	    x,y = EntityGetTransform( reference_id )
+
+        --load falling rocks
+        EntityLoad("data/entities/animals/boss_centipede/loose_lavaceiling.xml", x-235, y-73)
+		EntityLoad("data/entities/animals/boss_centipede/loose_lavaceiling.xml", x+264, y-50)
+		EntityLoad("data/entities/animals/boss_centipede/loose_lavabridge.xml", x-235, y+282)
+		EntityLoad("data/entities/animals/boss_centipede/loose_lavabridge.xml", x+257, y+262)
     end
 end
 
