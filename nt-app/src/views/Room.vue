@@ -51,6 +51,7 @@
               <tr v-for="user in users" :key="user.userId">
                 <td>{{ user.name }}</td>
                 <td>{{ user.seed }}</td>
+                <td>
                   <vUserTooltip :userId="user.userId"></vUserTooltip>
                 </td>
                 <td v-if="isHost && user.userId !== userId">
@@ -97,7 +98,7 @@
                       <table class="tablist-users-table">
                         <tbody>
                         <tr v-for="user in mod.users" :key="user">
-                            <vModUserTooltip :userId="user"></vModUserTooltip>
+                          <vModUserTooltip :userId="user"></vModUserTooltip>
                         </tr>
                         </tbody>
                       </table>
