@@ -74,27 +74,27 @@
             <table>
               <thead>
               <tr>
-                <th class="modlist-row">
-                  <div class="modlist-arrow-spacing"/>
-                  <div class="modlist-col">Mod Name</div>
-                  <div class="modlist-col-smol">Users</div>
+                <th class="tablist-row">
+                  <div class="tablist-arrow-spacing"/>
+                  <div class="tablist-col">Mod Name</div>
+                  <div class="tablist-col-smol">Users</div>
                 </th>
               </tr>
               </thead>
               <tbody>
                 <tr v-for="mod in modList" :key="mod.name">
                   <td>
-                    <div class="modlist-row" @click="toggleCollapse(mod.name)">
+                    <div class="tablist-row" @click="toggleCollapse(mod.name)">
                       <i title="click to see users"
                           class="fas"
                           slot="icon"
-                          :class="expandedItem === mod.name ? 'fa-chevron-up modlist-arrow-up' : 'fa-chevron-down modlist-arrow-down'"
+                          :class="expandedItem === mod.name ? 'fa-chevron-up tablist-arrow-up' : 'fa-chevron-down tablist-arrow-down'"
                       />
-                      <div class="modlist-col">{{`${mod.name.substring(0, 600)}${mod.name.length>600?'...':''}`}}</div>
-                      <div class="modlist-col-smol">{{mod.users.length}}</div>
+                      <div class="tablist-col">{{`${mod.name.substring(0, 600)}${mod.name.length>600?'...':''}`}}</div>
+                      <div class="tablist-col-smol">{{mod.users.length}}</div>
                     </div>
                     <div v-if="expandedItem === mod.name">
-                      <table class="modlist-users-table">
+                      <table class="tablist-users-table">
                         <tbody>
                         <tr v-for="user in mod.users" :key="user">
                             <vModUserTooltip :userId="user"></vModUserTooltip>
@@ -111,27 +111,27 @@
             <table>
               <thead>
               <tr>
-                <th class="modlist-row">
-                  <div class="modlist-arrow-spacing"/>
-                  <div class="modlist-col">Seed</div>
-                  <div class="modlist-col-smol">Users</div>
+                <th class="tablist-row">
+                  <div class="tablist-arrow-spacing"/>
+                  <div class="tablist-col">Seed</div>
+                  <div class="tablist-col-smol">Users</div>
                 </th>
               </tr>
               </thead>
               <tbody>
                 <tr v-for="seed in seedList" :key="seed.name">
                   <td>
-                    <div class="modlist-row" @click="toggleCollapse(seed.name)">
+                    <div class="tablist-row" @click="toggleCollapse(seed.name)">
                       <i title="click to see users"
                           class="fas"
                           slot="icon"
-                          :class="expandedItem === seed.name ? 'fa-chevron-up modlist-arrow-up' : 'fa-chevron-down modlist-arrow-down'"
+                          :class="expandedItem === seed.name ? 'fa-chevron-up tablist-arrow-up' : 'fa-chevron-down tablist-arrow-down'"
                       />
-                      <div class="modlist-col">{{`${seed.name.substring(0, 600)}${seed.name.length>600?'...':''}`}}</div>
-                      <div class="modlist-col-smol">{{seed.users.length}}</div>
+                      <div class="tablist-col">{{`${seed.name.substring(0, 600)}${seed.name.length>600?'...':''}`}}</div>
+                      <div class="tablist-col-smol">{{seed.users.length}}</div>
                     </div>
                     <div v-if="expandedItem === seed.name">
-                      <table class="modlist-users-table">
+                      <table class="tablist-users-table">
                         <tbody>
                         <tr v-for="user in seed.users" :key="user">
                           <td>{{ user }}</td>
@@ -418,38 +418,38 @@ export default {
   background: #2e2e2e !important;
 }
 
-.modlist-row{
+.tablist-row{
   width: 100%;
   justify-content: space-between;
   display: flex;
 }
 
-.modlist-col{
+.tablist-col{
   flex-grow: 1;
 }
 
-.modlist-col-smol{
+.tablist-col-smol{
   width: 300px;
   justify-content: center;
   text-align: center;
 }
 
-.modlist-users-table{
+.tablist-users-table{
   border: 1px solid #2E2E2E;
   width: 60%;
   margin-top: 8px;
   margin-left: 32px;
 }
 
-.modlist-arrow-spacing{
+.tablist-arrow-spacing{
   width: 20px;
 }
 
-.modlist-arrow-down{
+.tablist-arrow-down{
   margin-right: 8px;
 }
 
-.modlist-arrow-up{
+.tablist-arrow-up{
   margin-right: 8px;
 }
 
