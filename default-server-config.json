@@ -1,0 +1,6 @@
+{
+    "login_entry": "https://noitatogether.com/api/auth/login",
+    "api": "https://noitatogether.com/api",
+    "ws": "noitatogether.com/ws",
+    "is_ws_secure": true
+}
