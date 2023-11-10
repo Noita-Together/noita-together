@@ -567,14 +567,17 @@ export default {
 }
 
 .users-wrapper table td:nth-child(1n + 0) {
-    width: 50%;
+    width: 40%;
 }
 
 .users-wrapper table td:nth-child(2n + 0) {
-    width: 20%;
+    width: 15%;
 }
 
 .users-wrapper table td:nth-child(3n + 0) {
+    width: 15%;
+}
+.users-wrapper table td:nth-child(4n + 0) {
     width: 30%;
 }
 </style>
