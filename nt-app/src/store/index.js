@@ -174,7 +174,8 @@ export default new Vuex.Store({
         },
         tabs: {
             "0": 'Users',
-            "1": 'Mods'
+            "1": 'Mods',
+            "2": 'Seeds',
         },
         user: {
             name: "",

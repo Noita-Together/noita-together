@@ -42,6 +42,7 @@
                   <img v-if="!sortByUser" title="sort by name" alt="Sort by name" class="users-sort" src="/sort_by_icon.svg" @click="sortUser()"/>
                   <img v-if="sortByUser" title="Sort by oldest to newest" alt="Sort by oldest to newest" class="users-sort" src="/sort_by_icon_active.svg" @click="sortUser()"/>
                 </th>
+                <th>Seed</th>
                 <th>State</th>
                 <th v-if="isHost">Actions</th>
               </tr>
@@ -49,6 +50,7 @@
               <tbody>
               <tr v-for="user in users" :key="user.userId">
                 <td>{{ user.name }}</td>
+                <td>{{ user.seed }}</td>
                 <td>
                   <vUserTooltip :userId="user.userId"></vUserTooltip>
                 </td>
@@ -73,29 +75,66 @@
             <table>
               <thead>
               <tr>
-                <th class="modlist-row">
-                  <div class="modlist-arrow-spacing"/>
-                  <div class="modlist-col">Mod Name</div>
-                  <div class="modlist-col-smol">Users</div>
+                <th class="tablist-row">
+                  <div class="tablist-arrow-spacing"/>
+                  <div class="tablist-col">Mod Name</div>
+                  <div class="tablist-col-smol">Users</div>
                 </th>
               </tr>
               </thead>
               <tbody>
                 <tr v-for="mod in modList" :key="mod.name">
                   <td>
-                    <div class="modlist-row" @click="toggleCollapse(mod.name)">
+                    <div class="tablist-row" @click="toggleCollapse(mod.name)">
                       <i title="click to see users"
                           class="fas"
                           slot="icon"
-                          :class="expandedModItem === mod.name ? 'fa-chevron-up modlist-arrow-up' : 'fa-chevron-down modlist-arrow-down'"
+                          :class="expandedItem === mod.name ? 'fa-chevron-up tablist-arrow-up' : 'fa-chevron-down tablist-arrow-down'"
                       />
-                      <div class="modlist-col">{{`${mod.name.substring(0, 600)}${mod.name.length>600?'...':''}`}}</div>
-                      <div class="modlist-col-smol">{{mod.users.length}}</div>
+                      <div class="tablist-col">{{`${mod.name.substring(0, 600)}${mod.name.length>600?'...':''}`}}</div>
+                      <div class="tablist-col-smol">{{mod.users.length}}</div>
                     </div>
-                    <div v-if="expandedModItem === mod.name">
-                      <table class="modlist-users-table">
+                    <div v-if="expandedItem === mod.name">
+                      <table class="tablist-users-table">
                         <tbody>
                         <tr v-for="user in mod.users" :key="user">
+                          <vModUserTooltip :userId="user"></vModUserTooltip>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-if="tab === '2'"> <!--Seeds tab-->
+            <table>
+              <thead>
+              <tr>
+                <th class="tablist-row">
+                  <div class="tablist-arrow-spacing"/>
+                  <div class="tablist-col">Seed</div>
+                  <div class="tablist-col-smol">Users</div>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr v-for="seed in seedList" :key="seed.name">
+                  <td>
+                    <div class="tablist-row" @click="toggleCollapse(seed.name)">
+                      <i title="click to see users"
+                          class="fas"
+                          slot="icon"
+                          :class="expandedItem === seed.name ? 'fa-chevron-up tablist-arrow-up' : 'fa-chevron-down tablist-arrow-down'"
+                      />
+                      <div class="tablist-col">{{`${seed.name.substring(0, 600)}${seed.name.length>600?'...':''}`}}</div>
+                      <div class="tablist-col-smol">{{seed.users.length}}</div>
+                    </div>
+                    <div v-if="expandedItem === seed.name">
+                      <table class="tablist-users-table">
+                        <tbody>
+                        <tr v-for="user in seed.users" :key="user">
                           <td>{{ user }}</td>
                         </tr>
                         </tbody>
@@ -107,7 +146,6 @@
             </table>
           </div>
         </div>
-
         <div class="chat-wrapper">
             <div class="chatbox" @keydown="sendChat">
                 <input type="text" v-model="chatMsg" placeholder="Send Message" />
@@ -133,12 +171,14 @@ import vRoomFlags from "@/components/vRoomFlags.vue"
 import vLeaveRoom from "@/components/vLeaveRoom.vue"
 //import vTooltip from "@/components/vTooltip.vue"
 import vUserTooltip from "@/components/vUserTooltip.vue"
+import vModUserTooltip from "@/components/vModUserTooltip.vue"
 export default {
     components: {
         vButton,
         vRoomFlags,
         //vTooltip,
         vUserTooltip,
+        vModUserTooltip,
         vLeaveRoom
     },
     data() {
@@ -200,7 +240,7 @@ export default {
               return a.name.toLowerCase() >= b.name.toLowerCase() ? 1 : -1
             })
         },
-        expandedModItem(){
+        expandedItem(){
           return this.expandedContent
         },
         modList(){
@@ -211,7 +251,7 @@ export default {
               userMods.forEach(mod=>{
                 if(!Object.keys(mods).includes(mod))
                   mods[mod] = []
-                mods[mod].push(user.name)
+                mods[mod].push(user.userId)
               })
             })
 
@@ -219,6 +259,30 @@ export default {
             return modNames.map((modName)=>({
               name: modName,
               users: mods[modName]
+            })).sort((a,b)=>{
+              const aUsers = a.users.length
+              const bUsers = b.users.length
+
+              if(aUsers === bUsers){
+                return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+              }
+              return aUsers > bUsers ? -1 : 1
+            })
+        },
+        seedList(){
+            const seeds = {}
+            this.$store.state.room.users.forEach(user=>{
+              console.log(user)
+              const userSeed = user.seed ? user.seed : "Not Ready"
+              if(!Object.keys(seeds).includes(userSeed))
+                seeds[userSeed] = []
+              seeds[userSeed].push(user.name)
+            })
+
+            const seedNums = Object.keys(seeds)
+            return seedNums.map((seedNum)=>({
+              name: seedNum,
+              users: seeds[seedNum]
             })).sort((a,b)=>{
               const aUsers = a.users.length
               const bUsers = b.users.length
@@ -285,8 +349,8 @@ export default {
         openLeaveRoom() {
             this.showLeaveModal = true
         },
-        toggleCollapse(modName){
-            this.expandedContent = this.expandedContent === modName ? "" : modName
+        toggleCollapse(name){
+            this.expandedContent = this.expandedContent === name ? "" : name
         },
         openTab(tab){
             this.setTab(tab)
@@ -355,38 +419,38 @@ export default {
   background: #2e2e2e !important;
 }
 
-.modlist-row{
+.tablist-row{
   width: 100%;
   justify-content: space-between;
   display: flex;
 }
 
-.modlist-col{
+.tablist-col{
   flex-grow: 1;
 }
 
-.modlist-col-smol{
+.tablist-col-smol{
   width: 300px;
   justify-content: center;
   text-align: center;
 }
 
-.modlist-users-table{
+.tablist-users-table{
   border: 1px solid #2E2E2E;
   width: 60%;
   margin-top: 8px;
   margin-left: 32px;
 }
 
-.modlist-arrow-spacing{
+.tablist-arrow-spacing{
   width: 20px;
 }
 
-.modlist-arrow-down{
+.tablist-arrow-down{
   margin-right: 8px;
 }
 
-.modlist-arrow-up{
+.tablist-arrow-up{
   margin-right: 8px;
 }
 
@@ -503,14 +567,17 @@ export default {
 }
 
 .users-wrapper table td:nth-child(1n + 0) {
-    width: 50%;
+    width: 40%;
 }
 
 .users-wrapper table td:nth-child(2n + 0) {
-    width: 20%;
+    width: 15%;
 }
 
 .users-wrapper table td:nth-child(3n + 0) {
+    width: 15%;
+}
+.users-wrapper table td:nth-child(4n + 0) {
     width: 30%;
 }
 </style>
