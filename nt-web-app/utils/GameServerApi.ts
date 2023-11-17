@@ -1,5 +1,5 @@
 const apiBase = (() => {
-    const prefix = process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || `wss://${process.env.VUE_APP_HOSTNAME_WS}` || 'wss://noitatogether.com/ws/'
+    const prefix = process.env.VUE_APP_LOBBY_SERVER_URL_BASE || 'http://localhost:4444/api'
     return prefix.endsWith('/') ? prefix : `${prefix}/`
 })();
 
