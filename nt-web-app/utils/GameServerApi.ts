@@ -13,7 +13,7 @@ export interface Stats {
 }
 
 const getStatsUrl = (id: string, sessionId: string) => {
-    return `${apiBase}${id}/${sessionId}`
+    return `${apiBase}stats/${id}/${sessionId}`
 }
 
 export {
