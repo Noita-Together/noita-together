@@ -12,7 +12,7 @@
     "serve-websocket": "ts-node nt-websocket.ts",
     "init-db": "ts-node nt-database-init.ts",
     "serverInitOnce": "node create-jwt-secret.js",
-    "serveDev": "ts-node-dev server.ts",
+    "serveDev": "ts-node-dev nt-webserver.ts",
     "type-gen2": "pbjs -t static-module --ts --no-comments --no-delimited --out websocket/messages.ts websocket/messages.proto",
     "type-gen": "pbjs -t static-module --wrap es6 --no-comments --no-delimited --out websocket/messages.js websocket/messages.proto && pbjs -t static-module --no-delimited websocket/messages.proto | pbts -o websocket/messages.d.ts -"
   },
