@@ -1,5 +1,5 @@
 const apiBase = (() => {
-    const prefix = process.env.VUE_APP_LOBBY_SERVER_API_URL_BASE || 'http://localhost:4444/api'
+    const prefix = process.env.VUE_APP_LOBBY_SERVER_API_URL_BASE || 'https://dev.noitatogether.com:4444/api'
     return prefix.endsWith('/') ? prefix : `${prefix}/`
 })();
 
