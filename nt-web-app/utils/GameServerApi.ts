@@ -16,6 +16,9 @@ const getStatsUrl = (id: string, sessionId: string) => {
     return `${apiBase}stats/${id}/${sessionId}`
 }
 
+const healthcheckUrl =`${apiBase}health`;
+
 export {
     getStatsUrl,
+    healthcheckUrl,
 }
