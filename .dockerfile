@@ -4,8 +4,8 @@ ARG GID=0
 RUN npm install -g pm2
 RUN [ $GID > 0 ] && [ $UID > 0 ] && groupadd -g $GID nginx && useradd -u $UID -g $GID -m -d /noita-together -s /usr/sbin/nologin nginx
 USER $UID:$GID
-WORKDIR ./noita-together
+WORKDIR /noita-together
 ADD --chown=$UID:$GID . .
 RUN yarn install
 RUN yarn buildServer
-CMD ["bash", "-c", "rm -f /srv/socket/noita-together/noita-together.sock && pm2-runtime ./ecosystem.config.js"]
+CMD ["bash", "-c", "yarn server-http"]
