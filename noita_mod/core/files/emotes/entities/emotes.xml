@@ -1,0 +1,57 @@
+<Entity name="emotes">
+    <InheritTransformComponent 
+		_enabled="1" >
+        <Transform
+            position.x="-7"
+            position.y="-12" >
+        </Transform>
+    </InheritTransformComponent>
+
+    <HotspotComponent
+      _tags="cape_root"
+      sprite_hotspot_name="cape" />
+
+    <VariableStorageComponent
+        name="current_emote"
+        value_string="none" />
+
+    <VariableStorageComponent
+        name="emoting_now"
+        value_bool="0" />
+
+    <VariableStorageComponent
+        name="active_item"
+        value_int="0" />
+
+    <VariableStorageComponent
+        name="frames_emoting"
+        value_int="0" />
+
+    <VariableStorageComponent
+        name="spawned_entity"
+        value_int="0" />
+
+    <VariableStorageComponent
+        name="emote_menu_open"
+        value_bool="0" />
+
+    <VariableStorageComponent
+        name="invoke_locked"
+        value_bool="0" />
+
+    <VariableStorageComponent
+        name="skin"
+        value_string="purple" />
+
+    <VariableStorageComponent
+        name="previous_skin"
+        value_string="purple" />
+
+    <VariableStorageComponent
+        name="particles_to_restore"
+        value_string="" />
+
+    <LuaComponent
+        script_source_file="mods/noita-together/files/emotes/scripts/emotes.lua"
+        execute_every_n_frame="1" />
+</Entity>

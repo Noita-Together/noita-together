@@ -48,7 +48,13 @@ customEvents = {
     PlayerCosmeticFlags = function(data)
         StorePlayerGhostCosmetic(data, true)
     end,
-    SecretHourglass = HandleHourglassEvent
+    SecretHourglass = HandleHourglassEvent,
+    Emote = function(data)
+        EmotePlayerGhost(data)
+    end,
+    Skin = function(data)
+        SkinSwapPlayerGhost(data)
+    end
 }
 wsEvents = {
     AngerySteve = function (data)
