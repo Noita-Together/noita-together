@@ -390,38 +390,37 @@ export default {
 }
 
 .users-name{
-  display: flex;
+    display: flex;
 }
 
 .users-sort{
-  cursor: pointer;
-  margin-left: 8px;
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
+    cursor: pointer;
+    margin-left: 8px;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
 }
 
 .tab-switcher{
-  display: flex;
-  overflow: hidden;
-  position: sticky;
-  top: 0;
-  background: #1d1d1d;
+    display: flex;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    background: #1d1d1d;
 }
 
 .tab{
-  margin-right: 8px;
-  background: #808080;
-  padding: 4px 8px 4px;
-
+    margin-right: 8px;
+    background: #808080;
+    padding: 4px 8px 4px;
 }
 
 .tab:hover{
-  background: #666666;
+    background: #666666;
 }
 
 .activeTab{
-  background: #2e2e2e !important;
+    background: #2e2e2e !important;
 }
 
 .tablist-row-top{
@@ -433,38 +432,38 @@ export default {
 }
 
 .tablist-row{
-  width: 100%;
-  justify-content: space-between;
-  display: flex;
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
 }
 
 .tablist-col{
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .tablist-col-smol{
-  width: 300px;
-  justify-content: center;
-  text-align: center;
+    width: 300px;
+    justify-content: center;
+    text-align: center;
 }
 
 .tablist-users-table{
-  border: 1px solid #2E2E2E;
-  width: 60%;
-  margin-top: 8px;
-  margin-left: 32px;
+    border: 1px solid #2E2E2E;
+    width: 60%;
+    margin-top: 8px;
+    margin-left: 32px;
 }
 
 .tablist-arrow-spacing{
-  width: 20px;
+    width: 20px;
 }
 
 .tablist-arrow-down{
-  margin-right: 8px;
+    margin-right: 8px;
 }
 
 .tablist-arrow-up{
-  margin-right: 8px;
+    margin-right: 8px;
 }
 
 .room-header > h1 {
