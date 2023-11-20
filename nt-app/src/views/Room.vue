@@ -75,7 +75,7 @@
             <table>
               <thead>
               <tr>
-                <th class="tablist-row">
+                <th class="tablist-row-top">
                   <div class="tablist-arrow-spacing"/>
                   <div class="tablist-col">Mod Name</div>
                   <div class="tablist-col-smol">Users</div>
@@ -112,7 +112,7 @@
             <table>
               <thead>
               <tr>
-                <th class="tablist-row">
+                <th class="tablist-row-top">
                   <div class="tablist-arrow-spacing"/>
                   <div class="tablist-col">Seed</div>
                   <div class="tablist-col-smol">Users</div>
@@ -403,12 +403,17 @@ export default {
 
 .tab-switcher{
   display: flex;
+  overflow: hidden;
+  position: sticky;
+  top: 0;
+  background: #1d1d1d;
 }
 
 .tab{
   margin-right: 8px;
   background: #808080;
   padding: 4px 8px 4px;
+
 }
 
 .tab:hover{
@@ -417,6 +422,14 @@ export default {
 
 .activeTab{
   background: #2e2e2e !important;
+}
+
+.tablist-row-top{
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
+    position: sticky;
+    top: 1.6em;
 }
 
 .tablist-row{
