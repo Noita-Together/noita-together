@@ -131,6 +131,29 @@ const ipcPlugin = (ipc) => {
     }
 }
 
+function firstDefined() {
+    for (let i = 0; i < arguments.length; i++) {
+        if (arguments[i] !== undefined) return arguments[i];
+    }
+}
+
+function getFlagValue(spec, flag) {
+    if (!flag || typeof flag !== 'object' || Array.isArray(flag)) return;
+    switch (spec.type) {
+        case 'boolean':
+            // currently, presence of the flag indicates a boolean true and
+            // absence indicates a boolean false. however, the message also
+            // supports an explicit value, so if that is specified we should
+            // honor it. otherwise, we assume true because the flag existed
+            // in the message payload
+            return firstDefined(flag.boolVal, true);
+        case 'string':
+            return flag.strVal;
+        case 'number':
+            return firstDefined(flag.uIntVal, flag.intVal, flag.floatVal);
+    }
+}
+
 const ipcStuff = ipcPlugin(ipcRenderer)
 //TODO hot reloading support https://vuex.vuejs.org/guide/hot-reload.html
 //TODO plugins https://vuex.vuejs.org/guide/plugins.html
@@ -327,14 +350,13 @@ export default new Vuex.Store({
             const mode = state.room.gamemode
             const fDefaults = state.defaultFlags[mode]
             if (!fDefaults) { return }
-            state.roomFlags = payload.flags.map(val => {
-                const flag = fDefaults.find(f => f.id == val.flag)
-                if (!flag) { return }
-                else {
-                    if (typeof val.value == "number") { flag.value = val.value }
-                    if (flag.type == "boolean") { flag.value = true }
-                    return flag
-                }
+            state.roomFlags = payload.flags.map(flag => {
+                const spec = fDefaults.find(f => f.id == flag.flag)
+                if (!spec) { return }
+                const flagValue = getFlagValue(spec, flag)
+                if (flagValue == undefined) { return }
+                spec.value = flagValue
+                return spec
             }).filter(v => typeof v !== "undefined")
         },
         resetRoom: (state) => {
