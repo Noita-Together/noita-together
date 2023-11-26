@@ -9,7 +9,7 @@ function sysMsg(message) {
     appEvent("sChat", {
         id: uuidv4(),
         userId: "-1",
-        name: "[System]",
+        name: "[SYSTEM]",
         message
     })
 }
