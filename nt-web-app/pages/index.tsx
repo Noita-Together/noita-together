@@ -2,23 +2,22 @@ import Head from 'next/head'
 import { Inter } from 'next/font/google'
 import styles from '../styles/Home.module.css'
 import {useEffect, useState} from "react";
-import {StatusApiResponse} from "./api/status";
+import {healthcheckUrl} from '../utils/GameServerApi';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const [serverStatus, setServerStatus] = useState<StatusApiResponse|null|undefined>(undefined)
+  const [serverStatus, setServerStatus] = useState<string>("CHECKING")
   useEffect(()=>{
-     fetch(`api/status`).then((data: Response)=>{
-       return data.json() as Promise<StatusApiResponse>
-     }).catch(e=>null)
-         .then((status)=>{
-           setServerStatus(status)
-         })
+     fetch(healthcheckUrl)
+      .then((res: Response) => {
+        setServerStatus(res.status === 200 ? 'ONLINE' : 'OFFLINE')
+      })
+      .catch(() => {
+        setServerStatus('ERROR')
+      })
   }, [])
-  let serverStatusText = '...'
-  if(serverStatus?.error || serverStatus === null) serverStatusText = "OFFLINE"
-  else serverStatusText = serverStatus?.message ?? "???"
+
   return (
     <>
       <Head>
@@ -38,7 +37,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div title={`Online since ${serverStatus?.uptime ?? '???'}`} style={{color: serverStatusText === "ONLINE" ? "white" : "red"}}>Server Status: {serverStatusText}</div>
+          <div style={{color: serverStatus === "ONLINE" ? "white" : "red"}}>Server Status: {serverStatus}</div>
 
           {/*<div className={styles.center}>
           <div>

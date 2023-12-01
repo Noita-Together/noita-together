@@ -4,14 +4,27 @@ const ws = require("ws")
 const {encodeLobbyMsg, encodeGameMsg, decode} = require("./handlers/messageHandler")
 const appEvent = require("./appEvent")
 const noita = require("./noita")
-const host = `wss://${process.env.VUE_APP_HOSTNAME_WS}`
+
+const {host, sni} = (() => {
+    const prefix = process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || `wss://${process.env.VUE_APP_HOSTNAME_WS}` || 'wss://noitatogether.com/ws/'
+    const host = prefix.endsWith('/') ? prefix : `${prefix}/`;
+    const url = new URL(host);
+    const sni = url.hostname;
+
+    return { host, sni };
+})();
+
 const print = true
 module.exports = (data) => {
     const user = { userId: data.id, name: data.display_name }
     noita.setUser({ userId: user.userId, name: user.name, host: false })
     let isHost = false
-    console.log(`Connect to ws ${host}`)
-    let client = new ws(`${host}${data.token}`)
+
+    console.log(`Connect to lobby server ${host}`)
+    let client = new ws(`${host}${data.token}`, {
+        servername: sni,
+    });
+    
     const lobby = {
         sHostStart: (payload) => {
             if (isHost) {
@@ -86,32 +99,35 @@ module.exports = (data) => {
 
     client.on("message", (data) => {
         try {
-            const { gameAction, lobbyAction } = decode(data)
-            let payload
-            let key
-            if (gameAction) {
-                key = Object.keys(gameAction).shift()
-                payload = gameAction[key]
-                if (key === "sChat") { appEvent(key, payload) }
-                if (key === "sStatUpdate") { appEvent(key, payload) }
-                if (typeof noita[key] == "function") {
-                    noita[key](payload)
-                }
+            const msg = decode(data)
+            if (!msg) return;
+
+            const actionType = msg.kind.case
+            const action = msg.kind.value.action.case
+            const payload = msg.kind.value.action.value
+
+            if (!actionType || !action || !payload) {
+                console.error(`Failed to decode message actionType=${actionType} action=${action} payload=${payload}`)
+                return
             }
-            else if (lobbyAction) {
-                key = Object.keys(lobbyAction).shift()
-                payload = lobbyAction[key]
-                if (key && payload) {
-                    if (typeof lobby[key] == "function") { lobby[key](payload) }
-                    appEvent(key, payload)
-                }
+
+            switch (actionType) {
+                case 'gameAction':
+                    if (action === "sChat") { appEvent(action, payload) }
+                    if (action === "sStatUpdate") { appEvent(action, payload) }
+                    if (typeof noita[action] == "function") {
+                        noita[action](payload)
+                    }
+                    break;
+                case 'lobbyAction':
+                    if (typeof lobby[action] == "function") { lobby[action](payload) }
+                    appEvent(action, payload)
+                    break;
+                default:
+                    console.log('Unknown Envelope case: '+msg.kind.case)
+                    break;
             }
-            //if (["sPlayerMove", "sPlayerUpdate", "sChat"].indexOf(key) > -1) { return }
-            //console.log(`[SERVER ${key}]`)
-            //console.log(payload)
-            //console.log()
         } catch (error) {
-            //eugh
             console.log(error)
         }
     })
@@ -152,7 +168,14 @@ module.exports = (data) => {
     })
 
     noita.on("PlayerMove", (event) => {
-        const msg = encodeGameMsg("cPlayerMove", event)
+        // don't send empty move updates. don't know why this happens...
+        if (!event || !event.frames || event.frames.length === 0) return;
+        
+        if (event && event.frames && event.frames.length > 0) {
+            const {x, y} = event.frames[event.frames.length-1];
+            noita.setLastPosition(x, y);
+        }
+        const msg = encodeGameMsg("playerMove", event)
         sendMsg(msg)
     })
 
@@ -162,7 +185,19 @@ module.exports = (data) => {
     })
 
     noita.on("PlayerPickup", (event) => {
-        const msg = encodeGameMsg("cPlayerPickup", event)
+        /** @type {import('./gen/messages_pb').ClientPlayerPickup} */
+        const payload = {}
+
+        if (event.heart) {
+            payload.case = 'heart'
+            payload.value = event.heart
+        }
+        else if (event.orb) {
+            payload.case = 'orb'
+            payload.value = event.orb
+        }
+
+        const msg = encodeGameMsg("cPlayerPickup", { kind: payload })
         sendMsg(msg)
     })
 
@@ -201,24 +236,26 @@ module.exports = (data) => {
     })
 
     noita.on("SendItems", (event) => {
+        /** @type {import('./gen/messages_pb').ClientPlayerAddItem} */
         const payload = {}
+
         if (event.spells) {
-            const spells = event.spells.map(mapSpells)
-            payload.spells = { list: spells }
+            payload.case = 'spells'
+            payload.value = { list: event.spells.map(mapSpells) }
         }
         else if (event.flasks) {
-            const flasks = event.flasks.map(mapFlasks)
-            payload.flasks = { list: flasks }
+            payload.case = 'flasks'
+            payload.value = { list: event.flasks.map(mapFlasks) }
         }
         else if (event.wands) {
-            const wands = event.wands.map(mapWands)
-            payload.wands = { list: wands }
+            payload.case = 'wands'
+            payload.value = { list: event.wands.map(mapWands) }
         }
         else if (event.objects) {
-            const objects = event.objects.map(mapObjects)
-            payload.objects = { list: objects }
+            payload.case = 'objects'
+            payload.value = { list: event.objects.map(mapObjects) }
         }
-        const msg = encodeGameMsg("cPlayerAddItem", payload)
+        const msg = encodeGameMsg("cPlayerAddItem", {item: payload})
         sendMsg(msg)
     })
 
