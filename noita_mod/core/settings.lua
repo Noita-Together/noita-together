@@ -33,26 +33,33 @@ mod_settings =
 		ui_description = "Enable debug logging. logger.txt lives in the Noita install directory.\nIt is NOT automatically shared with NT developers.",
 		value_default = true,
         scope=MOD_SETTING_SCOPE_RUNTIME_RESTART --this doesnt actually seem to prompt the user to restart the game though ??
+	},
+	{
+        id = "NT_EMOTE_BINDING",
+        value_default = "key_code,20,mouse_code,joystick_code",
+		hidden = true,
+		scope=MOD_SETTING_SCOPE_RUNTIME
 	}
 }
 
---emotes keybind manages itself
+--support vars for dynamic emote keybind system
 local input_apis_present = (type(InputIsKeyDown) == "function") ~= false
 local listening = false
 local there_has_been_input = false
 local key_inputs = {}
 local mouse_inputs = {}
 local joystick_inputs = {}
-local old_binding = ModSettingGet("noita-together.NT_EMOTE_BINDING")
+local old_binding = "key_code,20,mouse_code,joystick_code"
+if ModSettingGet("noita-together.NT_EMOTE_BINDING") ~= nil then
+	old_binding = ModSettingGet("noita-together.NT_EMOTE_BINDING")
+end
 
 function ModSettingsUpdate( init_scope )
-	local old_version = mod_settings_get_version( mod_id )
 	mod_settings_update( mod_id, mod_settings, init_scope )
 end
 
 function ModSettingsGuiCount()
-	local emote_settings_count = 1
-	return mod_settings_gui_count( mod_id, mod_settings ) + emote_settings_count
+	return mod_settings_gui_count( mod_id, mod_settings )
 end
 
 function ModSettingsGui( gui, in_main_menu )
@@ -96,13 +103,12 @@ function ModSettingsGui( gui, in_main_menu )
 			end
 		end
 
-		local binding_button_label = "Current emote binding: "..keybind_string
 		if listening then
 			GuiColorSetForNextWidget(gui, 1, 0, 0, 1)
 			GuiOptionsAdd(gui, GUI_OPTION.NonInteractive)
-			binding_button_label = "Current emote binding: "
 		end
-		if GuiButton(gui, 9999, 0, 0, binding_button_label) then
+		GuiOptionsAdd(gui, GUI_OPTION.Layout_NextSameLine)
+		if GuiButton(gui, 9999, 0, 0, "Current emote binding: ") then
 			key_inputs = {}
 			mouse_inputs = {}
 			joystick_inputs = {}
@@ -111,7 +117,9 @@ function ModSettingsGui( gui, in_main_menu )
 			old_binding = ModSettingGet("noita-together.NT_EMOTE_BINDING")
 		end
 		GuiTooltip(gui, "Set a custom binding for emotes to any combination of mouse, keyboard, and gamepad inputs."
-			.."\nAlso supports M-Néé input customization.", "")
+		.."\nAlso supports M-Néé input customization.", "")
+		GuiText(gui, 90, 0, keybind_string)
+		GuiOptionsRemove(gui, GUI_OPTION.Layout_NextSameLine)
 	else
 		GuiColorSetForNextWidget(gui, 1, 1, 1, 0.5)
     	GuiText(gui, 0, 0, "Current emote binding: A+S+D")
