@@ -9,7 +9,7 @@ function sysMsg(message) {
     appEvent("sChat", {
         id: uuidv4(),
         userId: "-1",
-        name: "[System]",
+        name: "[SYSTEM]",
         message
     })
 }
@@ -23,6 +23,9 @@ function rotLerp(a, b, weight) {
     const shortest = ((a - b) + Math.PI) % pi2 - Math.PI
     return b + (shortest * weight) % pi2
 }
+
+const distSquaredThreshold = 400 * 400;
+
 class NoitaGame extends EventEmitter {
     constructor() {
         super()
@@ -48,9 +51,18 @@ class NoitaGame extends EventEmitter {
             gold: 0
         }
         this.onDeathKick = false
+        this.lastX = 0;
+        this.lastY = 0;
         ipcMain.once("game_listen", () => {
             this.gameListen()
         })
+    }
+
+    setLastPosition(x, y) {
+        if (typeof x === 'number' && typeof y === 'number') {
+            this.lastX = x;
+            this.lastY = y;
+        }
     }
 
     isConnectionLocalhost(ws) {
@@ -241,11 +253,28 @@ class NoitaGame extends EventEmitter {
         }
     }
 
-    sPlayerMove(payload) {
+    playerMove(payload) {
         try {
             if (payload.userId == this.user.userId || !this.client) {
                 return
             }
+            // convert PlayerMove -> PlayerPosition when the player in question is too far
+            // away from us. this saves client resources by not "replaying" the movements
+            // of players we can't see
+            if (payload.frames && payload.frames.length > 0) {
+                const mid = payload.frames[Math.floor(payload.frames.length/2)]
+                const dist = (mid.x-this.lastX)**2 + (mid.y-this.lastY)**2
+                if (dist > distSquaredThreshold) {
+                    this.sendEvt("PlayerPos", {
+                        userId: payload.userId,
+                        x: mid.x,
+                        y: mid.y,
+                    })
+                    return
+                }
+            }
+
+            // normal frame behavior instead
             const frames = []
             for (const [index, current] of payload.frames.entries()) {
                 frames.push(current)
@@ -271,12 +300,12 @@ class NoitaGame extends EventEmitter {
             console.log(error)
         }
     }
-    sPlayerPos(payload) {
-        if (payload.userId == this.user.userId || !this.client) {
-            return
-        }
-        this.sendEvt("PlayerPos", payload)
-    }
+    // sPlayerPos(payload) {
+    //     if (payload.userId == this.user.userId || !this.client) {
+    //         return
+    //     }
+    //     this.sendEvt("PlayerPos", payload)
+    // }
     sPlayerUpdate(payload) {
         if (payload.userId == this.user.userId) {
             return
@@ -314,18 +343,16 @@ class NoitaGame extends EventEmitter {
             }
         }
     }
-    sPlayerAddItem(payload) {
-        const data = { flasks: payload.flasks, spells: payload.spells, wands: payload.wands, objects: payload.objects }
-        const items = []
+    /**
+     * @param {import('./gen/messages_pb').ServerPlayerAddItem} message
+     */
+    sPlayerAddItem(message) {
+        const key = message.item.case
+        const payload = message.item.value
+        if (!payload) return
 
-        for (const key in data) {
-            if (!data[key]) { continue }
-            for (const item of data[key].list) {
-                this.bank[key].push(item)
-                items.push(item)
-            }
-        }
-
+        const items = payload.list
+        Array.prototype.push.apply(this.bank[key], items)
         this.sendEvt("UserAddItems", { userId: payload.userId, items })//filter later?
     }
     sPlayerAddGold(payload) {
@@ -363,13 +390,20 @@ class NoitaGame extends EventEmitter {
         }
         this.emit("HostTake", { userId: payload.userId, id: payload.id, success: false })
     }
-    sPlayerPickup(payload) {
-        const player = payload.userId == this.user.userId ? this.user : this.players[payload.userId]
+    /**
+     * @param {import('./gen/messages_pb').ServerPlayerPickup} message
+     */
+    sPlayerPickup(message) {
+        const player = message.userId == this.user.userId ? this.user : this.players[message.userId]
+        const type = message.kind.case
+        const payload = message.kind.value
+        if (!type || !payload) return;
+
         if (player) {
-            sysMsg(`${player.name} picked up a ${payload.heart ? "heart" : "orb"}.`)
+            sysMsg(`${player.name} picked up a ${type}.`)
         }
-        if (payload.userId == this.user.userId) { return }
-        this.sendEvt("PlayerPickup", payload)
+        if (message.userId == this.user.userId) { return }
+        this.sendEvt("PlayerPickup", {userId: message.userId, [type]: payload})
     }
     sPlayerDeath(payload) {
         const player = payload.userId == this.user.userId ? this.user : this.players[payload.userId]
