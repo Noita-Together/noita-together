@@ -1,19 +1,26 @@
 const { v4: uuidv4 } = require("uuid")
 const { ipcMain } = require("electron")
 const ws = require("ws")
-const {encodeLobbyMsg, encodeGameMsg, decode} = require("./handlers/messageHandler")
+const {
+    encodeLobbyMsg,
+    encodeGameMsg,
+    decode
+} = require("./handlers/messageHandler")
 const appEvent = require("./appEvent")
 const noita = require("./noita")
 const { NT } = require("nt-message")
 
-const {host, sni} = (() => {
-    const prefix = process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || `wss://${process.env.VUE_APP_HOSTNAME_WS}` || 'wss://noitatogether.com/ws/'
-    const host = prefix.endsWith('/') ? prefix : `${prefix}/`;
-    const url = new URL(host);
-    const sni = url.hostname;
+const { host, sni } = (() => {
+    const prefix =
+        process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE ||
+        `wss://${process.env.VUE_APP_HOSTNAME_WS}` ||
+        "wss://noitatogether.com/ws/"
+    const host = prefix.endsWith("/") ? prefix : `${prefix}/`
+    const url = new URL(host)
+    const sni = url.hostname
 
-    return { host, sni };
-})();
+    return { host, sni }
+})()
 
 const print = true
 module.exports = (data) => {
@@ -23,9 +30,9 @@ module.exports = (data) => {
 
     console.log(`Connect to lobby server ${host}`)
     let client = new ws(`${host}${data.token}`, {
-        servername: sni,
-    });
-    
+        servername: sni
+    })
+
     const lobby = {
         sHostStart: (payload) => {
             if (isHost) {
@@ -39,29 +46,25 @@ module.exports = (data) => {
                 sendMsg(msg)
             }
             noita.sendEvt("StartRun")
-
         },
         sUserBanned: (payload) => {
             if (payload.userId == user.userId) {
                 noita.reset()
-            }
-            else {
+            } else {
                 noita.removePlayer(payload)
             }
         },
         sUserKicked: (payload) => {
             if (payload.userId == user.userId) {
                 noita.reset()
-            }
-            else {
+            } else {
                 noita.removePlayer(payload)
             }
         },
         sUserLeftRoom: (payload) => {
             if (payload.userId == user.userId) {
                 noita.reset()
-            }
-            else {
+            } else {
                 noita.removePlayer(payload)
             }
         },
@@ -71,7 +74,9 @@ module.exports = (data) => {
         sJoinRoomSuccess: (payload) => {
             noita.rejectConnections = false
             for (const player of payload.users) {
-                if (player.userId == user.userId) { continue }
+                if (player.userId == user.userId) {
+                    continue
+                }
                 noita.addPlayer({ userId: player.userId, name: player.name })
             }
         },
@@ -85,7 +90,7 @@ module.exports = (data) => {
         },
         sRoomDeleted: (payload) => {
             noita.reset()
-        },
+        }
     }
 
     client.on("open", () => {
@@ -99,19 +104,19 @@ module.exports = (data) => {
     })
 
     /**
-     * @param {NT.GameAction} gameAction 
+     * @param {NT.GameAction} gameAction
      */
     function handleGameAction(gameAction) {
         const action = gameAction.action
         if (!action) return
 
         switch (action) {
-            case 'sChat':
-            case 'sStatUpdate':
+            case "sChat":
+            case "sStatUpdate":
                 appEvent(action, gameAction[action])
                 break
             default:
-                if (typeof noita[action] === 'function') {
+                if (typeof noita[action] === "function") {
                     noita[action](gameAction[action])
                 } else {
                     console.error(`No handler for gameAction=${action}`)
@@ -121,8 +126,7 @@ module.exports = (data) => {
     }
 
     /**
-     * 
-     * @param {NT.LobbyAction} lobbyAction 
+     * @param {NT.LobbyAction} lobbyAction
      */
     function handleLobbyAction(lobbyAction) {
         const action = lobbyAction.action
@@ -138,14 +142,14 @@ module.exports = (data) => {
     client.on("message", (data) => {
         try {
             const msg = decode(data)
-            if (!msg) return;
+            if (!msg) return
 
             const actionType = msg.kind
             switch (actionType) {
-                case 'gameAction':
+                case "gameAction":
                     handleGameAction(msg.gameAction)
                     break
-                case 'lobbyAction':
+                case "lobbyAction":
                     handleLobbyAction(msg.lobbyAction)
                     break
                 default:
@@ -194,11 +198,11 @@ module.exports = (data) => {
 
     noita.on("PlayerMove", (event) => {
         // don't send empty move updates. don't know why this happens...
-        if (!event || !event.frames || event.frames.length === 0) return;
-        
+        if (!event || !event.frames || event.frames.length === 0) return
+
         if (event && event.frames && event.frames.length > 0) {
-            const {x, y} = event.frames[event.frames.length-1];
-            noita.setLastPosition(x, y);
+            const { x, y } = event.frames[event.frames.length - 1]
+            noita.setLastPosition(x, y)
         }
         const msg = encodeGameMsg("playerMove", event)
         sendMsg(msg)
@@ -214,11 +218,10 @@ module.exports = (data) => {
         const payload = {}
 
         if (event.heart) {
-            payload.case = 'heart'
+            payload.case = "heart"
             payload.value = event.heart
-        }
-        else if (event.orb) {
-            payload.case = 'orb'
+        } else if (event.orb) {
+            payload.case = "orb"
             payload.value = event.orb
         }
 
@@ -265,22 +268,19 @@ module.exports = (data) => {
         const payload = {}
 
         if (event.spells) {
-            payload.case = 'spells'
+            payload.case = "spells"
             payload.value = { list: event.spells.map(mapSpells) }
-        }
-        else if (event.flasks) {
-            payload.case = 'flasks'
+        } else if (event.flasks) {
+            payload.case = "flasks"
             payload.value = { list: event.flasks.map(mapFlasks) }
-        }
-        else if (event.wands) {
-            payload.case = 'wands'
+        } else if (event.wands) {
+            payload.case = "wands"
             payload.value = { list: event.wands.map(mapWands) }
-        }
-        else if (event.objects) {
-            payload.case = 'objects'
+        } else if (event.objects) {
+            payload.case = "objects"
             payload.value = { list: event.objects.map(mapObjects) }
         }
-        const msg = encodeGameMsg("cPlayerAddItem", {item: payload})
+        const msg = encodeGameMsg("cPlayerAddItem", { item: payload })
         sendMsg(msg)
     })
 
@@ -324,7 +324,9 @@ module.exports = (data) => {
         return {
             id: uuidv4(),
             stats: keysToCamel(wand.stats),
-            alwaysCast: wand.always_cast ? wand.always_cast.map(mapSpells) : undefined,
+            alwaysCast: wand.always_cast
+                ? wand.always_cast.map(mapSpells)
+                : undefined,
             deck: wand.deck.map(mapSpells),
             sentBy: user.userId
         }
@@ -363,9 +365,8 @@ module.exports = (data) => {
     }
 
     function toCamel(str) {
-        return str.replace(/([_][a-z])/ig, ($1) => {
-            return $1.toUpperCase()
-                .replace('_', '')
+        return str.replace(/([_][a-z])/gi, ($1) => {
+            return $1.toUpperCase().replace("_", "")
         })
     }
 
