@@ -1,16 +1,18 @@
-/** @type {import('../gen/alt_pb')} */
-const { Envelope } = require('../gen/alt_pb.js');
+const { NT } = require('nt-message');
 
+/**
+ * @returns {NT.Envelope}
+ */
 function decode(buf) {
   try {
-    return Envelope.fromBinary(buf);
+    return NT.Envelope.decode(buf);
   } catch (err) {
     console.log(`Something fked up decoding ${err}`);
   }
 }
 
 /**
- * @param {import('../gen/messages_pb').Envelope} obj
+ * @param {NT.Envelope} obj
  * @returns
  */
 function encode(obj) {
@@ -22,7 +24,7 @@ function encode(obj) {
 }
 
 function encodeGameMsg(type, data) {
-  /** @type {import('../gen/messages_pb').GameAction} */
+  /** @type {NT.GameAction} */
   const gameAction = {
     action: {
       case: type,
@@ -38,7 +40,7 @@ function encodeGameMsg(type, data) {
 }
 
 function encodeLobbyMsg(type, data) {
-  /** @type {import('../gen/messages_pb').LobbyAction} */
+  /** @type {NT.LobbyAction} */
   const lobbyAction = {
     action: {
       case: type,

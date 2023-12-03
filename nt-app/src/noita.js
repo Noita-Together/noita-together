@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require("uuid")
 const appEvent = require("./appEvent")
 const cmdLineArgs = require("./cmdLineArgs");
 const { ipcMain } = require("electron")
+const { NT } = require("nt-message")
 function sysMsg(message) {
     appEvent("sChat", {
         id: uuidv4(),
@@ -253,6 +254,13 @@ class NoitaGame extends EventEmitter {
         }
     }
 
+    /**
+     * @param {NT.ServerPlayerMoves} payload 
+     */
+    sPlayerMoves(payload) {
+        payload.moves.forEach(this.sPlayerMoves, this);
+    }
+
     playerMove(payload) {
         try {
             if (payload.userId == this.user.userId || !this.client) {
@@ -344,7 +352,7 @@ class NoitaGame extends EventEmitter {
         }
     }
     /**
-     * @param {import('./gen/messages_pb').ServerPlayerAddItem} message
+     * @param {NT.ServerPlayerAddItem} message
      */
     sPlayerAddItem(message) {
         const key = message.item.case
@@ -391,7 +399,7 @@ class NoitaGame extends EventEmitter {
         this.emit("HostTake", { userId: payload.userId, id: payload.id, success: false })
     }
     /**
-     * @param {import('./gen/messages_pb').ServerPlayerPickup} message
+     * @param {NT.ServerPlayerPickup} message
      */
     sPlayerPickup(message) {
         const player = message.userId == this.user.userId ? this.user : this.players[message.userId]

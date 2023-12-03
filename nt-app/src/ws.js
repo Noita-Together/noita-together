@@ -4,6 +4,7 @@ const ws = require("ws")
 const {encodeLobbyMsg, encodeGameMsg, decode} = require("./handlers/messageHandler")
 const appEvent = require("./appEvent")
 const noita = require("./noita")
+const { NT } = require("nt-message")
 
 const {host, sni} = (() => {
     const prefix = process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || `wss://${process.env.VUE_APP_HOSTNAME_WS}` || 'wss://noitatogether.com/ws/'
@@ -97,35 +98,59 @@ module.exports = (data) => {
         client = null
     })
 
+    /**
+     * @param {NT.GameAction} gameAction 
+     */
+    function handleGameAction(gameAction) {
+        const action = gameAction.action
+        if (!action) return
+
+        switch (action) {
+            case 'sChat':
+            case 'sStatUpdate':
+                appEvent(action, gameAction[action])
+                break
+            default:
+                if (typeof noita[action] === 'function') {
+                    noita[action](gameAction[action])
+                } else {
+                    console.error(`No handler for gameAction=${action}`)
+                }
+                break
+        }
+    }
+
+    /**
+     * 
+     * @param {NT.LobbyAction} lobbyAction 
+     */
+    function handleLobbyAction(lobbyAction) {
+        const action = lobbyAction.action
+        if (!action) return
+
+        if (typeof lobby[action] == "function") {
+            lobby[action](payload)
+        } else {
+            console.error(`No handler for lobbyAction=${action}`)
+        }
+    }
+
     client.on("message", (data) => {
         try {
             const msg = decode(data)
             if (!msg) return;
 
-            const actionType = msg.kind.case
-            const action = msg.kind.value.action.case
-            const payload = msg.kind.value.action.value
-
-            if (!actionType || !action || !payload) {
-                console.error(`Failed to decode message actionType=${actionType} action=${action} payload=${payload}`)
-                return
-            }
-
+            const actionType = msg.kind
             switch (actionType) {
                 case 'gameAction':
-                    if (action === "sChat") { appEvent(action, payload) }
-                    if (action === "sStatUpdate") { appEvent(action, payload) }
-                    if (typeof noita[action] == "function") {
-                        noita[action](payload)
-                    }
-                    break;
+                    handleGameAction(msg.gameAction)
+                    break
                 case 'lobbyAction':
-                    if (typeof lobby[action] == "function") { lobby[action](payload) }
-                    appEvent(action, payload)
-                    break;
+                    handleLobbyAction(msg.lobbyAction)
+                    break
                 default:
-                    console.log('Unknown Envelope case: '+msg.kind.case)
-                    break;
+                    console.error(`Unknown actionType=${actionType}`)
+                    break
             }
         } catch (error) {
             console.log(error)
@@ -185,7 +210,7 @@ module.exports = (data) => {
     })
 
     noita.on("PlayerPickup", (event) => {
-        /** @type {import('./gen/messages_pb').ClientPlayerPickup} */
+        /** @type {NT.ClientPlayerPickup} */
         const payload = {}
 
         if (event.heart) {
@@ -236,7 +261,7 @@ module.exports = (data) => {
     })
 
     noita.on("SendItems", (event) => {
-        /** @type {import('./gen/messages_pb').ClientPlayerAddItem} */
+        /** @type {NT.ClientPlayerAddItem} */
         const payload = {}
 
         if (event.spells) {
