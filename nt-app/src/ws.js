@@ -9,6 +9,7 @@ const {
 const appEvent = require("./appEvent")
 const noita = require("./noita")
 const { NT } = require("nt-message")
+const { encodeFrames } = require("./frameCoder")
 
 const { host, sni } = (() => {
     const prefix =
@@ -204,7 +205,8 @@ module.exports = (data) => {
             const { x, y } = event.frames[event.frames.length - 1]
             noita.setLastPosition(x, y)
         }
-        const msg = encodeGameMsg("playerMove", event)
+        const cf = encodeFrames(event.frames)
+        const msg = encodeGameMsg("cPlayerMove", cf)
         sendMsg(msg)
     })
 
