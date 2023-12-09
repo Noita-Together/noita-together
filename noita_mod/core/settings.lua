@@ -33,6 +33,12 @@ mod_settings =
 		value_default = true,
         scope=MOD_SETTING_SCOPE_RUNTIME_RESTART --this doesnt actually seem to prompt the user to restart the game though ??
 	},
+	{
+        id = "NT_SHOW_WUOTE_FRIDGE",
+        ui_name = "Use Wuote Fridge icon instead of bank",
+        value_default = false,
+        scope=MOD_SETTING_SCOPE_RUNTIME
+    },
 }
 
 function ModSettingsUpdate( init_scope )
