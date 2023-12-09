@@ -291,20 +291,21 @@ class NoitaGame extends EventEmitter {
                 (payload.xInit - this.lastX) ** 2 +
                 (payload.yInit - this.lastY) ** 2
             if (!isNaN(dist) && dist > distSquaredThreshold) {
-                this.sendEvt("PlayerPos", {
+                const playerPos = {
                     userId: payload.userId,
                     x: payload.xInit,
                     y: payload.yInit
-                })
+                }
+                this.sendEvt("PlayerPos", playerPos)
                 return
             }
 
-            const decoded = decodeFrames(payload.frames)
+            const decoded = decodeFrames(payload)
             // normal frame behavior instead
             const frames = []
             for (const [index, current] of decoded.entries()) {
                 frames.push(current)
-                const next = payload.frames[index + 1]
+                const next = decoded[index + 1]
                 if (typeof next !== "undefined") {
                     const med = {
                         x: lerp(current.x, next.x, 0.869),
@@ -382,8 +383,12 @@ class NoitaGame extends EventEmitter {
      * @param {NT.ServerPlayerAddItem} message
      */
     sPlayerAddItem(message) {
-        const key = message.item.case
-        const payload = message.item.value
+        const pbjs = NT.ServerPlayerAddItem.create(message)
+
+        const key = pbjs.item
+        if (key == null) return
+
+        const payload = pbjs[key]
         if (!payload) return
 
         const items = payload.list
@@ -455,13 +460,17 @@ class NoitaGame extends EventEmitter {
      * @param {NT.ServerPlayerPickup} message
      */
     sPlayerPickup(message) {
+        const pbjs = NT.ServerPlayerPickup.create(message)
+
         const player =
             message.userId == this.user.userId
                 ? this.user
                 : this.players[message.userId]
-        const type = message.kind.case
-        const payload = message.kind.value
-        if (!type || !payload) return
+        const type = pbjs.kind
+        if (type == null) return
+
+        const payload = pbjs[type]
+        if (!payload) return
 
         if (player) {
             sysMsg(`${player.name} picked up a ${type}.`)

@@ -133,11 +133,13 @@ module.exports = (data) => {
         const action = lobbyAction.action
         if (!action) return
 
+        const payload = lobbyAction[action]
+        if (!payload) return
+
         if (typeof lobby[action] == "function") {
             lobby[action](payload)
-        } else {
-            console.error(`No handler for lobbyAction=${action}`)
         }
+        appEvent(action, payload)
     }
 
     client.on("message", (data) => {
@@ -216,18 +218,7 @@ module.exports = (data) => {
     })
 
     noita.on("PlayerPickup", (event) => {
-        /** @type {NT.ClientPlayerPickup} */
-        const payload = {}
-
-        if (event.heart) {
-            payload.case = "heart"
-            payload.value = event.heart
-        } else if (event.orb) {
-            payload.case = "orb"
-            payload.value = event.orb
-        }
-
-        const msg = encodeGameMsg("cPlayerPickup", { kind: payload })
+        const msg = encodeGameMsg("cPlayerPickup", event)
         sendMsg(msg)
     })
 
@@ -267,23 +258,18 @@ module.exports = (data) => {
 
     noita.on("SendItems", (event) => {
         /** @type {NT.ClientPlayerAddItem} */
-        const payload = {}
+        const msg = {}
 
         if (event.spells) {
-            payload.case = "spells"
-            payload.value = { list: event.spells.map(mapSpells) }
+            msg.spells = { list: event.spells.map(mapSpells) }
         } else if (event.flasks) {
-            payload.case = "flasks"
-            payload.value = { list: event.flasks.map(mapFlasks) }
+            msg.flasks = { list: event.flasks.map(mapFlasks) }
         } else if (event.wands) {
-            payload.case = "wands"
-            payload.value = { list: event.wands.map(mapWands) }
+            msg.wands = { list: event.wands.map(mapWands) }
         } else if (event.objects) {
-            payload.case = "objects"
-            payload.value = { list: event.objects.map(mapObjects) }
+            msg.objects = { list: event.objects.map(mapObjects) }
         }
-        const msg = encodeGameMsg("cPlayerAddItem", { item: payload })
-        sendMsg(msg)
+        sendMsg(encodeGameMsg("cPlayerAddItem", msg))
     })
 
     noita.on("PlayerTake", (event) => {

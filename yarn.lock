@@ -1644,7 +1644,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0":
+"@types/node@npm:*":
   version: 20.10.3
   resolution: "@types/node@npm:20.10.3"
   dependencies:
@@ -1657,6 +1657,15 @@ __metadata:
   version: 20.2.5
   resolution: "@types/node@npm:20.2.5"
   checksum: 38ce7c7e9d76880dc632f71d71e0d5914fcda9d5e9a7095d6c339abda55ca4affb0f2a882aeb29398f8e09d2c5151f0b6586c81c8ccdfe529c34b1ea3337425e
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:>=13.7.0":
+  version: 20.10.4
+  resolution: "@types/node@npm:20.10.4"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 054b296417e771ab524bea63cf3289559c6bdf290d45428f7cc68e9b00030ff7a0ece47b8c99a26b4f47a443919813bcf42beadff2f0bea7d8125fa541d92eb0
   languageName: node
   linkType: hard
 
@@ -10396,7 +10405,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"long@npm:^5.0.0":
+"long@npm:^5.0.0, long@npm:^5.2.3":
   version: 5.2.3
   resolution: "long@npm:5.2.3"
   checksum: 885ede7c3de4facccbd2cacc6168bae3a02c3e836159ea4252c87b6e34d40af819824b2d4edce330bfb5c4d6e8ce3ec5864bdcf9473fa1f53a4f8225860e5897
@@ -11295,7 +11304,7 @@ __metadata:
   resolution: "noita-together@workspace:."
   dependencies:
     axios: ^1.4.0
-    nt-message: "git+https://github.com/Noita-Together/nt-message#v1.0.0"
+    nt-message: "git+https://github.com/noita-together/nt-message#v1.0.0"
     prettier: latest
     ts-node: ^10.9.1
     ts-node-dev: ^2.0.0
@@ -11446,12 +11455,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"nt-message@git+https://github.com/Noita-Together/nt-message#v1.0.0":
+"nt-message@git+https://github.com/noita-together/nt-message#v1.0.0":
   version: 1.0.0
-  resolution: "nt-message@https://github.com/Noita-Together/nt-message.git#commit=1b076250dca228e56f08a1369a27669bdca3fb17"
+  resolution: "nt-message@https://github.com/noita-together/nt-message.git#commit=d68d7d879f2d9272f2e4af636747ce9c927c8461"
   dependencies:
+    long: ^5.2.3
     protobufjs: ^7.2.5
-  checksum: 91bd5f0bb3cb9cbe873727bc76bfa8886f03b0d18a1d7257191dcfb33c81c9b195464b842f62a663bc5e78741b6dbc18b286988784358f895f2c8a1e4fdc1264
+  checksum: 29f275efc97e7c8c66062bc06d1b3c5b3dc2b4dd628fd506492b0e6398f1230b80b6021e2e924d871422398d4bacdc1f082839ae4d510c9948fce8914785ebd8
   languageName: node
   linkType: hard
 

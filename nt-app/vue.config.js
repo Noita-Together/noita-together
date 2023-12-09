@@ -2,17 +2,17 @@ module.exports = {
     pluginOptions: {
         electronBuilder: {
             nodeIntegration: true,
-            externals: ['keytar'],
+            externals: ["keytar"],
             builderOptions: {
                 productName: "Noita Together Beta",
                 win: {
                     target: "nsis",
-                    requestedExecutionLevel: "requireAdministrator"//eugh
+                    requestedExecutionLevel: "requireAdministrator" //eugh
                 },
                 nsis: {
                     perMachine: true,
                     oneClick: false,
-                    allowToChangeInstallationDirectory: true,
+                    allowToChangeInstallationDirectory: true
                 },
                 publish: ["github"]
             }
