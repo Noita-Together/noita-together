@@ -1,6 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import { ipcRenderer } from 'electron'
+import Vue from "vue"
+import Vuex from "vuex"
+import { ipcRenderer } from "electron"
 
 Vue.use(Vuex)
 const colors = [
@@ -15,8 +15,9 @@ const colors = [
 const randomColor = () => {
     return colors[Math.floor(Math.random() * colors.length)]
 }
+const firstOfType = (type, ...vs) => (vs || []).find((v) => typeof v === type)
 const ipcPlugin = (ipc) => {
-    return store => {
+    return (store) => {
         ipc.on("CONNECTED", (event, data) => {
             store.commit("setUser", data)
         })
@@ -71,8 +72,7 @@ const ipcPlugin = (ipc) => {
             //store.commit("chatMsg", `[System] ${store.state.rooms.users[data.userId]} has left the room.`)
             if (data.userId == store.state.user.id) {
                 store.commit("resetRoom")
-            }
-            else {
+            } else {
                 store.commit("userLeftRoom", data)
             }
         })
@@ -81,8 +81,7 @@ const ipcPlugin = (ipc) => {
             //store.commit("chatMsg", `[System] ${store.state.rooms.users[data.userId]} has been kicked.`)
             if (data.userId == store.state.user.id) {
                 store.commit("resetRoom")
-            }
-            else {
+            } else {
                 store.commit("userLeftRoom", data)
             }
         })
@@ -91,8 +90,7 @@ const ipcPlugin = (ipc) => {
             //store.commit("chatMsg", `[System] ${store.state.rooms.users[data.userId]} has been banned.`)
             if (data.userId == store.state.user.id) {
                 store.commit("resetRoom")
-            }
-            else {
+            } else {
                 store.commit("userLeftRoom", data)
             }
         })
@@ -122,7 +120,6 @@ const ipcPlugin = (ipc) => {
             store.commit("setStats", data)
         })
 
-
         /*
         ipc.on("sDisconnected", (e, reason) => {
             //Show disconnection msg ?
@@ -136,46 +133,47 @@ const ipcStuff = ipcPlugin(ipcRenderer)
 //TODO plugins https://vuex.vuejs.org/guide/plugins.html
 export default new Vuex.Store({
     state: {
+        // prettier-ignore
         defaultFlags: {
             0: [
-                { id: "NT_sync_perks", name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them.", type: "boolean", value: false },
-                { id: "NT_team_perks", name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them.", type: "boolean", value: true },
-                { id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone.", type: "boolean", value: true },
-                { id: "NT_sync_hearts", name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too.", type: "boolean", value: true },
-                { id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too.", type: "boolean", value: true },
-                { id: "NT_sync_shift", name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies.", type: "boolean", value: true },
-                { id: "NT_send_wands", name: "Send Wands", tooltip: "Allow players to deposit/take wands.", type: "boolean", value: true },
-                { id: "NT_send_flasks", name: "Send Flasks", tooltip: "Allow players to deposit/take flasks.", type: "boolean", value: true },
-                { id: "NT_send_gold", name: "Send Gold", tooltip: "Allow players to deposit/take gold.", type: "boolean", value: true },
-                { id: "NT_send_items", name: "Send Items", tooltip: "Allow players to deposit/take items.", type: "boolean", value: true },
-                { id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot.", type: "boolean", value: true },
-                { id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed.", type: "number", value: 0 },
-                { id: "NT_death_penalty_end", name: "End run", tooltip: "Run ends for all players when someone dies.", type: "boolean", value: true },
-                { id: "NT_death_penalty_weak_respawn", name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone.", type: "boolean", value: true },
-                { id: "NT_death_penalty_full_respawn", name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties.", type: "boolean", value: true },
-                { id: "NT_ondeath_kick", name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™.", type: "boolean", value: false }
+                { type: "boolean", value: false, id: "NT_sync_perks", name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them." },
+                { type: "boolean", value: true,  id: "NT_team_perks", name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them." },
+                { type: "boolean", value: true,  id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
+                { type: "boolean", value: true,  id: "NT_sync_hearts", name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too." },
+                { type: "boolean", value: true,  id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+                { type: "boolean", value: true,  id: "NT_sync_shift", name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies." },
+                { type: "boolean", value: true,  id: "NT_send_wands", name: "Send Wands", tooltip: "Allow players to deposit/take wands." },
+                { type: "boolean", value: true,  id: "NT_send_flasks", name: "Send Flasks", tooltip: "Allow players to deposit/take flasks." },
+                { type: "boolean", value: true,  id: "NT_send_gold", name: "Send Gold", tooltip: "Allow players to deposit/take gold." },
+                { type: "boolean", value: true,  id: "NT_send_items", name: "Send Items", tooltip: "Allow players to deposit/take items." },
+                { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
+                { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
+                { type: "boolean", value: true,  id: "NT_death_penalty_end", name: "End run", tooltip: "Run ends for all players when someone dies." },
+                { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone." },
+                { type: "boolean", value: true,  id: "NT_death_penalty_full_respawn", name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties." },
+                { type: "boolean", value: false, id: "NT_ondeath_kick", name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™. "}
             ],
             2: [
-                { id: "NT_NEMESIS_ban_ambrosia", name: "Ban Ambrosia", tooltip: "will shift ambrosia away.", type: "boolean", value: true },
-                { id: "NT_NEMESIS_ban_invis", name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk.", type: "boolean", value: true },
-                { id: "NT_NEMESIS_nemesis_abilities", name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost.", type: "boolean", value: true },
-                { id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone.", type: "boolean", value: false },
-                { id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too.", type: "boolean", value: false },
-                { id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot.", type: "boolean", value: true },
-                { id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed.", type: "number", value: 0 },
-                { id: "NT_death_penalty_weak_respawn", name: "Last noita standing.", tooltip: "Run ends when there's only one player left.", type: "boolean", value: true },
-                { id: "NT_ondeath_kick", name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™.", type: "boolean", value: true }
+                { type: "boolean", value: true,  id: "NT_NEMESIS_ban_ambrosia", name: "Ban Ambrosia", tooltip: "will shift ambrosia away." },
+                { type: "boolean", value: true,  id: "NT_NEMESIS_ban_invis", name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk." },
+                { type: "boolean", value: true,  id: "NT_NEMESIS_nemesis_abilities", name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost." },
+                { type: "boolean", value: false, id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
+                { type: "boolean", value: false, id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+                { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
+                { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
+                { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Last noita standing.", tooltip: "Run ends when there's only one player left." },
+                { type: "boolean", value: true,  id: "NT_ondeath_kick", name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™. "}
             ]
         },
         gamemodes: {
-            "0": "Co-op",
-            "1": "Race",
-            "2": "Nemesis"
+            0: "Co-op",
+            1: "Race",
+            2: "Nemesis"
         },
         tabs: {
-            "0": 'Users',
-            "1": 'Mods',
-            "2": 'Seeds',
+            0: "Users",
+            1: "Mods",
+            2: "Seeds"
         },
         user: {
             name: "",
@@ -254,18 +252,7 @@ export default new Vuex.Store({
             return JSON.parse(state.stats)
         },
         flags: (state) => {
-            const mode = state.room.gamemode
-            const fDefaults = state.defaultFlags[mode]
-            return fDefaults.map(flag => {
-                const found = state.roomFlags.find(f => f.id == flag.id)
-                if (!found && flag.type == "boolean") {
-                    return { ...flag, value: false }
-                }
-                else if (found) {
-                    return flag
-                }
-                else { return undefined }
-            }).filter(v => typeof v !== "undefined")
+            return state.roomFlags
         }
     },
     mutations: {
@@ -278,20 +265,20 @@ export default new Vuex.Store({
         setLoading: (state, value) => {
             state.loading = value
         },
-        setTab: (state, value)=>{
+        setTab: (state, value) => {
             state.roomTab = value
         },
         joinState: (state, payload) => {
             state.joining = payload
         },
         userReadyState: (state, payload) => {
-            state.room.users = state.room.users.map(user => {
+            state.room.users = state.room.users.map((user) => {
                 if (user.userId == payload.userId) {
                     user.ready = payload.ready
                     user.seed = payload.seed
                     user.mods = payload.mods
-                    user.version = payload.version,
-                        user.beta = payload.beta
+                    user.version = payload.version
+                    user.beta = payload.beta
                 }
                 return user
             })
@@ -308,7 +295,7 @@ export default new Vuex.Store({
             state.lobbies.push(payload)
         },
         deleteRoom: (state, id) => {
-            state.lobbies = state.lobbies.filter(room => room.id != id)
+            state.lobbies = state.lobbies.filter((room) => room.id != id)
         },
         setRooms: (state, payload) => {
             state.lobbies = payload
@@ -326,16 +313,43 @@ export default new Vuex.Store({
         roomFlagsUpdated: (state, payload) => {
             const mode = state.room.gamemode
             const fDefaults = state.defaultFlags[mode]
-            if (!fDefaults) { return }
-            state.roomFlags = payload.flags.map(val => {
-                const flag = fDefaults.find(f => f.id == val.flag)
-                if (!flag) { return }
-                else {
-                    if (typeof val.value == "number") { flag.value = val.value }
-                    if (flag.type == "boolean") { flag.value = true }
-                    return flag
+            if (!fDefaults) {
+                return
+            }
+            const newFlags = fDefaults.map((spec) => {
+                const found = payload.flags.find((f) => f.flag === spec.id)
+                const prev =
+                    state.roomFlags.find((f) => f.id === spec.id) || spec
+
+                switch (spec.type) {
+                    case "boolean":
+                        // presence of a boolean flag currently indicates true,
+                        // absence indicates false. in the future, we should
+                        // send explicit true/false, and leave undefined for "unchanged"
+                        return { ...spec, value: !!found }
+                    case "string":
+                        return {
+                            ...spec,
+                            value: firstOfType(
+                                "string",
+                                found.strVal,
+                                prev.value
+                            )
+                        }
+                    default: // numeric types
+                        return {
+                            ...spec,
+                            value: firstOfType(
+                                "number",
+                                found.uIntVal,
+                                found.intVal,
+                                found.floatVal,
+                                prev.value
+                            )
+                        }
                 }
-            }).filter(v => typeof v !== "undefined")
+            })
+            state.roomFlags = newFlags
         },
         resetRoom: (state) => {
             state.stats = null
@@ -383,12 +397,19 @@ export default new Vuex.Store({
         },
         pushChat: (state, payload) => {
             const time = new Date()
-            let timeStr = ("0" + time.getHours()).slice(-2) + ":" + ("0" + time.getMinutes()).slice(-2)
-            const found = state.room.users.find(user => user.userId == payload.userId)
+            let timeStr =
+                ("0" + time.getHours()).slice(-2) +
+                ":" +
+                ("0" + time.getMinutes()).slice(-2)
+            const found = state.room.users.find(
+                (user) => user.userId == payload.userId
+            )
             let color = randomColor()
-            color = found && found.color || color
+            color = (found && found.color) || color
 
-            if (payload.userId === "-1") { color = "#e69569" }
+            if (payload.userId === "-1") {
+                color = "#e69569"
+            }
             state.roomChat.push({
                 id: payload.id,
                 time: timeStr,
@@ -408,8 +429,8 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        updateTab: async ({commit}, payload)=>{
-            commit('setTab', payload)
+        updateTab: async ({ commit }, payload) => {
+            commit("setTab", payload)
         },
         continueSavedUser: ({ state, commit, dispatch }) => {
             commit("setLoading", true)
@@ -499,8 +520,7 @@ export default new Vuex.Store({
                         commit("setLoading", false)
                         return true
                     }
-                }
-                else {
+                } else {
                     commit("setLoading", false)
                     return true
                 }
@@ -542,21 +562,25 @@ export default new Vuex.Store({
         },
         sendClientAlert: ({ commit }, payload) => {
             commit("pushChat", {
-                id: 'alert',
+                id: "alert",
                 userId: "-1",
                 name: "Alert",
                 message: payload.message.trim()
             })
         },
         sendFlags: ({ getters }) => {
-            const flags = getters.flags.map(val => {
-                let flag = { flag: val.id }
-                if (typeof val.value == "number") { flag.uIntVal = val.value }//temp fix
-                if (val.type == "boolean" && !val.value) {
-                    flag = undefined
-                }
-                return flag
-            }).filter(v => typeof v !== "undefined")
+            const flags = getters.flags
+                .map((val) => {
+                    let flag = { flag: val.id }
+                    if (typeof val.value == "number") {
+                        flag.uIntVal = val.value
+                    } //temp fix
+                    if (val.type == "boolean" && !val.value) {
+                        flag = undefined
+                    }
+                    return flag
+                })
+                .filter((v) => typeof v !== "undefined")
             ipcRenderer.send("CLIENT_MESSAGE", {
                 key: "cRoomFlagsUpdate",
                 payload: { flags }

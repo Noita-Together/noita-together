@@ -34,8 +34,8 @@
                 </vTooltip>
             </h2>
             <div class="world-seed">
-                <vInput v-model="payload.world.NT_sync_world_seed.value" ref="seedInput"></vInput>
-                <vButton @click="randomizeSeed">Random</vButton>
+                <vInput :disabled="!isHost" v-model="payload.world.NT_sync_world_seed.value" ref="seedInput"></vInput>
+                <vButton :disabled="!isHost" @click="randomizeSeed">Random</vButton>
             </div>
         </template>
         <div slot="footer" class="centered">
