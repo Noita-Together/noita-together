@@ -9,14 +9,14 @@ mod_settings =
 		id = "NT_HINTS",
 		ui_name = "Show hints",
 		value_default = true,
-        scope=MOD_SETTING_SCOPE_RUNTIME
+		scope=MOD_SETTING_SCOPE_RUNTIME
 	},
 	{
 		id = "NT_NO_STAT_PROGRESS",
 		ui_name = "Disable progress",
 		ui_description = "Disable progress tracking of perks, spells and enemies",
 		value_default = false,
-        scope=MOD_SETTING_SCOPE_RUNTIME
+ 		scope=MOD_SETTING_SCOPE_RUNTIME
 	},
 	{
 		id = "NT_GHOST_OPACITY",
@@ -25,18 +25,31 @@ mod_settings =
 		value_min = 0.0,
 		value_max = 1.0,
 		value_display_multiplier = 100,
-        scope=MOD_SETTING_SCOPE_RUNTIME
+		scope=MOD_SETTING_SCOPE_RUNTIME
 	},
 	{
 		id = "NT_ENABLE_LOGGER",
 		ui_name = "Enable Logger (Debug)",
 		ui_description = "Enable debug logging. logger.txt lives in the Noita install directory.\nIt is NOT automatically shared with NT developers.",
 		value_default = true,
-        scope=MOD_SETTING_SCOPE_RUNTIME_RESTART --this doesnt actually seem to prompt the user to restart the game though ??
+		scope=MOD_SETTING_SCOPE_RUNTIME_RESTART --this doesnt actually seem to prompt the user to restart the game though ??
 	},
 	{
-        id = "NT_EMOTE_BINDING",
-        value_default = "key_code,20,mouse_code,joystick_code",
+		id = "NT_SHOW_WUOTE_FRIDGE",
+		ui_name = "Use Wuote Fridge icon instead of bank",
+		value_default = false,
+		scope=MOD_SETTING_SCOPE_RUNTIME
+	},
+	{
+		id = "NT_SHOW_EMOTES",
+		ui_name = "Emotes system",
+		ui_description = "Enable visibility of player emotes and color swaps, as well as the in-game emotes menu.",
+		value_default = true,
+		scope=MOD_SETTING_SCOPE_RUNTIME
+	},
+	{
+		id = "NT_EMOTE_BINDING",
+		value_default = "key_code,20,mouse_code,joystick_code",
 		hidden = true,
 		scope=MOD_SETTING_SCOPE_RUNTIME
 	}

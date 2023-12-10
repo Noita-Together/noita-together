@@ -416,6 +416,8 @@ end
 
 --boolean is the player invoking the emote menu
 local function get_emote_menu_invoked()
+    if not ModSettingGet("noita-together.NT_SHOW_EMOTES") then return false end
+
     --M-Nee input
     if ModIsEnabled("mnee") then
 		dofile_once("mods/mnee/lib.lua")
@@ -515,6 +517,11 @@ emote_menu_invoked = get_emote_menu_invoked()
 
 --grab platforming comp here since we're almost inevitably going to need to reference it somewhere below
 platforming_comp = EntityGetFirstComponentIncludingDisabled(this_player, "CharacterPlatformingComponent")
+
+if not ModSettingGet("noita-together.NT_SHOW_EMOTES") then
+    if current_emote ~= "none" then set_emote("none") end
+    if skin ~= "purple" then set_skin("purple") end
+end
 
 --emote menu
 if not is_ghost then
