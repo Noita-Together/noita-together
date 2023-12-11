@@ -35,7 +35,7 @@ mod_settings =
 	},
 	{
         id = "NT_SHOW_WUOTE_FRIDGE",
-        ui_name = "Use Wuote Fridge icon instead of bank",
+        ui_name = "Use fridge icon",
         value_default = false,
         scope=MOD_SETTING_SCOPE_RUNTIME
     },
