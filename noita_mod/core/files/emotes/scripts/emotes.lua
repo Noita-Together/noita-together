@@ -113,16 +113,10 @@ function start_emote()
 
     --hide body sprite during emote and reveal the emote version
     if emote_list[current_emote].player_animation_file ~= nil then
-        --if(EntityGetName(this_entity) == "emotes_on_client")then
-        --    local body_sprite = EntityGetFirstComponent(this_player, "SpriteComponent", "character")
-        --    ComponentSetValue2(body_sprite, "visible", false)
-        --else
-            local body_sprite = EntityGetFirstComponent(this_player, "SpriteComponent", "lukki_disable")
-            ComponentSetValue2(body_sprite, "visible", false)
-        --end
+        local body_sprite = EntityGetFirstComponent(this_player, "SpriteComponent", "lukki_disable")
+        ComponentSetValue2(body_sprite, "visible", false)
 
         --animation file color variants
-        print("skin: " .. tostring(skin))
         local image_file = emote_list[current_emote].player_animation_file
         if skin ~= "purple" then
             image_file = image_file:sub(1, -5)
@@ -234,14 +228,8 @@ end
 function end_emote()
     unfreeze_player()
 
-    --show body sprite
-    --if(EntityGetName(this_entity) == "emotes_on_client")then
-    --   local body_sprite = EntityGetFirstComponent(this_player, "SpriteComponent", "character")
-    --   ComponentSetValue2(body_sprite, "visible", true)
-    --else
-       local body_sprite = EntityGetFirstComponent(this_player, "SpriteComponent", "lukki_disable")
-       ComponentSetValue2(body_sprite, "visible", true)
-   --end
+    local body_sprite = EntityGetFirstComponent(this_player, "SpriteComponent", "lukki_disable")
+    ComponentSetValue2(body_sprite, "visible", true)
 
    --show arm sprite
    local children = EntityGetAllChildren(this_player)
@@ -577,9 +565,6 @@ else
     --end a non-looping emote when it's done
     if emote_list[current_emote].frames >= 1 and frames_emoting - 1 > emote_list[current_emote].frames then
         current_emote = "none"
-        --[[if not is_ghost then
-            reset_emote_store_for_multiplayer_apis(current_emote)
-        end]]
     end
 
     --start the emote 1 frame after it's selected

@@ -36,7 +36,7 @@ mod_settings =
 	},
 	{
 		id = "NT_SHOW_WUOTE_FRIDGE",
-		ui_name = "Use Wuote Fridge icon instead of bank",
+		ui_name = "Use fridge icon",
 		value_default = false,
 		scope=MOD_SETTING_SCOPE_RUNTIME
 	},
@@ -133,6 +133,7 @@ function ModSettingsGui( gui, in_main_menu )
 		.."\nAlso supports M-Néé input customization.", "")
 		GuiText(gui, 90, 0, keybind_string)
 		GuiOptionsRemove(gui, GUI_OPTION.Layout_NextSameLine)
+		GuiLayoutAddVerticalSpacing(gui, 10)
 	else
 		GuiColorSetForNextWidget(gui, 1, 1, 1, 0.5)
     	GuiText(gui, 0, 0, "Current emote binding: A+S+D")
@@ -186,8 +187,9 @@ function input_listen()
         binding = binding .. tostring(code) .. ","
     end
     binding = binding:sub(1, -2)
-    ModSettingSet("noita-together.NT_EMOTE_BINDING", binding)
-
+	ModSettingSet("noita-together.NT_EMOTE_BINDING", binding)
+	ModSettingSetNextValue("noita-together.NT_EMOTE_BINDING", binding, false)
+	
     if there_has_been_input and not there_is_input then
         listening = false
         there_has_been_input = false
