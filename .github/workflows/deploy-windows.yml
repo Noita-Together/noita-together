@@ -33,13 +33,13 @@ jobs:
           mkdir ./build/
           cp "./nt-app/dist_electron/latest.yml" ./build/latest.yml
           cp "./nt-app/dist_electron/Noita-Together-Setup-*" ./build/
-      - name: Output checksums
-        run: |
-          ls ./build/
-          $files = Get-ChildItem ./build
-          foreach ($f in $files){
-            certutil -hashfile ./build/$f
-          }
+#      - name: Output checksums TODO
+#        run: |
+#          ls ./build/
+#          $files = Get-ChildItem ./build
+#          foreach ($f in $files){
+#            certutil -hashfile ./build/$f
+#          }
       - env:
           buildVersion: ${{ steps.get_tag_version.outputs.version }}
         name: Upload files to release
