@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    env:
-      buildVersion: ${{ steps.get_tag_version.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -20,18 +18,31 @@ jobs:
         id: get_tag_version
         run: echo ::set-output name=version::${{ github.ref }}
       - name: Set package.json version
+        env:
+          buildVersion: ${{ steps.get_tag_version.outputs.version }}
         run: |
-          npm version ${ { steps.get_tag_version.outputs.version }#app-}
+          npm version $env:buildVersion
+          yarn config set enableImmutableInstalls false
         working-directory: ./nt-app
       - run: yarn install
-      - run: yarn workspace buildClient
+      - run: yarn workspace nt-app electron:build --publish never
       - run: ls ./nt-app/dist_electron/
-      - run: |
+      - env:
+          buildVersion: ${{ steps.get_tag_version.outputs.version }}
+        run: |
+          mkdir ./build/
           cp "./nt-app/dist_electron/latest.yml" ./build/latest.yml
-          cp "./nt-app/dist_electron/Noita-Together-Setup-$(buildVersion).exe" ./build/
-          cp "./nt-app/dist_electron/Noita-Together-Setup-$(buildVersion).exe.blockmap" ./build/
-
-      - name: Upload files to release
+          cp "./nt-app/dist_electron/Noita-Together-Setup-*" ./build/
+      - name: Output checksums
+        run: |
+          ls ./build/
+          $files = Get-ChildItem ./build
+          foreach ($f in $files){
+            certutil -hashfile ./build/$f
+          }
+      - env:
+          buildVersion: ${{ steps.get_tag_version.outputs.version }}
+        name: Upload files to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -39,7 +50,3 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
-      - name: Output checksums
-        run: |
-          certutil -hashfile "./nt-app/dist_electron/Noita-Together-Setup-$(buildVersion).exe"
-          certutil -hashfile "./nt-app/dist_electron/Noita-Together-Setup-$(buildVersion).exe.blockmap"
