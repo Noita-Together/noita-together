@@ -1,0 +1,239 @@
+<Sprite 
+	filename="mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player_amulet.png" 
+	offset_x="0" 
+	offset_y="0" >
+
+	<RectAnimation
+    	name="wave"
+		frame_count="9"
+		frame_width="12"
+		frame_height="18"
+		frame_wait="0.06"
+		frames_per_row="9" 
+		pos_x="0"
+		pos_y="0"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="heart"
+		frame_count="28"
+		frame_width="13"
+		frame_height="19"
+		frame_wait="0.06"
+		frames_per_row="28"
+		pos_x="0"
+		pos_y="19"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="thumbs_up"
+		frame_count="50"
+		frame_width="14"
+		frame_height="18"
+		frame_wait="0.08"
+		frames_per_row="25"
+		pos_x="0"
+		pos_y="37"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="disapprove"
+		frame_count="29"
+		frame_width="11"
+		frame_height="18"
+		frame_wait="0.08"
+		frames_per_row="29"
+		pos_x="0"
+		pos_y="73"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="come_on"
+		frame_count="21"
+		frame_width="12"
+		frame_height="18"
+		frame_wait="0.06"
+		frames_per_row="21"
+		pos_x="0"
+		pos_y="91"
+		has_offset="1"
+		offset_x="-2"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="t_pose"
+		frame_count="1"
+		frame_width="13"
+		frame_height="18"
+		frame_wait="0.06"
+		frames_per_row="1"
+		pos_x="0"
+		pos_y="109"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="mario"
+		frame_count="8"
+		frame_width="13"
+		frame_height="18"
+		frame_wait="0.05"
+		frames_per_row="8"
+		pos_x="0"
+		pos_y="127"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="luigi"
+		frame_count="12"
+		frame_width="7"
+		frame_height="18"
+		frame_wait="0.05"
+		frames_per_row="12"
+		pos_x="0"
+		pos_y="145"
+		has_offset="1"
+		offset_x="-3"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="clap"
+		frame_count="4"
+		frame_width="9"
+		frame_height="18"
+		frame_wait="0.08"
+		frames_per_row="4"
+		pos_x="0"
+		pos_y="163"
+		has_offset="1"
+		offset_x="-2"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="macarena"
+		frame_count="64"
+		frame_width="11"
+		frame_height="18"
+		frame_wait="0.15"
+		frames_per_row="32"
+		pos_x="0"
+		pos_y="181"
+		has_offset="1"
+		offset_x="-1"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="the_wave"
+		frame_count="56"
+		frame_width="13"
+		frame_height="18"
+		frame_wait="0.05"
+		frames_per_row="28"
+		pos_x="0"
+		pos_y="217"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="aggressive_point"
+		frame_count="52"
+		frame_width="17"
+		frame_height="18"
+		frame_wait="0.05"
+		frames_per_row="20"
+		pos_x="0"
+		pos_y="253"
+		has_offset="1"
+		offset_x="-1"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="default_dance"
+		frame_count="103"
+		frame_width="14"
+		frame_height="18"
+		frame_wait="0.08"
+		frames_per_row="28"
+		pos_x="0"
+		pos_y="307"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="praise_the_sun"
+		frame_count="78"
+		frame_width="15"
+		frame_height="19"
+		frame_wait="0.08"
+		frames_per_row="26"
+		pos_x="0"
+		pos_y="379"
+		has_offset="1"
+		offset_x="0"
+		offset_y="3" />
+
+	<RectAnimation
+    	name="dab"
+		frame_count="1"
+		frame_width="15"
+		frame_height="18"
+		frame_wait="0.08"
+		frames_per_row="1"
+		pos_x="0"
+		pos_y="436"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="worm"
+		frame_count="45"
+		frame_width="20"
+		frame_height="18"
+		frame_wait="0.08"
+		frames_per_row="20"
+		pos_x="0"
+		pos_y="454"
+		has_offset="1"
+		offset_x="0"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="meditate"
+		frame_count="1"
+		frame_width="13"
+		frame_height="14"
+		frame_wait="1"
+		frames_per_row="1"
+		pos_x="0"
+		pos_y="509"
+		has_offset="1"
+		offset_x="-0.5"
+		offset_y="-3" />
+
+	<RectAnimation
+    	name="repose"
+		frame_count="71"
+		frame_width="17"
+		frame_height="13"
+		frame_wait=".25"
+		frames_per_row="22"
+		pos_x="0"
+		pos_y="523"
+		has_offset="1"
+		offset_x="0"
+		offset_y="-4" />
+</Sprite>

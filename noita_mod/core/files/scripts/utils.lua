@@ -815,3 +815,43 @@ function GuiTextMultiLine(gui, x, y, text)
     --return dy, could be useful for determining how much y-distance we used
     return dy
 end
+
+function EmotePlayerGhost(data)
+    local ghosts = EntityGetWithTag("nt_ghost")
+    for _, ghost in pairs(ghosts) do
+        local id_comp = get_variable_storage_component(ghost, "userId")
+        local userId = ComponentGetValue2(id_comp, "value_string")
+        if (userId == data.userId) then
+            local children = EntityGetAllChildren(ghost)
+            for _, child in ipairs(children) do
+                if EntityGetName(child) == "emotes_on_ghost" then
+                    local current_emote_var_comp = EntityGetComponentIncludingDisabled(child, "VariableStorageComponent")[1]
+                    ComponentSetValue2(current_emote_var_comp, "value_string", data.emote)
+                    local frames_emoting_var_comp = EntityGetComponentIncludingDisabled(child, "VariableStorageComponent")[4]
+                    ComponentSetValue2(frames_emoting_var_comp, "value_int", 0)
+                end
+            end
+            break
+        end
+    end
+end
+
+function SkinSwapPlayerGhost(data)
+    local ghosts = EntityGetWithTag("nt_ghost")
+    for _, ghost in pairs(ghosts) do
+        local id_comp = get_variable_storage_component(ghost, "userId")
+        local userId = ComponentGetValue2(id_comp, "value_string")
+        if (userId == data.userId) then
+            local children = EntityGetAllChildren(ghost)
+            for _, child in ipairs(children) do
+                if EntityGetName(child) == "emotes_on_ghost" then
+                    local skin_var_comp = EntityGetComponentIncludingDisabled(child, "VariableStorageComponent")[8]
+                    print(tostring(data.skin))
+                    print(tostring(skin_var_comp))
+                    ComponentSetValue2(skin_var_comp, "value_string", data.skin)
+                end
+            end
+            break
+        end
+    end
+end

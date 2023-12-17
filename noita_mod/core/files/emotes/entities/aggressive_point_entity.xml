@@ -1,0 +1,42 @@
+<Entity name="aggressive_point_entity">
+    <ParticleEmitterComponent 
+        emitted_material_name="spark_red"
+        gravity.y="-1.0"
+        lifetime_min="0.2"
+        lifetime_max="1"
+        count_min="1"
+        count_max="5"
+        render_on_grid="1"
+        fade_based_on_lifetime="0"
+        area_circle_radius.min="1"
+        area_circle_radius.max="4"
+        velocity_always_away_from_center="10"
+        cosmetic_force_create="0"
+        emission_interval_min_frames="1"
+        emission_interval_max_frames="1"
+        emit_cosmetic_particles="1"
+        emission_chance="100"
+        render_back="1"
+        is_emitting="0" />
+
+    <SpriteParticleEmitterComponent
+        sprite_file="data/particles/berserk_0$[1-4].xml"
+        emission_interval_min_frames="1"
+        emission_interval_max_frames="3"
+        randomize_position.min_x="-10"
+        randomize_position.max_x="10"
+        randomize_position.min_y="-15"
+        randomize_position.max_y="-5"
+        randomize_velocity.min_x="-8"
+        randomize_velocity.max_x="8"
+        randomize_velocity.min_y="-12"
+        randomize_velocity.max_y="-6"
+        gravity.x="0"
+        gravity.y="0"
+        lifetime="1"
+        is_emitting="0" />
+
+    <LuaComponent 
+        execute_every_n_frame="1"
+        script_source_file="mods/noita-together/files/emotes/scripts/aggressive_point_entity.lua" />
+</Entity>

@@ -48,7 +48,17 @@ customEvents = {
     PlayerCosmeticFlags = function(data)
         StorePlayerGhostCosmetic(data, true)
     end,
-    SecretHourglass = HandleHourglassEvent
+    SecretHourglass = HandleHourglassEvent,
+    Emote = function(data)
+        if ModSettingGet("noita-together.NT_SHOW_EMOTES") then
+            EmotePlayerGhost(data)
+        end
+    end,
+    Skin = function(data)
+        if ModSettingGet("noita-together.NT_SHOW_EMOTES") then
+            SkinSwapPlayerGhost(data)
+        end
+    end
 }
 wsEvents = {
     AngerySteve = function (data)
