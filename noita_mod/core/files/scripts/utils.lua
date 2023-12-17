@@ -260,10 +260,14 @@ function AppendText(entity, text)
     return component
 end
 
+--bank funcs
+--called when item removed from bank
+--12/16/23 change this to instead *flag* as removed, add a separate cleanup function for when bank UI is not open
 function RemoveItemWithId(target, id)
     for index, item in ipairs(target) do
         if (item.id == id) then
-            table.remove(target, index)
+            item.removed = true --clean up on next bank UI close
+            --table.remove(target, index)
         end
     end
 end
@@ -275,6 +279,16 @@ function GetItemWithId(target, id)
         end
     end
 end
+
+function CleanRemovedBankItems(target)
+    for index, item in ipairs(target) do
+        if item.removed == true then
+            table.remove(target, index)
+        end
+    end
+end
+
+--
 
 function PopulateSpellList()
     dofile_once("data/scripts/gun/gun_enums.lua")

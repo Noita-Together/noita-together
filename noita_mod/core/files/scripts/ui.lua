@@ -38,6 +38,7 @@ if not initialized then
         nt_illegal = true
     }
 
+    local was_bank_open = false --flag if bank is open, clear after bank is closed and cleanup happens
     local is_hovering_message_input = false --flag if hovering over message input textbox
     local is_hovering_bank_filter = false --flag if hovering over bank filter textbox
     local is_hovering_bank_gold = false --flag if hovering over bank gold textbox
@@ -260,8 +261,12 @@ if not initialized then
         GuiZSetForNextWidget(gui, 7)
         local wand = get_wand_sprite(item.stats.sprite)
         if (not force) then
-            GuiImage(gui, next_id(), x + wand.ox, y + wand.oy, wand.sprite, 1, 1, 1)
+            GuiImage(gui, next_id(), x + wand.ox, y + wand.oy, wand.sprite, item.removed and 0.25 or 1.0, 1, 1)
         end
+
+        --do nothing else if wand taken
+        if item.removed then return end
+
         local left, right, hover = previous_data(gui)
         if (hover or force) then
 
@@ -334,6 +339,7 @@ if not initialized then
 
     local function draw_item_sprite(item, x,y)
         GuiZSetForNextWidget(gui, 8)
+        local item_render_alpha = item.removed and 0.25 or 1.0
         if (item.gameId ~= nil) then --spell
             local player = PlayerList[item.sentBy] or {name=GameTextGet("$noitatogether_me")}
             local spell_description = ""
@@ -344,13 +350,16 @@ if not initialized then
             if spell.nt_illegal then
                 spell_description = item.gameId .. "\n" .. spell_description .. "\n" .. GameTextGet("$noitatogether_bank_illegal_spell_desc")
             end
-            GuiImage(gui, next_id(), x +2, y +2,  spell.sprite, 1,1,1)--SpellSprites[item.gameId], 1)
-            GuiTooltip(gui, spell.name, spell_description)
-            --This doesnt show charges if it was put in with unlimited spells, but it will come out full anyway
-            --TODO this is not the same font as used on vanilla spel icons???
-            --ignore for the dummy illegal spell, even if the banked item has a charge count
-            if not spell.nt_illegal and item.usesRemaining >= 0 then
-                GuiText(gui, x+1, y, item.usesRemaining)
+            GuiImage(gui, next_id(), x +2, y +2,  spell.sprite, item_render_alpha,1,1) --SpellSprites[item.gameId], 1)
+            --dont show tooltip if removed
+            if not item.removed then
+                GuiTooltip(gui, spell.name, spell_description)
+                --This doesnt show charges if it was put in with unlimited spells, but it will come out full anyway
+                --TODO this is not the same font as used on vanilla spel icons???
+                --ignore for the dummy illegal spell, even if the banked item has a charge count
+                if not spell.nt_illegal and item.usesRemaining >= 0 then
+                    GuiText(gui, x+1, y, item.usesRemaining)
+                end
             end
         elseif (item.stats ~= nil) then --wand
             local nx, ny = (screen_width / 2) - 260, (screen_height/2) - 95
@@ -363,12 +372,14 @@ if not initialized then
             end
             GuiZSetForNextWidget(gui, 7)
             if (item.isChest) then
-                GuiImage(gui, next_id(), x + 2, y + 2, "data/ui_gfx/items/material_pouch.png", 1, 1, 1)
+                GuiImage(gui, next_id(), x + 2, y + 2, "data/ui_gfx/items/material_pouch.png", item_render_alpha, 1, 1)
             else
                 GuiColorSetForNextWidget(gui, item.color.r, item.color.g, item.color.b, 1)
-                GuiImage(gui, next_id(), x + 2, y + 2, "data/ui_gfx/items/potion.png", 1, 1, 1)
+                GuiImage(gui, next_id(), x + 2, y + 2, "data/ui_gfx/items/potion.png", item_render_alpha, 1, 1)
             end
-            GuiTooltip(gui, container_name, flask_info(item.content, item.isChest))
+            if not item.removed then 
+                GuiTooltip(gui, container_name, flask_info(item.content, item.isChest))
+            end
         elseif (item.path ~= nil) then
             local player = PlayerList[item.sentBy] or {name=GameTextGet("$noitatogether_me")}
             local item_name = nt_items[item.path] and nt_items[item.path].name or ""
@@ -380,8 +391,10 @@ if not initialized then
             local ox = ((w - 20) / 2) * -1
             local oy = ((h - 20) / 2) * -1
             GuiZSetForNextWidget(gui, 7)
-            GuiImage(gui, next_id(), x + ox, y + oy, item.sprite, 1, 1, 1)
-            GuiTooltip(gui, item_name, "")
+            GuiImage(gui, next_id(), x + ox, y + oy, item.sprite, item_render_alpha, 1, 1)
+            if not item.removed then
+                GuiTooltip(gui, item_name, "")
+            end
         end
     end
 
@@ -411,7 +424,7 @@ if not initialized then
 
         GuiZSetForNextWidget(gui, 9)
         if (GuiImageButton(gui, next_id(), x, y, "", "mods/noita-together/files/ui/slot.png")) then
-            if (item ~= nil) then
+            if (item ~= nil and not item.removed) then
                 --check for illegal items
                 local legal = true
 
@@ -938,11 +951,22 @@ if not initialized then
         end
 
         if (show_bank) then
+            --just-in-time cleanup of removed items as we open?
+            if not was_bank_open then
+                CleanRemovedBankItems(BankItems)
+            end
             draw_item_bank()
             if(GameHasFlagRun("NT_send_gold")) then
                 draw_gold_bank()
             end
+
+            was_bank_open = true
         else
+            if was_bank_open then
+                --(util) clear bank items with "removed" true
+                CleanRemovedBankItems(BankItems)
+                was_bank_open = false
+            end
             --clear textbox hovering flags - in case hovering while bank view closed
             is_hovering_bank_filter = false
             is_hovering_bank_gold = false
