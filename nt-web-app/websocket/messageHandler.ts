@@ -1,4 +1,4 @@
-import { NT } from 'nt-message';
+import { NT } from '@noita-together/nt-message';
 
 /**
  * @throws {Error} if the message is not a valid envelope

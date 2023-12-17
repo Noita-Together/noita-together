@@ -336,7 +336,7 @@ export default {
             this.chatMsg = ""
         },
         sendFlags(payload) {
-            this.$store.commit("roomFlagsUpdated", payload)
+            this.$store.commit("cRoomFlagsUpdated", payload)
             this.$store.dispatch("sendFlags")
             this.closeRoomFlags()
         },

@@ -1,11 +1,12 @@
-const { NT } = require("nt-message")
+const { NT } = require("@noita-together/nt-message")
 
 /**
  * @returns {NT.Envelope}
  */
 function decode(buf) {
     try {
-        return NT.Envelope.decode(buf)
+        const decoded = NT.Envelope.decode(buf)
+        return decoded
     } catch (err) {
         console.log(`Something fked up decoding ${err}`)
     }

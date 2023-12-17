@@ -8,7 +8,7 @@ const {
 } = require("./handlers/messageHandler")
 const appEvent = require("./appEvent")
 const noita = require("./noita")
-const { NT } = require("nt-message")
+const { NT } = require("@noita-together/nt-message")
 const { encodeFrames } = require("./frameCoder")
 
 const { host, sni } = (() => {

@@ -1,3 +1,3 @@
-const { createFrameCoder } = require("nt-message")
+const { createFrameCoder } = require("@noita-together/nt-message")
 
 module.exports = createFrameCoder()

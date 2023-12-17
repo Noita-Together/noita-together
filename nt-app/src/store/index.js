@@ -2,6 +2,9 @@ import Vue from "vue"
 import Vuex from "vuex"
 import { ipcRenderer } from "electron"
 
+/** @typedef {{'boolean': boolean, 'string': string, 'number': number}} VueFlagTypes */
+/** @typedef {import('@noita-together/nt-message').NT.ClientRoomFlagsUpdate.IGameFlag} IGameFlag */
+
 Vue.use(Vuex)
 const colors = [
     "#698935",
@@ -16,6 +19,166 @@ const randomColor = () => {
     return colors[Math.floor(Math.random() * colors.length)]
 }
 const firstOfType = (type, ...vs) => (vs || []).find((v) => typeof v === type)
+
+/** @typedef {{ type: 'boolean', value: boolean, id: string, name: string, tooltip: string }} BooleanFlag */
+/** @typedef {{ type: 'string', value: string, id: string, name: string, tooltip: string }} StringFlag */
+/** @typedef {{ type: 'number', value: number, id: string, name: string, tooltip: string }} NumberFlag */
+/** @typedef {BooleanFlag|StringFlag|NumberFlag} VueFlag */
+
+export const gamemodes = {
+    0: "Co-op",
+    1: "Race",
+    2: "Nemesis"
+}
+/** @typedef {keyof typeof gamemodes} GameMode */
+
+// prettier-ignore
+export const defaultFlags = {
+    /** @type {VueFlag[]} */
+    0: [
+        { type: "boolean", value: false, id: "NT_sync_perks", name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them." },
+        { type: "boolean", value: true,  id: "NT_team_perks", name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them." },
+        { type: "boolean", value: true,  id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
+        { type: "boolean", value: true,  id: "NT_sync_hearts", name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too." },
+        { type: "boolean", value: true,  id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+        { type: "boolean", value: true,  id: "NT_sync_shift", name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies." },
+        { type: "boolean", value: true,  id: "NT_send_wands", name: "Send Wands", tooltip: "Allow players to deposit/take wands." },
+        { type: "boolean", value: true,  id: "NT_send_flasks", name: "Send Flasks", tooltip: "Allow players to deposit/take flasks." },
+        { type: "boolean", value: true,  id: "NT_send_gold", name: "Send Gold", tooltip: "Allow players to deposit/take gold." },
+        { type: "boolean", value: true,  id: "NT_send_items", name: "Send Items", tooltip: "Allow players to deposit/take items." },
+        { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
+        { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
+        { type: "boolean", value: true,  id: "NT_death_penalty_end", name: "End run", tooltip: "Run ends for all players when someone dies." },
+        { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone." },
+        { type: "boolean", value: true,  id: "NT_death_penalty_full_respawn", name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties." },
+        { type: "boolean", value: false, id: "NT_ondeath_kick", name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™. "}
+    ],
+    /** @type {VueFlag[]} */
+    2: [
+        { type: "boolean", value: true,  id: "NT_NEMESIS_ban_ambrosia", name: "Ban Ambrosia", tooltip: "will shift ambrosia away." },
+        { type: "boolean", value: true,  id: "NT_NEMESIS_ban_invis", name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk." },
+        { type: "boolean", value: true,  id: "NT_NEMESIS_nemesis_abilities", name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost." },
+        { type: "boolean", value: false, id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
+        { type: "boolean", value: false, id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+        { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
+        { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
+        { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Last noita standing.", tooltip: "Run ends when there's only one player left." },
+        { type: "boolean", value: true,  id: "NT_ondeath_kick", name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™. "}
+    ]
+};
+
+/**
+ * @param {GameMode} gamemode
+ * @param {VueFlag[]} current
+ * @param {IGameFlag[]} update
+ * @returns {VueFlag[]}
+ */
+export const updateFlagsFromProto = (gamemode, current, update) => {
+    /** @type {VueFlag[]} */
+    const defaults = defaultFlags[gamemode]
+    /* eslint-disable no-unused-vars */
+    return defaults.map((spec, _idx, _defaults) => {
+        const found = update.find((f) => f.flag === spec.id)
+        const prev = current.find((f) => f.id === spec.id) || spec
+        /** @type {VueFlag} */
+        const vueFlag = { ...spec }
+
+        switch (spec.type) {
+            case "boolean":
+                // presence of a boolean flag currently indicates true,
+                // absence indicates false. in the future, we should
+                // send explicit true/false, and leave undefined for "unchanged"
+                vueFlag.value = !!found
+                break
+            case "string":
+                vueFlag.value = firstOfType("string", found.strVal, prev.value)
+                break
+            default: // numeric types
+                vueFlag.value = firstOfType(
+                    "number",
+                    found.uIntVal,
+                    found.intVal,
+                    found.floatVal,
+                    prev.value
+                )
+                break
+        }
+        return vueFlag
+    })
+}
+
+/**
+ * @param {GameMode} gamemode
+ * @param {VueFlag[]} current
+ * @param {VueFlag[]} update
+ * @returns {VueFlag[]}
+ */
+export const updateFlagsFromUI = (gamemode, current, update) => {
+    /** @type {VueFlag[]} */
+    const defaults = defaultFlags[gamemode]
+    /* eslint-disable no-unused-vars */
+    return defaults.map((spec, _idx, _defaults) => {
+        const found = update.find((f) => f.id === spec.id)
+        const prev = current.find((f) => f.id === spec.id) || spec
+        /** @type {VueFlag} */
+        const vueFlag = { ...spec }
+
+        switch (spec.type) {
+            case "boolean":
+                // presence of a boolean flag currently indicates true,
+                // absence indicates false. in the future, we should
+                // send explicit true/false, and leave undefined for "unchanged"
+                vueFlag.value = !!found
+                break
+            case "string":
+                vueFlag.value = firstOfType("string", found.value, prev.value)
+                break
+            default: // numeric types
+                vueFlag.value = firstOfType("number", found.value, prev.value)
+                break
+        }
+        return vueFlag
+    })
+}
+
+/**
+ * @param {GameMode} gamemode
+ * @param {VueFlag[]} current
+ * @returns {import('@noita-together/nt-message').NT.ClientRoomFlagsUpdate}
+ */
+export const flagsToProto = (gamemode, current) => {
+    /** @type {VueFlag[]} */
+    const defaults = defaultFlags[gamemode]
+    return {
+        /* eslint-disable no-unused-vars */
+        flags: defaults.reduce((acc, spec, _idx, _defaults) => {
+            const found = current.find((f) => f.id === spec.id)
+
+            /** @type {IGameFlag} */
+            const flag = { flag: spec.id }
+
+            switch (spec.type) {
+                case "boolean":
+                    // presence of a boolean flag currently indicates true,
+                    // absence indicates false. in the future, we should
+                    // send explicit true/false, and leave undefined for "unchanged"
+                    if (!found.value) return acc
+                    break
+                case "string":
+                    flag.strVal = found.value
+                    break
+                default:
+                    if (!Number.isInteger(found.value))
+                        flag.floatVal = found.value
+                    else if (found.value < 0) flag.intVal = found.value
+                    else flag.uIntVal = found.value
+                    break
+            }
+            return acc.concat(flag)
+        }, [])
+    }
+}
+
 const ipcPlugin = (ipc) => {
     return (store) => {
         ipc.on("CONNECTED", (event, data) => {
@@ -57,7 +220,7 @@ const ipcPlugin = (ipc) => {
         })
 
         ipc.on("sRoomFlagsUpdated", (event, data) => {
-            store.commit("roomFlagsUpdated", data)
+            store.commit("sRoomFlagsUpdated", data)
         })
 
         ipc.on("sRoomDeleted", (event, data) => {
@@ -133,43 +296,10 @@ const ipcStuff = ipcPlugin(ipcRenderer)
 //TODO plugins https://vuex.vuejs.org/guide/plugins.html
 export default new Vuex.Store({
     state: {
-        // prettier-ignore
-        defaultFlags: {
-            0: [
-                { type: "boolean", value: false, id: "NT_sync_perks", name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them." },
-                { type: "boolean", value: true,  id: "NT_team_perks", name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them." },
-                { type: "boolean", value: true,  id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
-                { type: "boolean", value: true,  id: "NT_sync_hearts", name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too." },
-                { type: "boolean", value: true,  id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
-                { type: "boolean", value: true,  id: "NT_sync_shift", name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies." },
-                { type: "boolean", value: true,  id: "NT_send_wands", name: "Send Wands", tooltip: "Allow players to deposit/take wands." },
-                { type: "boolean", value: true,  id: "NT_send_flasks", name: "Send Flasks", tooltip: "Allow players to deposit/take flasks." },
-                { type: "boolean", value: true,  id: "NT_send_gold", name: "Send Gold", tooltip: "Allow players to deposit/take gold." },
-                { type: "boolean", value: true,  id: "NT_send_items", name: "Send Items", tooltip: "Allow players to deposit/take items." },
-                { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
-                { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
-                { type: "boolean", value: true,  id: "NT_death_penalty_end", name: "End run", tooltip: "Run ends for all players when someone dies." },
-                { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone." },
-                { type: "boolean", value: true,  id: "NT_death_penalty_full_respawn", name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties." },
-                { type: "boolean", value: false, id: "NT_ondeath_kick", name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™. "}
-            ],
-            2: [
-                { type: "boolean", value: true,  id: "NT_NEMESIS_ban_ambrosia", name: "Ban Ambrosia", tooltip: "will shift ambrosia away." },
-                { type: "boolean", value: true,  id: "NT_NEMESIS_ban_invis", name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk." },
-                { type: "boolean", value: true,  id: "NT_NEMESIS_nemesis_abilities", name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost." },
-                { type: "boolean", value: false, id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
-                { type: "boolean", value: false, id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
-                { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
-                { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
-                { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Last noita standing.", tooltip: "Run ends when there's only one player left." },
-                { type: "boolean", value: true,  id: "NT_ondeath_kick", name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™. "}
-            ]
-        },
-        gamemodes: {
-            0: "Co-op",
-            1: "Race",
-            2: "Nemesis"
-        },
+        // TODO: these should not be part of state, but I'm leaving them here
+        // so that I don't have to hunt down references to them and fix everything
+        defaultFlags: defaultFlags,
+        gamemodes: gamemodes,
         tabs: {
             0: "Users",
             1: "Mods",
@@ -253,6 +383,9 @@ export default new Vuex.Store({
         },
         flags: (state) => {
             return state.roomFlags
+        },
+        protoFlags: (state) => {
+            return flagsToProto(state.room.gamemode, state.roomFlags)
         }
     },
     mutations: {
@@ -310,46 +443,19 @@ export default new Vuex.Store({
             let room = Object.assign(state.room)
             state.room = Object.assign(room, payload)
         },
-        roomFlagsUpdated: (state, payload) => {
-            const mode = state.room.gamemode
-            const fDefaults = state.defaultFlags[mode]
-            if (!fDefaults) {
-                return
-            }
-            const newFlags = fDefaults.map((spec) => {
-                const found = payload.flags.find((f) => f.flag === spec.id)
-                const prev =
-                    state.roomFlags.find((f) => f.id === spec.id) || spec
-
-                switch (spec.type) {
-                    case "boolean":
-                        // presence of a boolean flag currently indicates true,
-                        // absence indicates false. in the future, we should
-                        // send explicit true/false, and leave undefined for "unchanged"
-                        return { ...spec, value: !!found }
-                    case "string":
-                        return {
-                            ...spec,
-                            value: firstOfType(
-                                "string",
-                                found.strVal,
-                                prev.value
-                            )
-                        }
-                    default: // numeric types
-                        return {
-                            ...spec,
-                            value: firstOfType(
-                                "number",
-                                found.uIntVal,
-                                found.intVal,
-                                found.floatVal,
-                                prev.value
-                            )
-                        }
-                }
-            })
-            state.roomFlags = newFlags
+        sRoomFlagsUpdated: (state, payload) => {
+            state.roomFlags = updateFlagsFromProto(
+                state.room.gamemode,
+                state.roomFlags,
+                payload.flags
+            )
+        },
+        cRoomFlagsUpdated: (state, payload) => {
+            state.roomFlags = updateFlagsFromUI(
+                state.room.gamemode,
+                state.roomFlags,
+                payload.flags
+            )
         },
         resetRoom: (state) => {
             state.stats = null
@@ -568,22 +674,10 @@ export default new Vuex.Store({
                 message: payload.message.trim()
             })
         },
-        sendFlags: ({ getters }) => {
-            const flags = getters.flags
-                .map((val) => {
-                    let flag = { flag: val.id }
-                    if (typeof val.value == "number") {
-                        flag.uIntVal = val.value
-                    } //temp fix
-                    if (val.type == "boolean" && !val.value) {
-                        flag = undefined
-                    }
-                    return flag
-                })
-                .filter((v) => typeof v !== "undefined")
+        sendFlags: ({ getters, state }) => {
             ipcRenderer.send("CLIENT_MESSAGE", {
                 key: "cRoomFlagsUpdate",
-                payload: { flags }
+                payload: flagsToProto(state.room.gamemode, getters.flags)
             })
         },
         startRun: (context, payload) => {

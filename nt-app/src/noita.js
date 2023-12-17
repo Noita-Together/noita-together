@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid")
 const appEvent = require("./appEvent")
 const cmdLineArgs = require("./cmdLineArgs")
 const { ipcMain } = require("electron")
-const { NT } = require("nt-message")
+const { NT } = require("@noita-together/nt-message")
 const { decodeFrames } = require("./frameCoder")
 function sysMsg(message) {
     appEvent("sChat", {

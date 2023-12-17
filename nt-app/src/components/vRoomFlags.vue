@@ -117,7 +117,7 @@ export default {//braincells where'd ya go
             for (const flag in flags.death) {
                 if (flags.death[flag].name == this.deathFlag) {
                     flags.death[flag].value = true
-                    payload.push({ flag: flags.death[flag].id });
+                    payload.push({ id: flags.death[flag].id });
                 }
                 else {
                     flags.death[flag].value = false
@@ -128,13 +128,13 @@ export default {//braincells where'd ya go
                     typeof flags.game[flag].value == "boolean" &&
                     flags.game[flag].value
                 ) {
-                    payload.push({ flag: flags.game[flag].id });
+                    payload.push({ id: flags.game[flag].id });
                 }
             }
             for (const flag in flags.world) {
                 let val = Number(flags.world[flag].value)
                 if (isNaN(val)) { val = 0 }
-                payload.push({ flag: flags.world[flag].id, value: Math.min(val, 4294967295) })
+                payload.push({ id: flags.world[flag].id, value: Math.min(val, 4294967295) })
             }
             //console.log({ flags: payload })
             this.$emit("applyFlags", { flags: payload });

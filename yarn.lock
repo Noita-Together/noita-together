@@ -1114,6 +1114,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noita-together/nt-message@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@noita-together/nt-message@npm:0.0.1"
+  dependencies:
+    long: ^5.2.3
+    protobufjs: ^7.2.5
+  checksum: 2438d2ceb10d8ab9a19d73183edc57b87692eb913acaed299a2c5a74b46d494292f52ae8eedba0a64402468bbc3016e4d42f16b40f7ed79079e26d862a645e1f
+  languageName: node
+  linkType: hard
+
 "@npmcli/agent@npm:^2.0.0":
   version: 2.2.0
   resolution: "@npmcli/agent@npm:2.2.0"
@@ -11303,8 +11313,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "noita-together@workspace:."
   dependencies:
+    "@noita-together/nt-message": ^0.0.1
     axios: ^1.4.0
-    nt-message: "git+https://github.com/noita-together/nt-message#v1.0.0"
     prettier: latest
     ts-node: ^10.9.1
     ts-node-dev: ^2.0.0
@@ -11454,16 +11464,6 @@ __metadata:
     ws: ^7.4.2
   languageName: unknown
   linkType: soft
-
-"nt-message@git+https://github.com/noita-together/nt-message#v1.0.0":
-  version: 1.0.0
-  resolution: "nt-message@https://github.com/noita-together/nt-message.git#commit=d68d7d879f2d9272f2e4af636747ce9c927c8461"
-  dependencies:
-    long: ^5.2.3
-    protobufjs: ^7.2.5
-  checksum: 29f275efc97e7c8c66062bc06d1b3c5b3dc2b4dd628fd506492b0e6398f1230b80b6021e2e924d871422398d4bacdc1f082839ae4d510c9948fce8914785ebd8
-  languageName: node
-  linkType: hard
 
 "nt-web-app@workspace:nt-web-app":
   version: 0.0.0-use.local
