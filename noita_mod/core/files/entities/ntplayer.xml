@@ -2,6 +2,10 @@
   name="DEBUG_NAME:NT_player"
   tags="nt_ghost"
   serialize="0" >
+
+  <Entity name="emotes_on_ghost">
+    <Base file="mods/noita-together/files/emotes/entities/emotes.xml" />
+  </Entity>
   
   <HotspotComponent
       _tags="hand"

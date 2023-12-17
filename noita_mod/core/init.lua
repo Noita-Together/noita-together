@@ -46,6 +46,11 @@ ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/file
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
 
+--emote system mnee support
+if ModIsEnabled("mnee") then
+	ModLuaFileAppend("mods/mnee/bindings.lua", "mods/noita-together/files/emotes/scripts/mnee.lua")
+end
+
 -----------------------------------------
 -- Append our translations to the game --
 -----------------------------------------
@@ -227,6 +232,12 @@ function OnPlayerSpawned(player_entity)
     local controls_component = EntityGetFirstComponent(player_entity, "ControlsComponent")
     if (controls_component ~= nil) then
         ComponentSetValue2(controls_component, "enabled", false)
+    end
+
+    --add the emote system entity
+    if EntityGetWithName("emotes") == 0 then
+        local emote_system = EntityLoad("mods/noita-together/files/emotes/entities/emotes.xml", player_x, player_y)
+        EntityAddChild(player_entity, emote_system)
     end
 
     --Prevent players from polymorphing before the run begins
