@@ -27,7 +27,7 @@ import { shell, ipcRenderer } from "electron"
 export default {
   data() {
     return {
-      loginUrl: `${process.env.VUE_APP_HOSTNAME}/auth/login`,
+      loginUrl: process.env.VUE_APP_NT_LOGIN_URL,
       remember: false,
       clicked: false,
     }

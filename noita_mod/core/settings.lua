@@ -189,7 +189,7 @@ function input_listen()
     binding = binding:sub(1, -2)
 	ModSettingSet("noita-together.NT_EMOTE_BINDING", binding)
 	ModSettingSetNextValue("noita-together.NT_EMOTE_BINDING", binding, false)
-	
+
     if there_has_been_input and not there_is_input then
         listening = false
         there_has_been_input = false

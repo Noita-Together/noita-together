@@ -562,6 +562,7 @@ if not initialized then
     local function draw_item_bank()
         local pos_x, pos_y = (screen_width / 3), (screen_height/4) - 30
         local offx, offy = 35, 50
+        local is_fridge = ModSettingGet("noita-together.NT_SHOW_WUOTE_FRIDGE")
         GuiOptionsAdd(gui, GUI_OPTION.NoPositionTween)
         GuiZSetForNextWidget(gui, 12)
         GuiImageNinePiece(gui, next_id(), pos_x, pos_y, 254, 224, 1, "mods/noita-together/files/ui/outer.png")
@@ -572,7 +573,11 @@ if not initialized then
             show_bank = not show_bank
         end
         GuiZSetForNextWidget(gui, 9)
-        GuiText(gui, pos_x + 26, pos_y + 5, "$noitatogether_bank_title")
+        if (is_fridge) then
+            GuiText(gui, pos_x + 10, pos_y + 5, "$noitatogether_fridge_title")
+        else
+            GuiText(gui, pos_x + 10, pos_y + 5, "$noitatogether_bank_title")
+        end
         GuiZSetForNextWidget(gui, 9)
         if (GuiImageButton(gui, next_id(), pos_x + 52, pos_y + 5, "", "mods/noita-together/files/ui/sort.png")) then
             sortItems()
@@ -830,6 +835,7 @@ if not initialized then
         reset_id()
         GuiStartFrame(gui)
         GuiIdPushString( gui, "noita_together")
+        local is_fridge = ModSettingGet("noita-together.NT_SHOW_WUOTE_FRIDGE")
 
         -- controller stuff
         local player = GetPlayer()
@@ -853,7 +859,7 @@ if not initialized then
                 last_inven_is_open = is_open
             end
             --[[ ghost selection
-                local controls_comp = EntityGetFirstComponent(player, "ControlsComponent")
+            local controls_comp = EntityGetFirstComponent(player, "ControlsComponent")
             if (controls_comp ~= nil) then
                 local x, y = ComponentGetValue2(controls_comp, "mMousePosition")
                 local mouse_down = ComponentGetValue2(controls_comp, "mButtonDownLeftClick")
@@ -868,7 +874,7 @@ if not initialized then
                     end
                 end
             end
-            ]]
+            --]]
         end
         -- close on escape (pause)
         if (show_bank and GamePaused) then
@@ -907,12 +913,18 @@ if not initialized then
             show_player_list = not show_player_list
         end
         GuiTooltip(gui, "$noitatogether_tooltip_player_list", "")
+        local bank_icon_path = "mods/noita-together/files/ui/buttons/bank.png"
+        if (is_fridge) then bank_icon_path = "mods/noita-together/files/ui/buttons/fridge.png" end
 
-        if (GuiImageButton(gui, next_id(), 160, 0, "", "mods/noita-together/files/ui/buttons/bank.png")) then
+        if (GuiImageButton(gui, next_id(), 160, 0, "", bank_icon_path)) then
             if (show_message) then show_message = false end
             show_bank = not show_bank
         end
-        GuiTooltip(gui, "$noitatogether_tooltip_item_bank", "")
+        if (is_fridge) then
+            GuiTooltip(gui, "$noitatogether_tooltip_item_fridge", "")
+        else
+            GuiTooltip(gui, "$noitatogether_tooltip_item_bank", "")
+        end
 
         if (show_message) then
             draw_player_message()
