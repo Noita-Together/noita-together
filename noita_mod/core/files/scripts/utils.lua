@@ -281,8 +281,9 @@ function GetItemWithId(target, id)
 end
 
 function CleanRemovedBankItems(target)
-    for index, item in ipairs(target) do
-        if item.removed == true then
+    --iterate backwards to avoid table index changing nonsense :)
+    for index=#target,1,-1 do
+        if target[index].removed == true then
             table.remove(target, index)
         end
     end
