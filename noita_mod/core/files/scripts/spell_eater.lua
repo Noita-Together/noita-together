@@ -114,18 +114,20 @@ if (#wands > 0 and GameHasFlagRun("NT_send_wands")) then
             local deck = {}
             if childs ~= nil then
                 for _, child in ipairs(childs) do
-                    local item_comp = EntityGetFirstComponentIncludingDisabled(child, "ItemComponent")
-                    local item_component = EntityGetFirstComponentIncludingDisabled(child, "ItemActionComponent")
-                    local is_always_cast = ComponentGetValue2(item_comp, "permanently_attached")
-                    local uses_remaining = ComponentGetValue2(item_comp, "uses_remaining")
-                    local action_id = ComponentGetValue2(item_component, "action_id")
-                    if (is_always_cast) then
-                        table.insert(always_cast, {id=action_id, usesRemaining=-1})
-                        --deck_capacity includes always casts, but for serialization *dont* count them
-                        --otherwise the wand gains slots when its deserialized and the ACs are added
-                        serialized.deck_capacity = serialized.deck_capacity - 1
-                    else
-                        table.insert(deck, {id=action_id, usesRemaining=uses_remaining})
+                    if EntityHasTag(child,"card_action") then
+                        local item_comp = EntityGetFirstComponentIncludingDisabled(child, "ItemComponent")
+                        local item_component = EntityGetFirstComponentIncludingDisabled(child, "ItemActionComponent")
+                        local is_always_cast = ComponentGetValue2(item_comp, "permanently_attached")
+                        local uses_remaining = ComponentGetValue2(item_comp, "uses_remaining")
+                        local action_id = ComponentGetValue2(item_component, "action_id")
+                        if (is_always_cast) then
+                            table.insert(always_cast, {id=action_id, usesRemaining=-1})
+                            --deck_capacity includes always casts, but for serialization *dont* count them
+                            --otherwise the wand gains slots when its deserialized and the ACs are added
+                            serialized.deck_capacity = serialized.deck_capacity - 1
+                        else
+                            table.insert(deck, {id=action_id, usesRemaining=uses_remaining})
+                        end
                     end
                 end
             end
