@@ -36,7 +36,7 @@
           <div v-if="tab === '0' || !tab"> <!--Users tab-->
             <table>
               <thead>
-              <tr>
+              <tr class="pin-row">
                 <th class="users-name">
                   <span>Name</span>
                   <img v-if="!sortByUser" title="sort by name" alt="Sort by name" class="users-sort" src="/sort_by_icon.svg" @click="sortUser()"/>
@@ -47,7 +47,8 @@
                 <th v-if="isHost">Actions</th>
               </tr>
               </thead>
-              <tbody>
+              <tbody class="users-rows">
+              <!-- <tbody> -->
               <tr v-for="user in users" :key="user.userId">
                 <td>{{ user.name }}</td>
                 <td>{{ user.seed }}</td>
@@ -241,19 +242,19 @@ export default {
             },
             {
                 prefix: ":",
-                names: this.modList.map(mod => ':'+mod.name.replace(' ','_')),
+                names: this.modList.map(mod => ':'+mod.name.replaceAll(' ','_')),
             }]
         },
         users() {
             const data = [
-                ...this.$store.state.room.users
+                ...this.$store.state.room.users, ...this.fakeUsers
             ]
             if(!this.sortByUser) return data
-            return data.sort((a, b) => {
+            return [data[0], ...data.slice(1).sort((a, b) => {
               if(!a.name) return 1
               if(!b.name) return -1
               return a.name.toLowerCase() >= b.name.toLowerCase() ? 1 : -1
-            })
+            })]
         },
         expandedItem(){
           return this.expandedContent
@@ -446,6 +447,17 @@ export default {
     top: 1.6em;
 }
 
+.pin-row > th{
+    position: sticky;
+    top: 1.6em
+}
+
+.users-rows tr:first-child > td{
+    position: sticky;
+    top: 4.4em;
+    background-color: #1D1D1D;
+}
+
 .tablist-row{
     width: 100%;
     justify-content: space-between;
@@ -521,7 +533,7 @@ export default {
 .chat-entry {
     padding: 0.25em 0.1em;
     overflow-y: hidden;
-    min-height: 1.125em;
+    min-height: fit-content;
 }
 
 .chat-entry:hover {
@@ -533,7 +545,7 @@ export default {
     border: 0.1em solid gold;
     box-sizing: border-box;
     overflow-y: hidden;
-    min-height: 1.725em;
+    min-height: fit-content;
 }
 
 .mention:hover {

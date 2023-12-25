@@ -62,12 +62,6 @@ export default {
             if ([" ","Escape"].includes(event.key)) {
                 this.exitMention()
             }
-            if (event.key == "Tab") {
-                if (this.search.indexOf(this.items[this.itemI].prefix) > -1) {
-                    this.mentionReplace(this.results[this.resultInd])
-                    this.exitMention()
-                }
-            }
             if (this.isOpen) {
                 this.name = this.search.substring(this.cursor.start, this.cursor.end + 1)
                 if (this.name.indexOf(" ") > -1) {
@@ -77,6 +71,12 @@ export default {
                 if (this.search.indexOf(this.items[this.itemI].prefix) < 0) {
                     this.exitMention()
                 }
+                if (event.key == "Tab") {
+                    if (this.search.indexOf(this.items[this.itemI].prefix) > -1) {
+                        this.mentionReplace(this.results[this.resultInd])
+                    this.exitMention()
+                }
+            }
             } 
         },
         down() {
@@ -117,10 +117,13 @@ export default {
             this.itemI = 0
         },
         mentionReplace(mention) {
-            console.log(this.search.substring(this.cursor.start))
-            const replaced = this.search.substring(this.cursor.start).replace(this.name,mention)
+            // console.log(this.search.substring(this.cursor.start))
+            mention += " "
+            const replaced = this.search.substring(this.cursor.start)
+                .replace(this.name, mention)
+                .replace(/\s{2,}/, " ")
             const saved = this.search.substring(0, this.cursor.start)
-            const pos = this.cursor.start+mention.length
+            const pos = this.cursor.start + mention.length
             this.search = saved + replaced
             this.$nextTick(() => {
                 this.$refs.inField.setSelectionRange(pos, pos)
