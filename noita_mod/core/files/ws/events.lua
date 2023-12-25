@@ -48,7 +48,17 @@ customEvents = {
     PlayerCosmeticFlags = function(data)
         StorePlayerGhostCosmetic(data, true)
     end,
-    SecretHourglass = HandleHourglassEvent
+    SecretHourglass = HandleHourglassEvent,
+    Emote = function(data)
+        if ModSettingGet("noita-together.NT_SHOW_EMOTES") then
+            EmotePlayerGhost(data)
+        end
+    end,
+    Skin = function(data)
+        if ModSettingGet("noita-together.NT_SHOW_EMOTES") then
+            SkinSwapPlayerGhost(data)
+        end
+    end
 }
 wsEvents = {
     AngerySteve = function (data)
@@ -101,7 +111,7 @@ wsEvents = {
     RequestGameInfo = function(data)
         local seed = StatsGetValue("world_seed")
         local mods = ModGetActiveModIDs()
-        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.13.0", beta=GameIsBetaBuild()}})
+        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.14.0", beta=GameIsBetaBuild()}})
         SendWsEvent({event="RequestPlayerList", payload={}})
         PopulateSpellList()
     end,

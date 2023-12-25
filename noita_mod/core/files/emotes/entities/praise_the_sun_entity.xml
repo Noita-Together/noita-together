@@ -1,0 +1,71 @@
+<Entity name="praise_the_sun_entity">
+    <LightComponent
+        update_properties="1"
+        radius="0"
+        r="255"
+        g="255"
+        b="0"
+        fade_out_time="0.5" />
+
+    <LightComponent
+        update_properties="1"
+        radius="0"
+        r="255"
+        g="255"
+        b="0"
+        fade_out_time="0.5" />
+
+    <LightComponent
+        update_properties="1"
+        radius="0"
+        r="255"
+        g="255"
+        b="0"
+        fade_out_time="0.5" />
+
+    <LightComponent
+        update_properties="1"
+        radius="0"
+        r="255"
+        g="255"
+        b="0"
+        fade_out_time="0.5" />
+
+    <LightComponent
+        update_properties="1"
+        radius="0"
+        r="255"
+        g="255"
+        b="0"
+        fade_out_time="0.5" />
+
+    <SpriteComponent
+        image_file="mods/noita-together/files/emotes/entities_gfx/praise_the_sun_orb.png"
+        offset_x="5"
+        offset_y="5"
+        alpha="0.0" />
+
+    <ParticleEmitterComponent 
+        color="11ffff00"
+        gravity.y="0.0"
+        lifetime_min="0.1"
+        lifetime_max="0.4"
+        count_min="1"
+        count_max="2"
+        render_on_grid="0"
+        area_circle_radius.min="0"
+        area_circle_radius.max="4"
+        velocity_always_away_from_center="20"
+        cosmetic_force_create="0"
+        emission_interval_min_frames="15"
+        emission_interval_max_frames="15"
+        emit_cosmetic_particles="1"
+        create_real_particles="0"
+        emission_chance="100"
+        render_back="0"
+        is_emitting="0" />
+        
+    <LuaComponent 
+        execute_every_n_frame="1"
+        script_source_file="mods/noita-together/files/emotes/scripts/praise_the_sun_entity.lua" />
+</Entity>
