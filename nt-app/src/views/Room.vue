@@ -242,12 +242,12 @@ export default {
             },
             {
                 prefix: ":",
-                names: this.modList.map(mod => ':'+mod.name.replaceAll(' ','_')),
+                names: this.modList.map(mod => ':'+mod.name.replace(/\s/g,'_')),
             }]
         },
         users() {
             const data = [
-                ...this.$store.state.room.users, ...this.fakeUsers
+                ...this.$store.state.room.users
             ]
             if(!this.sortByUser) return data
             return [data[0], ...data.slice(1).sort((a, b) => {
@@ -456,6 +456,7 @@ export default {
     position: sticky;
     top: 4.4em;
     background-color: #1D1D1D;
+    overflow: hidden;
 }
 
 .tablist-row{
