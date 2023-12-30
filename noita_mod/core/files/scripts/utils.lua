@@ -260,10 +260,14 @@ function AppendText(entity, text)
     return component
 end
 
+--bank funcs
+--called when item removed from bank
+--12/16/23 change this to instead *flag* as removed, add a separate cleanup function for when bank UI is not open
 function RemoveItemWithId(target, id)
     for index, item in ipairs(target) do
         if (item.id == id) then
-            table.remove(target, index)
+            item.removed = true --clean up on next bank UI close
+            --table.remove(target, index)
         end
     end
 end
@@ -275,6 +279,17 @@ function GetItemWithId(target, id)
         end
     end
 end
+
+function CleanRemovedBankItems(target)
+    --iterate backwards to avoid table index changing nonsense :)
+    for index=#target,1,-1 do
+        if target[index].removed == true then
+            table.remove(target, index)
+        end
+    end
+end
+
+--
 
 function PopulateSpellList()
     dofile_once("data/scripts/gun/gun_enums.lua")
@@ -552,24 +567,26 @@ function GetWandSpells(id)
     if childs ~= nil then
         local last_slot = 0
         for _, child in ipairs(childs) do
-            local item_comp = EntityGetFirstComponentIncludingDisabled(child, "ItemComponent")
-            local item_action_component = EntityGetFirstComponentIncludingDisabled(child, "ItemActionComponent")
-            local is_always_cast = ComponentGetValue2(item_comp, "permanently_attached")
-            local action_id = ComponentGetValue2(item_action_component, "action_id")
-            local slot = ComponentGetValue2(item_comp, "inventory_slot")
-            local empty_slots = slot - last_slot
+            if EntityHasTag(child,"card_action") then
+                local item_comp = EntityGetFirstComponentIncludingDisabled(child, "ItemComponent")
+                local item_action_component = EntityGetFirstComponentIncludingDisabled(child, "ItemActionComponent")
+                local is_always_cast = ComponentGetValue2(item_comp, "permanently_attached")
+                local action_id = ComponentGetValue2(item_action_component, "action_id")
+                local slot = ComponentGetValue2(item_comp, "inventory_slot")
+                local empty_slots = slot - last_slot
 
-            if empty_slots > 0 then
-                for s = 1, empty_slots do
-                    table.insert(deck, {gameId="0"})
+                if empty_slots > 0 then
+                    for s = 1, empty_slots do
+                        table.insert(deck, {gameId="0"})
+                        last_slot = last_slot + 1
+                    end
+                end
+                if (is_always_cast) then
+                    table.insert(always_cast, {gameId=action_id})
+                else
+                    table.insert(deck, {gameId=action_id})
                     last_slot = last_slot + 1
                 end
-            end
-            if (is_always_cast) then
-                table.insert(always_cast, {gameId=action_id})
-            else
-                table.insert(deck, {gameId=action_id})
-                last_slot = last_slot + 1
             end
         end
     end
@@ -814,4 +831,44 @@ function GuiTextMultiLine(gui, x, y, text)
 
     --return dy, could be useful for determining how much y-distance we used
     return dy
+end
+
+function EmotePlayerGhost(data)
+    local ghosts = EntityGetWithTag("nt_ghost")
+    for _, ghost in pairs(ghosts) do
+        local id_comp = get_variable_storage_component(ghost, "userId")
+        local userId = ComponentGetValue2(id_comp, "value_string")
+        if (userId == data.userId) then
+            local children = EntityGetAllChildren(ghost)
+            for _, child in ipairs(children) do
+                if EntityGetName(child) == "emotes_on_ghost" then
+                    local current_emote_var_comp = EntityGetComponentIncludingDisabled(child, "VariableStorageComponent")[1]
+                    ComponentSetValue2(current_emote_var_comp, "value_string", data.emote)
+                    local frames_emoting_var_comp = EntityGetComponentIncludingDisabled(child, "VariableStorageComponent")[4]
+                    ComponentSetValue2(frames_emoting_var_comp, "value_int", 0)
+                end
+            end
+            break
+        end
+    end
+end
+
+function SkinSwapPlayerGhost(data)
+    local ghosts = EntityGetWithTag("nt_ghost")
+    for _, ghost in pairs(ghosts) do
+        local id_comp = get_variable_storage_component(ghost, "userId")
+        local userId = ComponentGetValue2(id_comp, "value_string")
+        if (userId == data.userId) then
+            local children = EntityGetAllChildren(ghost)
+            for _, child in ipairs(children) do
+                if EntityGetName(child) == "emotes_on_ghost" then
+                    local skin_var_comp = EntityGetComponentIncludingDisabled(child, "VariableStorageComponent")[8]
+                    print(tostring(data.skin))
+                    print(tostring(skin_var_comp))
+                    ComponentSetValue2(skin_var_comp, "value_string", data.skin)
+                end
+            end
+            break
+        end
+    end
 end

@@ -4,7 +4,8 @@ module.exports = {
             nodeIntegration: true,
             externals: ["keytar"],
             builderOptions: {
-                productName: "Noita Together Beta",
+                productName: "Noita Together",
+                artifactName: 'Noita-Together-Setup-${version}.${ext}',
                 win: {
                     target: "nsis",
                     requestedExecutionLevel: "requireAdministrator" //eugh

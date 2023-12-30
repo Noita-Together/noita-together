@@ -1,0 +1,44 @@
+<Entity name="heart_entity">
+    <ParticleEmitterComponent 
+        emitted_material_name="spark_red"
+        gravity.y="0.0"
+        lifetime_min="0.2"
+        lifetime_max="0.5"
+        count_min="1"
+        count_max="5"
+        render_on_grid="1"
+        fade_based_on_lifetime="1"
+        area_circle_radius.min="0"
+        area_circle_radius.max="0"
+        cosmetic_force_create="0"
+        emission_interval_min_frames="1"
+        emission_interval_max_frames="1"
+        emit_cosmetic_particles="1"
+        image_animation_file="mods/noita-together/files/emotes/entities_gfx/heart_entity_emitter.png" 
+        image_animation_speed="10"
+        image_animation_loop="1"
+        emission_chance="100"
+        render_back="1"
+        is_emitting="0" />
+
+    <SpriteParticleEmitterComponent
+        sprite_file="mods/noita-together/files/emotes/entities_gfx/heart_entity_sprite_$[0-1].png"
+        emission_interval_min_frames="1"
+        emission_interval_max_frames="5"
+        randomize_position.min_x="-10"
+        randomize_position.max_x="10"
+        randomize_position.min_y="-10"
+        randomize_position.max_y="10"
+        randomize_velocity.min_x="-8"
+        randomize_velocity.max_x="8"
+        randomize_velocity.min_y="0"
+        randomize_velocity.max_y="12"
+        gravity.x="0"
+        gravity.y="5"
+        lifetime="0.5"
+        is_emitting="0" />
+
+    <LuaComponent 
+        execute_every_n_frame="3"
+        script_source_file="mods/noita-together/files/emotes/scripts/heart_entity.lua" />
+</Entity>

@@ -6,17 +6,13 @@ import { ipcRenderer } from "electron"
 /** @typedef {import('@noita-together/nt-message').NT.ClientRoomFlagsUpdate.IGameFlag} IGameFlag */
 
 Vue.use(Vuex)
-const colors = [
-    "#698935",
-    "#358969",
-    "#356989",
-    "#693589",
-    "#893569",
-    "#893535",
-    "#896935"
-]
-const randomColor = () => {
-    return colors[Math.floor(Math.random() * colors.length)]
+const randomColor = (name) => {
+    var hash = 0
+    for (var i = 0; i < name.length; i++) {
+        hash = ((hash << 5) - hash) + name.charCodeAt(i);
+    }
+    var hue = Math.floor(hash / 100 * 360)
+    return `hsl(${hue}, 70%, 60%)`
 }
 const firstOfType = (type, ...vs) => (vs || []).find((v) => typeof v === type)
 
@@ -308,7 +304,8 @@ export default new Vuex.Store({
         user: {
             name: "",
             id: 0,
-            extra: 0
+            extra: 0,
+            color: "",
         },
         savedUser: false,
         savedUserName: "",
@@ -420,6 +417,7 @@ export default new Vuex.Store({
         setUser: (state, payload) => {
             state.user.name = payload.display_name
             state.user.id = payload.id
+            state.user.color = randomColor(payload.display_name)
         },
         setUserExtra: (state, payload) => {
             state.user.extra = payload
@@ -436,7 +434,7 @@ export default new Vuex.Store({
         setRoom: (state, payload) => {
             state.room = payload
             for (const user of state.room.users) {
-                user.color = randomColor()
+                user.color = randomColor(user.name)
             }
         },
         roomUpdated: (state, payload) => {
@@ -476,7 +474,7 @@ export default new Vuex.Store({
                 userId: payload.userId,
                 name: payload.name,
                 owner: false,
-                color: randomColor(),
+                color: randomColor(payload.name),
                 readyState: {
                     ready: false,
                     seed: "",
@@ -510,19 +508,29 @@ export default new Vuex.Store({
             const found = state.room.users.find(
                 (user) => user.userId == payload.userId
             )
-            let color = randomColor()
-            color = (found && found.color) || color
-
+            let userColor = randomColor(payload.name)
+            userColor = (found && found.color) || userColor
+            let userRegex = new RegExp(`(@${state.user.name})(?= |$)`,'i')
+            let messageClass = userRegex.test(payload.message) ? "mention" : "chat-entry"
+            console.log(payload.name)
+            let messageSpans = payload.message.split(userRegex).filter(String).map(msg => ({
+                message: msg,
+                style: {
+                    color: userRegex.test(msg) ? randomColor(state.user.name) : "rgba(255, 255, 255, 0.8)",
+                    fontWeight: userRegex.test(msg) ? 600 : 400,
+                },
+            }))
             if (payload.userId === "-1") {
-                color = "#e69569"
+                userColor = "#e69569"
             }
             state.roomChat.push({
                 id: payload.id,
                 time: timeStr,
                 userId: payload.userId,
                 name: payload.name.trim(),
-                message: payload.message.trim(),
-                color
+                class: messageClass,
+                spans: messageSpans,
+                color: userColor,
             })
             if (state.roomChat.length > 250) {
                 state.roomChat.shift()
