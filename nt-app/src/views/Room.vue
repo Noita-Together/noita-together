@@ -453,10 +453,8 @@ export default {
 }
 
 .users-rows tr:first-child > td{
-    position: sticky;
     top: 4.4em;
     background-color: #1D1D1D;
-    overflow: hidden;
 }
 
 .tablist-row{
