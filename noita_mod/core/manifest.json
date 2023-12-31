@@ -168,7 +168,7 @@
     "files/scripts/remove_flags.lua": "d8673a32332be541f1634989d6160a1527481b46c9c7e4257c425c53dbfb7a84",
     "files/scripts/sampo/sampo_aura.lua": "f95d142c80b8b13340d672f7510c6434c2c00dd3ea0ad8a838b832ffb37fd3c5",
     "files/scripts/sampo/sampo_aura_attractor_fix.lua": "d04404d47abbfbf3ed85b2329260520ca53ce20fa98b8bd8acc7ccae913d45a1",
-    "files/scripts/spell_eater.lua": "45d74da80bb4214c6705ba30d30655e95874c5cc8ea0bcfb9287fac9ebd34cca",
+    "files/scripts/spell_eater.lua": "11aaae0213ffabc8effd51e803af8656b52c91c318c0cd19761d121892b6a85c",
     "files/scripts/spell_eater_glow.lua": "933f40e6d782a00ddbc06f57644dedeb682787c3005c311ea013b50b05fcaf7e",
     "files/scripts/spell_spitter.lua": "cd9a25701a4f37772aa0c480ae4061127746af71600f23685b842eba51e8bb6e",
     "files/scripts/spell_spitter_glow.lua": "4dc1a7112bfe16208e8f61185c29e4d6db0a0f8c8c29ad0ee8f8a4121630dfee",
@@ -176,7 +176,7 @@
     "files/scripts/ui.lua": "a65a8c31434ef4e6da5b711e2805050ee7666e5d9a83d58554b3ef551300fbcb",
     "files/scripts/util/coop_boss_fight.lua": "ce987b457ed4f44cceecd868fb5ddd2608cff1bded7d0b139ed4170d5d0d6588",
     "files/scripts/util/player_ghosts.lua": "86796033307b3001bd2c426d840cc166e646e26279f251c763d02c7b42d86de9",
-    "files/scripts/utils.lua": "0c9061157bdd38adb9d4a5d5255941f2ca267dadb30762ce19fd2b6a57a5e52d",
+    "files/scripts/utils.lua": "16f03aaf43061f5c2034db47a45abdeca71831166f41b98085ae16e193634cd1",
     "files/store.lua": "d100921b562330b2082e29243151cf038a7a224800294cebfd93b262edeceec7",
     "files/stringstore/noitaglobalstore.lua": "df6663bed01bc62a918f994d2a9ec0ad2847e799366c9ce9a371973226d1299a",
     "files/stringstore/stringstore.lua": "7934f19bd537a87b1b9476cb30fa506f7d48b37953011980630a9eb37df4060f",
@@ -281,12 +281,12 @@
     "files/ui/_hpbar_full.png": "c4efa2ad19b0dd2f4fda9582a9a13403ceaeec96b5bede248905be98bbb52b85",
     "files/ui_gfx/status_indicators/nt_hourglass_protection_half.png": "6f6a937fbf7de0cad46a5d2f5c024026188f28ab536037e921514c9b027f31c0",
     "files/ui_gfx/status_indicators/nt_hourglass_speed_levitation.png": "50e3c351577cff9e200d6d2ced92d7603c68b1190e9b417e8eebd052454aa3f7",
-    "files/ws/events.lua": "341ee574f885c77ef41bcee94aa4b5e223e1bc839fc62d5a6e8a55eb2bd5dc68",
+    "files/ws/events.lua": "d7c9b5d8c31025dc51c9ffc581dbe85f62a116d8605db974b6dbad11a42ac007",
     "files/ws/host.lua": "3e7067808fb85f6398dd42249cc06c06c95c0af4f294590ab67224e31d218aa7",
     "files/ws/ws.lua": "5848c4d646bd33d57e7598c92eb0c59a57bba03ed794b9612adba21666ab7e8d",
     "init.lua": "3e73200cd7b9439d37551651385895b5fda54d628346d982c3fdc6962be61ac5",
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "2e419aeaad4c787bd6162bec3dfd9ac8e11dd743bb9c6b54baa5197c346e7220"
   },
-  "buildDate": "2023-12-17T02:32:07.042Z"
+  "buildDate": "2023-12-31T01:44:21.877Z"
 }

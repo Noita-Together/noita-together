@@ -36,7 +36,7 @@
           <div v-if="tab === '0' || !tab"> <!--Users tab-->
             <table>
               <thead>
-              <tr>
+              <tr class="pin-row">
                 <th class="users-name">
                   <span>Name</span>
                   <img v-if="!sortByUser" title="sort by name" alt="Sort by name" class="users-sort" src="/sort_by_icon.svg" @click="sortUser()"/>
@@ -47,7 +47,8 @@
                 <th v-if="isHost">Actions</th>
               </tr>
               </thead>
-              <tbody>
+              <tbody class="users-rows">
+              <!-- <tbody> -->
               <tr v-for="user in users" :key="user.userId">
                 <td>{{ user.name }}</td>
                 <td>{{ user.seed }}</td>
@@ -91,8 +92,8 @@
                           slot="icon"
                           :class="expandedItem === mod.name ? 'fa-chevron-up tablist-arrow-up' : 'fa-chevron-down tablist-arrow-down'"
                       />
-                      <div class="tablist-col">{{`${mod.name.substring(0, 600)}${mod.name.length>600?'...':''}`}}</div>
-                      <div class="tablist-col-smol">{{mod.users.length}}</div>
+                      <div class="tablist-col">{{ `${ mod.name.substring(0, 150)}${mod.name.length>150?'...':''}` }}</div>
+                      <div class="tablist-col-smol">{{ mod.users.length }}</div>
                     </div>
                     <div v-if="expandedItem === mod.name">
                       <table class="tablist-users-table">
@@ -128,8 +129,8 @@
                           slot="icon"
                           :class="expandedItem === seed.name ? 'fa-chevron-up tablist-arrow-up' : 'fa-chevron-down tablist-arrow-down'"
                       />
-                      <div class="tablist-col">{{`${seed.name.substring(0, 600)}${seed.name.length>600?'...':''}`}}</div>
-                      <div class="tablist-col-smol">{{seed.users.length}}</div>
+                      <div class="tablist-col">{{ seed.name }}</div>
+                      <div class="tablist-col-smol">{{ seed.users.length }}</div>
                     </div>
                     <div v-if="expandedItem === seed.name">
                       <table class="tablist-users-table">
@@ -148,19 +149,19 @@
         </div>
         <div class="chat-wrapper">
             <div class="chatbox" @keydown="sendChat">
-                <input type="text" v-model="chatMsg" placeholder="Send Message" />
+                <vChatAutocomplete :items="autoData" v-model="chatMsg"></vChatAutocomplete> 
+                <!-- <vChatAutocomplete :items="fakeUsernames" v-model="chatMsg"></vChatAutocomplete>  -->
             </div>
             <div class="room-chat" ref="chat" @scroll="handleScroll()">
                 <template v-if="chat.length > 0">
-                    <div class="chat-entry" v-for="(entry, index) in chat" :key="index">
-                        <span class="chat-time" :style="{ color: entry.userId === '-1' ? '#e69569' : '#fff'}">[{{ entry.time }}]</span>
+                    <div v-for="(entry, index) in chat" :key="index" :class="entry.class">
+                        <span class="chat-time" :style="{ color: entry.userId === '-1' ? entry.color : '#fff'}">[{{ entry.time }}]</span>
                         <span class="chat-name" :style="{ color: entry.color }">{{ entry.name }}</span>
-                        <span class="chat-message">{{ entry.message }}</span>
+                        <span class="chat-message" v-for="(span,j) in entry.spans" :key="j" :style="span.style">{{ span.message }}</span>
                     </div>
                 </template>
             </div>
         </div>
-        <!-- </div> -->
     </div>
 </template>
 
@@ -171,6 +172,7 @@ import vRoomFlags from "@/components/vRoomFlags.vue"
 import vLeaveRoom from "@/components/vLeaveRoom.vue"
 //import vTooltip from "@/components/vTooltip.vue"
 import vUserTooltip from "@/components/vUserTooltip.vue"
+import vChatAutocomplete from "@/components/vChatAutocomplete.vue"
 import vModUserTooltip from "@/components/vModUserTooltip.vue"
 export default {
     components: {
@@ -179,6 +181,7 @@ export default {
         //vTooltip,
         vUserTooltip,
         vModUserTooltip,
+        vChatAutocomplete,
         vLeaveRoom
     },
     data() {
@@ -229,16 +232,29 @@ export default {
         isHost() {
             return this.$store.getters.isHost
         },
+        clientUser() {
+            return this.$store.state.user
+        },
+        autoData() {
+            return [{
+                prefix: "@",
+                names: this.$store.state.room.users.map(user => '@'+user.name),
+            },
+            {
+                prefix: ":",
+                names: this.modList.map(mod => ':'+mod.name.replace(/\s/g,'_')),
+            }]
+        },
         users() {
             const data = [
                 ...this.$store.state.room.users
             ]
             if(!this.sortByUser) return data
-            return data.sort((a, b) => {
+            return [data[0], ...data.slice(1).sort((a, b) => {
               if(!a.name) return 1
               if(!b.name) return -1
               return a.name.toLowerCase() >= b.name.toLowerCase() ? 1 : -1
-            })
+            })]
         },
         expandedItem(){
           return this.expandedContent
@@ -246,7 +262,7 @@ export default {
         modList(){
             const mods = {}
             this.$store.state.room.users.forEach(user=>{
-              console.log(user)
+            //   console.log(user)
               const userMods = user.mods ? user.mods : []
               userMods.forEach(mod=>{
                 if(!Object.keys(mods).includes(mod))
@@ -272,25 +288,25 @@ export default {
         seedList(){
             const seeds = {}
             this.$store.state.room.users.forEach(user=>{
-              console.log(user)
-              const userSeed = user.seed ? user.seed : "Not Ready"
-              if(!Object.keys(seeds).includes(userSeed))
-                seeds[userSeed] = []
-              seeds[userSeed].push(user.name)
+                // console.log(user)
+                const userSeed = user.seed ? user.seed : "Not Ready"
+                if(!Object.keys(seeds).includes(userSeed))
+                    seeds[userSeed] = []
+                seeds[userSeed].push(user.name)
             })
 
             const seedNums = Object.keys(seeds)
             return seedNums.map((seedNum)=>({
-              name: seedNum,
-              users: seeds[seedNum]
+                name: seedNum,
+                users: seeds[seedNum]
             })).sort((a,b)=>{
-              const aUsers = a.users.length
-              const bUsers = b.users.length
+                const aUsers = a.users.length
+                const bUsers = b.users.length
 
-              if(aUsers === bUsers){
-                return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
-              }
-              return aUsers > bUsers ? -1 : 1
+                if(aUsers === bUsers){
+                    return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+                }
+                return aUsers > bUsers ? -1 : 1
             })
         },
         tab(){
@@ -302,16 +318,16 @@ export default {
     },
     methods: {
         handleScroll() {
-          const chatBox = this.$refs.chat;
-          const scrollTop = chatBox.scrollTop;
-          const scrollHeight = chatBox.scrollHeight;
-          const clientHeight = chatBox.clientHeight;
-          const scrollThreshold = 100; // Adjust the threshold as needed
+            const chatBox = this.$refs.chat;
+            const scrollTop = chatBox.scrollTop;
+            const scrollHeight = chatBox.scrollHeight;
+            const clientHeight = chatBox.clientHeight;
+            const scrollThreshold = 100; // Adjust the threshold as needed
 
-          this.shouldScroll = scrollHeight - scrollTop - clientHeight < scrollThreshold;
+            this.shouldScroll = scrollHeight - scrollTop - clientHeight < scrollThreshold;
         },
         scrollToBottom() {
-          this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
+            this.$refs.chat.scrollTop = this.$refs.chat.scrollHeight;
         },
         lockRoom() {
             this.$store.dispatch("updateRoom", { locked: !this.room.locked })
@@ -327,8 +343,8 @@ export default {
                 this.$store.dispatch("sendClientAlert", { message: "You are being rate limited!" })
                 return
             }
-            if(this.chatMsg.length > 2000){
-              this.$store.dispatch("sendClientAlert", { message: "Message too long! Try again with less than 2000 characters!" })
+            if(this.chatMsg.length > 500){
+              this.$store.dispatch("sendClientAlert", { message: "Message too long! Try again with less than 500 characters!" })
               return
             }
             this.$store.dispatch("sendChat", { message: this.chatMsg.trim() })
@@ -431,6 +447,16 @@ export default {
     top: 1.6em;
 }
 
+.pin-row > th{
+    position: sticky;
+    top: 1.6em
+}
+
+.users-rows tr:first-child > td{
+    top: 4.4em;
+    background-color: #1D1D1D;
+}
+
 .tablist-row{
     width: 100%;
     justify-content: space-between;
@@ -438,11 +464,11 @@ export default {
 }
 
 .tablist-col{
-    flex-grow: 1;
+    width: 80%;
 }
 
 .tablist-col-smol{
-    width: 300px;
+    width: 20%;
     justify-content: center;
     text-align: center;
 }
@@ -484,23 +510,6 @@ export default {
     width: 100%;
 }
 
-.chatbox > input {
-    margin: 0;
-    padding: 0.5em;
-    width: 100%;
-    background: transparent;
-    border: none;
-    background: rgb(34, 34, 34);
-    transition: all 0.2s;
-}
-
-.chatbox > input:focus {
-    box-shadow: none;
-    outline: none;
-    background-position: 0 0;
-    background: rgb(14, 14, 14);
-}
-
 .chat-wrapper {
     display: flex;
     flex-direction: column-reverse;
@@ -521,11 +530,25 @@ export default {
 }
 
 .chat-entry {
-    padding-bottom: 0.5em;
+    padding: 0.25em 0.1em;
+    overflow-y: hidden;
+    min-height: fit-content;
 }
 
 .chat-entry:hover {
     background: rgba(58, 58, 58, 0.5);
+}
+.mention {
+    margin-bottom: 0.2em;
+    padding: 0.2em 0.1em;
+    border: 0.1em solid gold;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    min-height: fit-content;
+}
+
+.mention:hover {
+    background: rgba(58, 58, 58, 0.5); 
 }
 
 .chat-entry > p {

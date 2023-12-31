@@ -281,8 +281,9 @@ function GetItemWithId(target, id)
 end
 
 function CleanRemovedBankItems(target)
-    for index, item in ipairs(target) do
-        if item.removed == true then
+    --iterate backwards to avoid table index changing nonsense :)
+    for index=#target,1,-1 do
+        if target[index].removed == true then
             table.remove(target, index)
         end
     end
@@ -566,24 +567,26 @@ function GetWandSpells(id)
     if childs ~= nil then
         local last_slot = 0
         for _, child in ipairs(childs) do
-            local item_comp = EntityGetFirstComponentIncludingDisabled(child, "ItemComponent")
-            local item_action_component = EntityGetFirstComponentIncludingDisabled(child, "ItemActionComponent")
-            local is_always_cast = ComponentGetValue2(item_comp, "permanently_attached")
-            local action_id = ComponentGetValue2(item_action_component, "action_id")
-            local slot = ComponentGetValue2(item_comp, "inventory_slot")
-            local empty_slots = slot - last_slot
+            if EntityHasTag(child,"card_action") then
+                local item_comp = EntityGetFirstComponentIncludingDisabled(child, "ItemComponent")
+                local item_action_component = EntityGetFirstComponentIncludingDisabled(child, "ItemActionComponent")
+                local is_always_cast = ComponentGetValue2(item_comp, "permanently_attached")
+                local action_id = ComponentGetValue2(item_action_component, "action_id")
+                local slot = ComponentGetValue2(item_comp, "inventory_slot")
+                local empty_slots = slot - last_slot
 
-            if empty_slots > 0 then
-                for s = 1, empty_slots do
-                    table.insert(deck, {gameId="0"})
+                if empty_slots > 0 then
+                    for s = 1, empty_slots do
+                        table.insert(deck, {gameId="0"})
+                        last_slot = last_slot + 1
+                    end
+                end
+                if (is_always_cast) then
+                    table.insert(always_cast, {gameId=action_id})
+                else
+                    table.insert(deck, {gameId=action_id})
                     last_slot = last_slot + 1
                 end
-            end
-            if (is_always_cast) then
-                table.insert(always_cast, {gameId=action_id})
-            else
-                table.insert(deck, {gameId=action_id})
-                last_slot = last_slot + 1
             end
         end
     end
