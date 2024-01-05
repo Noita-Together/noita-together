@@ -53,6 +53,7 @@ const loginserv = http.createServer(function (req, res) {
     if (rememberUser) {
         keytar.setPassword("Noita Together", preferred_username, refreshToken)
     }
+
     appEvent("USER_EXTRA", extra)
     wsClient({
         display_name: preferred_username,

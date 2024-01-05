@@ -18,6 +18,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@popperjs/core": "^2.6.0",
+        "bufferutil": "^4.0.8",
         "electron": "9.4.4",
         "electron-updater": "5.0.6",
         "fs-extra": "^11.1.1",

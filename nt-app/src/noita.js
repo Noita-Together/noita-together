@@ -1,5 +1,6 @@
 const EventEmitter = require("events")
 const path = require("path")
+const fs = require('fs');
 const ws = require("ws")
 const { v4: uuidv4 } = require("uuid")
 const appEvent = require("./appEvent")
@@ -53,6 +54,11 @@ class NoitaGame extends EventEmitter {
         this.onDeathKick = false
         this.lastX = 0;
         this.lastY = 0;
+        this.loadMostRecentJson('bankSaves').then((result) => {
+            if (result !== null) {
+                this.bank = result;
+            }
+        })
         ipcMain.once("game_listen", () => {
             this.gameListen()
         })
@@ -342,8 +348,97 @@ class NoitaGame extends EventEmitter {
                 }
             }
         }
+        this.writeBankToFile();
     }
-    /**
+    
+    
+
+    loadMostRecentJson(directoryPath) {
+        return new Promise((resolve, reject) => {
+            fs.readdir(directoryPath, (err, files) => {
+                if (err) {
+                    console.error('Error reading directory:', err);
+                    return reject(err);
+                }
+
+                // Filter for JSON files and sort by modification date
+                const jsonFiles = files
+                    .filter(file => file.endsWith('.json'))
+                    .sort((a, b) => {
+                        return fs.statSync(path.join(directoryPath, b)).mtime -
+                            fs.statSync(path.join(directoryPath, a)).mtime;
+                    });
+
+                // If no JSON files, return null
+                if (jsonFiles.length === 0) {
+                    return resolve(null);
+                }
+
+                // Read the most recent JSON file
+                fs.readFile(path.join(directoryPath, jsonFiles[0]), 'utf8', (err, data) => {
+                    if (err) {
+                        console.error('Error reading file:', err);
+                        return reject(err);
+                    }
+                    resolve(JSON.parse(data));
+                });
+            });
+        });
+    }
+
+    cleanDirectory(directoryPath) {
+        try {
+            fs.readdir(directoryPath, (err, files) => {
+                if (err) {
+                    console.error('Error reading directory:', err);
+                    return;
+                }
+
+                // Sort files by creation date
+                files.sort((a, b) => {
+                    try {
+                        return fs.statSync(path.join(directoryPath, a)).birthtime -
+                            fs.statSync(path.join(directoryPath, b)).birthtime;
+                    } catch {
+                        console.log("error while cleaning")
+                    }
+                });
+
+                // If more than 10 files, delete the oldest ones
+                if (files.length > 10) {
+                    const filesToDelete = files.slice(0, files.length - 10);
+                    filesToDelete.forEach(file => {
+                        fs.unlink(path.join(directoryPath, file), err => {
+                            if (err) {
+                                console.error('Error deleting file:', err);
+                            } else {
+                                console.log(`Deleted ${file}`);
+                            }
+                        });
+                    });
+                }
+            });
+        } catch {
+            console.log("error while cleaning")
+        }
+    }
+    writeBankToFile() {
+        const fileName = new Date().toISOString().replace(/:/g, '-') + '.json';
+        const filePath = path.join('.', 'bankSaves', fileName);
+
+        console.log('Writing to: ' + filePath);
+        console.log(JSON.stringify(this.bank));
+
+        fs.writeFile(filePath, JSON.stringify(this.bank), { flag: 'wx' }, (err) => {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log('File written successfully');
+            }
+        });
+        this.cleanDirectory('bankSaves');
+    }
+  	/**
      * @param {import('./gen/messages_pb').ServerPlayerAddItem} message
      */
     sPlayerAddItem(message) {
@@ -357,6 +452,7 @@ class NoitaGame extends EventEmitter {
     }
     sPlayerAddGold(payload) {
         this.bank.gold += payload.amount
+		this.writeBankToFile();
         this.sendEvt("UserAddGold", payload)
     }
     sPlayerTakeGold(payload) {
@@ -367,6 +463,7 @@ class NoitaGame extends EventEmitter {
         else {
             this.emit("HostTakeGold", { userId: payload.userId, amount: payload.amount, success: false })
         }
+        this.writeBankToFile();
     }
     sHostUserTakeGold(payload) {
         if (payload.success) {
@@ -376,6 +473,7 @@ class NoitaGame extends EventEmitter {
         else if (payload.userId == this.user.userId) {
             this.sendEvt("UserTakeGoldFailed", { me: payload.userId == this.user.userId, ...payload })
         }
+        this.writeBankToFile();
     }
     sPlayerTakeItem(payload) {
         if (!this.isHost) { return }
@@ -388,8 +486,10 @@ class NoitaGame extends EventEmitter {
                 }
             }
         }
+        this.writeBankToFile();
         this.emit("HostTake", { userId: payload.userId, id: payload.id, success: false })
     }
+    
     /**
      * @param {import('./gen/messages_pb').ServerPlayerPickup} message
      */
@@ -403,8 +503,10 @@ class NoitaGame extends EventEmitter {
             sysMsg(`${player.name} picked up a ${type}.`)
         }
         if (message.userId == this.user.userId) { return }
+        this.writeBankToFile();
         this.sendEvt("PlayerPickup", {userId: message.userId, [type]: payload})
     }
+    
     sPlayerDeath(payload) {
         const player = payload.userId == this.user.userId ? this.user : this.players[payload.userId]
         if (player) {
