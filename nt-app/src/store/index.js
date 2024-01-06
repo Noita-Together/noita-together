@@ -9,17 +9,18 @@ Vue.use(Vuex)
 const randomColor = (name) => {
     var hash = 0
     for (var i = 0; i < name.length; i++) {
-        hash = ((hash << 5) - hash) + name.charCodeAt(i);
+        hash = (hash << 5) - hash + name.charCodeAt(i)
     }
-    var hue = Math.floor(hash / 100 * 360)
+    var hue = Math.floor((hash / 100) * 360)
     return `hsl(${hue}, 70%, 60%)`
 }
 const firstOfType = (type, ...vs) => (vs || []).find((v) => typeof v === type)
 
-/** @typedef {{ type: 'boolean', value: boolean, id: string, name: string, tooltip: string }} BooleanFlag */
-/** @typedef {{ type: 'string', value: string, id: string, name: string, tooltip: string }} StringFlag */
-/** @typedef {{ type: 'number', value: number, id: string, name: string, tooltip: string }} NumberFlag */
-/** @typedef {BooleanFlag|StringFlag|NumberFlag} VueFlag */
+/** @typedef {{ type: 'boolean', value: boolean, id: string }} BooleanFlag */
+/** @typedef {{ type: 'string', value: string, id: string }} StringFlag */
+/** @typedef {{ type: 'number', value: number, id: string }} NumberFlag */
+/** @typedef {{ type: 'enum', value: string, choices: string[] }} EnumFlag */
+/** @typedef {BooleanFlag|StringFlag|NumberFlag|EnumFlag} VueFlag */
 
 export const gamemodes = {
     0: "Co-op",
@@ -29,37 +30,74 @@ export const gamemodes = {
 /** @typedef {keyof typeof gamemodes} GameMode */
 
 // prettier-ignore
+/** @typedef {{ name: string, tooltip: string }} FlagDescriptor */
+/** @type {Record<number, Record<string, FlagDescriptor|Record<any, FlagDescriptor>>>} */
+export const flagInfo = {
+    0: {
+        "NT_sync_perks":                  { name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them." },
+        "NT_team_perks":                  { name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them." },
+        "NT_sync_steve":                  { name: "Sync Steve", tooltip: "Angers the gods for everyone." },
+        "NT_sync_hearts":                 { name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too." },
+        "NT_sync_orbs":                   { name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+        "NT_sync_shift":                  { name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies." },
+        "NT_send_wands":                  { name: "Send Wands", tooltip: "Allow players to deposit/take wands." },
+        "NT_send_flasks":                 { name: "Send Flasks", tooltip: "Allow players to deposit/take flasks." },
+        "NT_send_gold":                   { name: "Send Gold", tooltip: "Allow players to deposit/take gold." },
+        "NT_send_items":                  { name: "Send Items", tooltip: "Allow players to deposit/take items." },
+        "NT_world_randomize_loot":        { name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
+        "NT_sync_world_seed":             { name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
+        "NT_death_penalty": {
+            "end":           { name: "End run", tooltip: "Run ends for all players when someone dies." },
+            "weak_respawn":  { name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone." },
+            "full_respawn":  { name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties." },
+        },
+        "NT_ondeath_kick":                { name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™. "},
+    },
+    2: {
+        "NT_NEMESIS_ban_ambrosia":        { name: "Ban Ambrosia", tooltip: "will shift ambrosia away." },
+        "NT_NEMESIS_ban_invis":           { name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk." },
+        "NT_NEMESIS_nemesis_abilities":   { name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost." },
+        "NT_sync_steve":                  { name: "Sync Steve", tooltip: "Angers the gods for everyone." },
+        "NT_sync_orbs":                   { name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+        "NT_world_randomize_loot":        { name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
+        "NT_sync_world_seed":             { name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
+        "NT_death_penalty": {
+            "weak_respawn":  { name: "Last noita standing.", tooltip: "Run ends when there's only one player left." },
+        },
+        "NT_ondeath_kick":                { name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™. "}
+    },
+};
+
+// prettier-ignore
 export const defaultFlags = {
     /** @type {VueFlag[]} */
     0: [
-        { type: "boolean", value: false, id: "NT_sync_perks", name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them." },
-        { type: "boolean", value: true,  id: "NT_team_perks", name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them." },
-        { type: "boolean", value: true,  id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
-        { type: "boolean", value: true,  id: "NT_sync_hearts", name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too." },
-        { type: "boolean", value: true,  id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
-        { type: "boolean", value: true,  id: "NT_sync_shift", name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies." },
-        { type: "boolean", value: true,  id: "NT_send_wands", name: "Send Wands", tooltip: "Allow players to deposit/take wands." },
-        { type: "boolean", value: true,  id: "NT_send_flasks", name: "Send Flasks", tooltip: "Allow players to deposit/take flasks." },
-        { type: "boolean", value: true,  id: "NT_send_gold", name: "Send Gold", tooltip: "Allow players to deposit/take gold." },
-        { type: "boolean", value: true,  id: "NT_send_items", name: "Send Items", tooltip: "Allow players to deposit/take items." },
-        { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
-        { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
-        { type: "boolean", value: true,  id: "NT_death_penalty_end", name: "End run", tooltip: "Run ends for all players when someone dies." },
-        { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Respawn Penalty", tooltip: "Player respawns and everyone takes a % drop on their max hp, once it goes below certain threshold on the weakest player the run ends for everyone." },
-        { type: "boolean", value: true,  id: "NT_death_penalty_full_respawn", name: "Respawn", tooltip: "Player will respawn on their last checkpoint and no penalties." },
-        { type: "boolean", value: false, id: "NT_ondeath_kick", name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™. "}
+        { id: "NT_sync_perks",                 type: "boolean", value: false, },
+        { id: "NT_team_perks",                 type: "boolean", value: true,  },
+        { id: "NT_sync_steve",                 type: "boolean", value: true,  },
+        { id: "NT_sync_hearts",                type: "boolean", value: true,  },
+        { id: "NT_sync_orbs",                  type: "boolean", value: true,  },
+        { id: "NT_sync_shift",                 type: "boolean", value: true,  },
+        { id: "NT_send_wands",                 type: "boolean", value: true,  },
+        { id: "NT_send_flasks",                type: "boolean", value: true,  },
+        { id: "NT_send_gold",                  type: "boolean", value: true,  },
+        { id: "NT_send_items",                 type: "boolean", value: true,  },
+        { id: "NT_world_randomize_loot",       type: "boolean", value: true,  },
+        { id: "NT_sync_world_seed",            type: "number" , value: 0,     },
+        { id: "NT_death_penalty",              type: "enum",    value: 'end', choices: ['end', 'weak_respawn', 'full_respawn'], },
+        { id: "NT_ondeath_kick",               type: "boolean", value: false, },
     ],
     /** @type {VueFlag[]} */
     2: [
-        { type: "boolean", value: true,  id: "NT_NEMESIS_ban_ambrosia", name: "Ban Ambrosia", tooltip: "will shift ambrosia away." },
-        { type: "boolean", value: true,  id: "NT_NEMESIS_ban_invis", name: "Ban Invisibility", tooltip: "will shift invisibility away and remove the perk." },
-        { type: "boolean", value: true,  id: "NT_NEMESIS_nemesis_abilities", name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost." },
-        { type: "boolean", value: false, id: "NT_sync_steve", name: "Sync Steve", tooltip: "Angers the gods for everyone." },
-        { type: "boolean", value: false, id: "NT_sync_orbs", name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
-        { type: "boolean", value: true,  id: "NT_world_randomize_loot", name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
-        { type: "number" , value: 0,     id: "NT_sync_world_seed", name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
-        { type: "boolean", value: true,  id: "NT_death_penalty_weak_respawn", name: "Last noita standing.", tooltip: "Run ends when there's only one player left." },
-        { type: "boolean", value: true,  id: "NT_ondeath_kick", name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™. "}
+        { id: "NT_NEMESIS_ban_ambrosia",       type: "boolean", value: true,  },
+        { id: "NT_NEMESIS_ban_invis",          type: "boolean", value: true,  },
+        { id: "NT_NEMESIS_nemesis_abilities",  type: "boolean", value: true,  },
+        { id: "NT_sync_steve",                 type: "boolean", value: false, },
+        { id: "NT_sync_orbs",                  type: "boolean", value: false, },
+        { id: "NT_world_randomize_loot",       type: "boolean", value: true,  },
+        { id: "NT_sync_world_seed",            type: "number" , value: 0,     },
+        { id: "NT_death_penalty",              type: "boolean", value: 'weak_respawn', choices: ['weak_respawn'], },
+        { id: "NT_ondeath_kick",               type: "boolean", value: true,  }
     ]
 };
 
@@ -85,6 +123,13 @@ export const updateFlagsFromProto = (gamemode, current, update) => {
                 // absence indicates false. in the future, we should
                 // send explicit true/false, and leave undefined for "unchanged"
                 vueFlag.value = !!found
+                break
+            case "enum":
+                var valid = spec.choices.find(
+                    (choice) => choice === found && found.strVal
+                )
+                // we might receive an enum value that isn't a valid option - if so, ignore it
+                vueFlag.value = firstOfType("string", valid, prev.value)
                 break
             case "string":
                 vueFlag.value = firstOfType("string", found.strVal, prev.value)
@@ -121,10 +166,16 @@ export const updateFlagsFromUI = (gamemode, current, update) => {
 
         switch (spec.type) {
             case "boolean":
-                // presence of a boolean flag currently indicates true,
-                // absence indicates false. in the future, we should
-                // send explicit true/false, and leave undefined for "unchanged"
-                vueFlag.value = !!found
+                vueFlag.value = firstOfType("boolean", found.value, prev.value)
+                break
+            case "enum":
+                // this should be unable to be incorrect, but we'll prevent sending erroneous data
+                // by being "forward" about our error-checking, in case of a mistake
+                var valid =
+                    spec.choices.indexOf(found.value) > -1
+                        ? found.value
+                        : undefined
+                vueFlag.value = firstOfType("string", valid, prev.value)
                 break
             case "string":
                 vueFlag.value = firstOfType("string", found.value, prev.value)
@@ -160,6 +211,7 @@ export const flagsToProto = (gamemode, current) => {
                     // send explicit true/false, and leave undefined for "unchanged"
                     if (!found.value) return acc
                     break
+                case "enum":
                 case "string":
                     flag.strVal = found.value
                     break
@@ -305,7 +357,7 @@ export default new Vuex.Store({
             name: "",
             id: 0,
             extra: 0,
-            color: "",
+            color: ""
         },
         savedUser: false,
         savedUserName: "",
@@ -452,7 +504,7 @@ export default new Vuex.Store({
             state.roomFlags = updateFlagsFromUI(
                 state.room.gamemode,
                 state.roomFlags,
-                payload.flags
+                payload
             )
         },
         resetRoom: (state) => {
@@ -510,16 +562,23 @@ export default new Vuex.Store({
             )
             let userColor = randomColor(payload.name)
             userColor = (found && found.color) || userColor
-            let userRegex = new RegExp(`(@${state.user.name})(?= |$)`,'i')
-            let messageClass = userRegex.test(payload.message) ? "mention" : "chat-entry"
+            let userRegex = new RegExp(`(@${state.user.name})(?= |$)`, "i")
+            let messageClass = userRegex.test(payload.message)
+                ? "mention"
+                : "chat-entry"
             console.log(payload.name)
-            let messageSpans = payload.message.split(userRegex).filter(String).map(msg => ({
-                message: msg,
-                style: {
-                    color: userRegex.test(msg) ? randomColor(state.user.name) : "rgba(255, 255, 255, 0.8)",
-                    fontWeight: userRegex.test(msg) ? 600 : 400,
-                },
-            }))
+            let messageSpans = payload.message
+                .split(userRegex)
+                .filter(String)
+                .map((msg) => ({
+                    message: msg,
+                    style: {
+                        color: userRegex.test(msg)
+                            ? randomColor(state.user.name)
+                            : "rgba(255, 255, 255, 0.8)",
+                        fontWeight: userRegex.test(msg) ? 600 : 400
+                    }
+                }))
             if (payload.userId === "-1") {
                 userColor = "#e69569"
             }
@@ -530,7 +589,7 @@ export default new Vuex.Store({
                 name: payload.name.trim(),
                 class: messageClass,
                 spans: messageSpans,
-                color: userColor,
+                color: userColor
             })
             if (state.roomChat.length > 250) {
                 state.roomChat.shift()
