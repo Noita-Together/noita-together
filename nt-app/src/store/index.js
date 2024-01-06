@@ -126,7 +126,7 @@ export const updateFlagsFromProto = (gamemode, current, update) => {
                 break
             case "enum":
                 var valid = spec.choices.find(
-                    (choice) => choice === found && found.strVal
+                    (choice) => choice === (found && found.strVal)
                 )
                 // we might receive an enum value that isn't a valid option - if so, ignore it
                 vueFlag.value = firstOfType("string", valid, prev.value)
@@ -171,10 +171,9 @@ export const updateFlagsFromUI = (gamemode, current, update) => {
             case "enum":
                 // this should be unable to be incorrect, but we'll prevent sending erroneous data
                 // by being "forward" about our error-checking, in case of a mistake
-                var valid =
-                    spec.choices.indexOf(found.value) > -1
-                        ? found.value
-                        : undefined
+                var valid = spec.choices.find(
+                    (choice) => choice === (found && found.value)
+                )
                 vueFlag.value = firstOfType("string", valid, prev.value)
                 break
             case "string":
