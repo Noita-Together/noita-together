@@ -201,37 +201,41 @@ class NoitaGame extends EventEmitter {
         }
     }
 
-    /** @param {NT.ServerRoomFlagsUpdated.GameFlag[]} data */
+    /** @param {NT.ServerRoomFlagsUpdated.GameFlag[]} toGameData */
     updateFlags(data) {
+        // don't mutate the input!
+        const toGameData = data.map((v) => ({ ...v }))
+
         // to avoid making changes to how the mod deals with flags, convert our pseudo-enum
         // ("NT_death_penalty", "end") into a boolean flag ("NT_death_penalty_end") before
         // sending to the mod
-        const deathPenalty = data.findIndex(
+        const deathPenalty = toGameData.findIndex(
             (flag) => flag.flag === "NT_death_penalty"
         )
         if (deathPenalty > -1) {
             /** @type {NT.ServerRoomFlagsUpdated.GameFlag} */
-            const flag = data[deathPenalty]
+            const flag = toGameData[deathPenalty]
             if (flag.strVal) {
-                data[deathPenalty] = { flag: `${flag.flag}_${flag.strVal}` }
+                toGameData[deathPenalty] = {
+                    flag: `${flag.flag}_${flag.strVal}`
+                }
             }
         }
 
-        const onDeathKick = data.some(
+        const onDeathKick = toGameData.some(
             (entry) => entry.flag == "NT_ondeath_kick"
         )
         if (this.isHost) {
             this.onDeathKick = onDeathKick
-            data.push({ flag: "NT_is_host" })
+            toGameData.push({ flag: "NT_is_host" })
         }
 
-        data.push({ flag: "NT_GAMEMODE_CO_OP" }) //hardcode this for now :) <3
+        toGameData.push({ flag: "NT_GAMEMODE_CO_OP" }) //hardcode this for now :) <3
 
         // store a copy in case the game asks for it
-        this.gameFlags = data.map((v) =>
+        this.gameFlags = toGameData.map((v) =>
             NT.ServerRoomFlagsUpdated.GameFlag.create(v)
         )
-        console.log(this.gameFlags)
         this.sendEvt("UpdateFlags", this.gameFlags)
     }
 
