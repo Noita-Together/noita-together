@@ -3,39 +3,56 @@
         <h1 slot="header">Game Options</h1>
         <template slot="body" class="flags-body">
             <h2>
-                Death Penalty
+                <span>Death Penalty</span>
                 <vTooltip>
-                    <span>{{ deathTooltip }}</span>
+                    <span>{{ tooltip("NT_death_penalty", true) }}</span>
                 </vTooltip>
             </h2>
-            <select class="slot-selector" :disabled="!isHost" v-model="deathFlag">
-                <option v-for="option in payload.death" :key="option.id">{{ option.name }}</option>
+            <select
+                class="slot-selector"
+                :disabled="!isHost"
+                v-model="tempFlags.NT_death_penalty.value"
+            >
+                <option
+                    v-for="(value, key) in deathFlags"
+                    :key="key"
+                    :value="key"
+                >
+                    {{ value.name }}
+                </option>
             </select>
 
             <h2>Run Options</h2>
             <div class="switches">
                 <vSwitch
-                    v-for="entry in payload.game"
+                    v-for="entry in booleanFlags"
                     :key="entry.id"
-                    v-model="payload.game[entry.id].value"
+                    v-model="tempFlags[entry.id].value"
                     :disabled="!isHost"
                 >
-                    <span>{{ entry.name }}</span>
+                    <span>{{ flagInfo(entry.id).name }}</span>
                     <vTooltip>
-                        <span>{{ entry.tooltip }}</span>
+                        <span>{{ tooltip(entry.id, false) }}</span>
                     </vTooltip>
                 </vSwitch>
             </div>
 
             <h2>
-                World seed
+                <span>World seed</span>
                 <vTooltip>
-                    <span>{{ payload.world.NT_sync_world_seed.tooltip }}</span>
+                    <span>{{ tooltip("NT_sync_world_seed", false) }}</span>
                 </vTooltip>
             </h2>
             <div class="world-seed">
-                <vInput v-model="payload.world.NT_sync_world_seed.value" ref="seedInput"></vInput>
-                <vButton @click="randomizeSeed">Random</vButton>
+                <vInput
+                    :disabled="!isHost"
+                    type="number"
+                    v-model.number="tempFlags.NT_sync_world_seed.value"
+                    ref="seedInput"
+                ></vInput>
+                <vButton :disabled="!isHost" @click="randomizeSeed"
+                    >Random</vButton
+                >
             </div>
         </template>
         <div slot="footer" class="centered">
@@ -46,110 +63,108 @@
 </template>
 
 <script>
-import vSwitch from "../components/vSwitch.vue";
-import vModal from "../components/vModal.vue";
-import vButton from "../components/vButton.vue";
-import vTooltip from "../components/vTooltip.vue";
-import vInput from "../components/vInput.vue";
-export default {//braincells where'd ya go
-    name: "vRoomPassword",
+import vSwitch from "../components/vSwitch.vue"
+import vModal from "../components/vModal.vue"
+import vButton from "../components/vButton.vue"
+import vTooltip from "../components/vTooltip.vue"
+import vInput from "../components/vInput.vue"
+import { flagInfo } from "../store/index.js"
+
+export default {
+    //braincells where'd ya go
+    name: "vRoomFlags",
     components: {
         vButton,
         vModal,
         vInput,
         vSwitch,
-        vTooltip,
+        vTooltip
     },
     beforeMount() {
-        this.payload = this.flags;
-        const deathFlag = this.storeFlags.find(v => v.id.startsWith("NT_death_penalty") && v.value)
-        console.log({ f: this.storeFlags })
-        this.deathFlag = deathFlag.name
+        // create a "working copy" of the flags - so that we can cancel without
+        // affecting the store
+        const obj = {}
+        for (const flag of this.$store.getters.flags) {
+            obj[flag.id] = Object.assign({}, flag)
+        }
+        this.tempFlags = obj
+        this.gamemode = this.$store.getters.roomGamemode
     },
     data() {
         return {
-            payload: null,
-            deathFlag: ""
-        };
+            gamemode: null,
+            tempFlags: null
+        }
     },
     computed: {
         isHost() {
-            return this.$store.getters.isHost;
+            return this.$store.getters.isHost
         },
-        storeFlags() {
-            return this.$store.getters.flags
+        booleanFlags() {
+            return Object.values(this.tempFlags).filter(
+                (v) => v.type === "boolean"
+            )
         },
-        flags() {
-            const flags = this.storeFlags;
-            const game = {};
-            const world = {};
-            const death = {};
-            for (const flag of flags) {
-                if (flag.id.startsWith("NT_death_penalty")) {
-                    death[flag.id] = flag;
-                } else if (flag.id == "NT_sync_world_seed") {
-                    world[flag.id] = flag;
-                } else {
-                    game[flag.id] = flag;
-                }
-            }
-            return { game, death, world };
-        },
-        deathTooltip() {
-            const flags = this.flags.death;
-            const flag = this.deathFlag;
-            let tooltip = "";
-            for (const key in flags) {
-                if (flags[key].name == flag) {
-                    tooltip = flags[key].tooltip;
-                    break;
-                }
-            }
-            return tooltip;
-        },
+        deathFlags() {
+            return flagInfo[this.gamemode].NT_death_penalty
+        }
     },
     methods: {
-        //the whole flags things is a massive mess gotta rethink when braincells grow back
+        flagInfo(id, val) {
+            const gamemode = this.gamemode
+            if (!Object.prototype.hasOwnProperty.call(flagInfo, gamemode)) {
+                throw new Error(
+                    "Invalid flagInfo call: gamemode " +
+                        gamemode +
+                        " not present"
+                )
+            }
+
+            /** @type {import('../store/index.js').VueFlag|undefined} */
+            const spec = this.tempFlags[id]
+            if (!spec) {
+                throw new Error(
+                    "Invalid flagInfo call: id " + id + " not present"
+                )
+            }
+
+            switch (spec.type) {
+                case "string":
+                case "number":
+                case "boolean":
+                    return flagInfo[gamemode][id]
+                case "enum":
+                    if (spec.choices.indexOf(val) === -1) {
+                        throw new Error(
+                            "Invalid flagInfo call: enum value " +
+                                val +
+                                " not present"
+                        )
+                    }
+                    return flagInfo[gamemode][id][val]
+            }
+        },
+        tooltip(id, isEnum) {
+            if (!isEnum) {
+                return this.flagInfo(id).tooltip
+            }
+            const enumValue = (this.tempFlags[id] || { value: null }).value
+            return this.flagInfo(id, enumValue).tooltip
+        },
         applyFlags() {
-            const flags = this.flags;
-            const payload = [];
-            //console.log({a: flags.death})
-            for (const flag in flags.death) {
-                if (flags.death[flag].name == this.deathFlag) {
-                    flags.death[flag].value = true
-                    payload.push({ flag: flags.death[flag].id });
-                }
-                else {
-                    flags.death[flag].value = false
-                }
-            }
-            for (const flag in flags.game) {
-                if (
-                    typeof flags.game[flag].value == "boolean" &&
-                    flags.game[flag].value
-                ) {
-                    payload.push({ flag: flags.game[flag].id });
-                }
-            }
-            for (const flag in flags.world) {
-                let val = Number(flags.world[flag].value)
-                if (isNaN(val)) { val = 0 }
-                payload.push({ flag: flags.world[flag].id, value: Math.min(val, 4294967295) })
-            }
-            //console.log({ flags: payload })
-            this.$emit("applyFlags", { flags: payload });
+            this.$emit("applyFlags", Object.values(this.tempFlags))
         },
         randomizeSeed() {
             const seed = Math.floor(Math.random() * 4294967295) + 1
             // not an amazing way to do it
             this.$refs.seedInput.$refs.input.value = seed
-            this.$refs.seedInput.$refs.input.dispatchEvent(new Event('input'))
+            this.$refs.seedInput.$refs.input.dispatchEvent(new Event("input"))
         },
         close() {
-            this.$emit("close");
-        },
-    },
-};
+            this.$emit("close")
+        }
+    }
+}
 </script>
 
 <style>
@@ -178,5 +193,8 @@ export default {//braincells where'd ya go
     margin-top: auto;
     padding-bottom: 0;
     margin-right: 0;
+}
+span + .tooltip-wrapper {
+    margin-left: 0.5em;
 }
 </style>

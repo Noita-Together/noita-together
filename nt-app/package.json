@@ -1,6 +1,6 @@
 {
     "name": "nt-app",
-    "version": "0.10.7",
+    "version": "0.10.8",
     "author": "Noita-Together",
     "description": "Allows you to play noita with friends...",
     "repository": "https://github.com/Noita-Together/noita-together",
@@ -24,7 +24,6 @@
         "got": "^11.8.1",
         "jsonwebtoken": "^9.0.2",
         "keytar": "^7.2.0",
-        "protobufjs": "^6.11.4",
         "uuid": "^9.0.0",
         "validator": "^13.5.1",
         "vue": "^2.6.11",
