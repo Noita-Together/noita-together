@@ -1,4 +1,4 @@
-import { NT } from "./messages";
+import { NT } from '@noita-together/nt-message';
 
 /**
  * @throws {Error} if the message is not a valid envelope
@@ -22,10 +22,7 @@ export function encode(obj: NT.IEnvelope) {
   }
 }
 
-export function encodeGameMsg<T extends NonNullable<NT.GameAction["action"]>>(
-  type: T,
-  data: NT.IGameAction[T]
-) {
+export function encodeGameMsg<T extends NonNullable<NT.GameAction['action']>>(type: T, data: NT.IGameAction[T]) {
   const payload = {
     gameAction: {
       [type]: data,
@@ -34,10 +31,7 @@ export function encodeGameMsg<T extends NonNullable<NT.GameAction["action"]>>(
   return encode(payload);
 }
 
-export function encodeLobbyMsg<T extends NonNullable<NT.LobbyAction["action"]>>(
-  type: T,
-  data: NT.ILobbyAction[T]
-) {
+export function encodeLobbyMsg<T extends NonNullable<NT.LobbyAction['action']>>(type: T, data: NT.ILobbyAction[T]) {
   const payload = {
     lobbyAction: {
       [type]: data,
@@ -45,10 +39,3 @@ export function encodeLobbyMsg<T extends NonNullable<NT.LobbyAction["action"]>>(
   };
   return encode(payload);
 }
-
-export default {
-  encode,
-  decode,
-  encodeGameMsg,
-  encodeLobbyMsg,
-};

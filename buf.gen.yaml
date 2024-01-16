@@ -1,7 +1,0 @@
-version: v1
-plugins:
-  - plugin: es
-    opt: target=ts
-    out: nt-web-app/websocket/gen
-  - plugin: es
-    out: nt-app/src/gen

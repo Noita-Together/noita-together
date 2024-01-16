@@ -17,23 +17,14 @@
     "server-init-db": "yarn workspace nt-web-app init-db",
     "serverDev": "yarn workspace nt-web-app serveDev",
     "buildServer": "yarn workspace nt-web-app build",
-    "buildClient": "yarn workspace nt-app electron:build",
-    "regenerate-proto-experimental": "pbjs -t static-module --ts --no-comments --no-delimited --out websocket/messages.ts websocket/messages.proto",
-    "regenerate-proto-server": "pbjs -t static-module --wrap es6 --no-comments --no-delimited --out nt-web-app/websocket/messages.js protobuf/messages.proto && pbjs -t static-module --no-delimited protobuf/messages.proto | pbts -o nt-web-app/websocket/messages.d.ts -",
-    "regenerate-proto-client": "node copy.js ./protobuf/messages.proto ./nt-app/public/messages.proto",
-    "build-proto": "yarn regenerate-proto-server && yarn regenerate-proto-client",
-    "buf-proto": "yarn buf generate protobuf"
+    "buildClient": "yarn workspace nt-app electron:build"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "^1.4.1",
-    "axios": "^1.4.0",
-    "protobufjs": "^6.10.2"
+    "@noita-together/nt-message": "^0.0.1",
+    "axios": "^1.4.0"
   },
   "devDependencies": {
-    "@bufbuild/buf": "^1.27.2",
-    "@bufbuild/protoc-gen-es": "^1.4.1",
-    "pbjs": "^0.0.14",
-    "prettier": "^2.8.8",
+    "prettier": "latest",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0"
   }
