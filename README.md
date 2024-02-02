@@ -32,7 +32,7 @@ In addition, the auth server requires a [Twitch app](https://dev.twitch.tv/conso
 - Create two random passwords to be used for the JWT secrets (dubbed access and refresh). Note them as well.
 - Set up a postgres database. You can use [the official Docker postgres image](https://hub.docker.com/_/postgres) to launch a server easily. Note down the connection information (host, port, username, password, database name)
 - Install [nvm](https://github.com/nvm-sh/nvm) to more easily switch Node versions
-- Clone this repository. If you intend to make changes, fork this repository and clone your fork instead. Install dependencies (`nvm install 14; nvm use 14; yarn`)
+- Clone this repository. If you intend to make changes, fork this repository and clone your fork instead. Install dependencies (`nvm install 16.20.0; nvm use 16.20.0; yarn`)
 - Clone the [lobby-server repository](https://github.com/Noita-Together/lobby-server). If you intend to make changes, fork that repository and clone your fork instead. Install dependencies (`nvm install 21; nvm use 21; npm install`)
 - Note that this repository uses `yarn` (`npm install -g yarn`), while the other repositories use `npm`.
 - If you intend to make changes to the protobuf messages, you'll also need to fork and clone the [nt-message](https://github.com/Noita-Together/nt-message) repository. You can use npm link / yarn link so that the dependent projects receive your changes (don't forget to build!)
@@ -205,7 +205,7 @@ VUE_APP_NT_LOGIN_URL=http://localhost:3000/api/auth/login
 VUE_APP_LOBBY_SERVER_WS_URL_BASE=ws://localhost:4444/ws
 ```
 
-Be sure you're using Node.JS version 14: `nvm use 14`
+Be sure you're using Node.JS version 16.20.0: `nvm use 16.20.0`
 
 To start the companion app in dev mode, run `yarn workspace nt-app next dev`
 
