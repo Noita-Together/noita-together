@@ -1,16 +1,19 @@
-
 # Noita Together
+
 Play alone together
 [click here to downloads](https://github.com/Noita-Together/noita-together/releases)
 
 ## What is Noita Together?
+
 Noita Together is an attempt to bring a slight multiplayer aspect to the game, think of it more like everyone is in different dimensions yet you can still see other players and somewhat interact with each other you can not directly affect other player's worlds
 
 it consists of an app made with electron for the twitch authentication and making/joining rooms and some other things and a lua mod that communicates with the app in-game
 mod uses [pollws](https://github.com/probable-basilisk/pollws/) made by probable-basilisk (fakepyry / pyry)
 
 ### **How to install [(click here)](https://github.com/Noita-Together/noita-together/wiki/Installation)**
+
 ### **How to use [(click here)](https://github.com/Noita-Together/noita-together/wiki/Usage)**
+
 ### **FAQ [(click here)](https://github.com/Noita-Together/noita-together/wiki/FAQ)**
 
 ## Contributing
@@ -18,6 +21,7 @@ mod uses [pollws](https://github.com/probable-basilisk/pollws/) made by probable
 ### Running locally for development
 
 Noita Together consists of a number of cooperating pieces, which currently live in various repositories:
+
 - The mod itself [this repository](/noita_mod)
 - The companion app [this repository](/nt-app)
 - The website / auth server [this repository](/nt-web-app)
@@ -38,8 +42,6 @@ In addition, the auth server requires a [Twitch app](https://dev.twitch.tv/conso
 - If you intend to make changes to the protobuf messages, you'll also need to fork and clone the [nt-message](https://github.com/Noita-Together/nt-message) repository. You can use npm link / yarn link so that the dependent projects receive your changes (don't forget to build!)
 
 #### Configure the auth server
-
-Create an empty file `noita-together/nt-web-app/.uaccess`
 
 Create the file `noita-together/nt-web-app/.env` with the following contents. (Note: Lines beginning with `#` are comments and can be removed.)
 
@@ -168,11 +170,13 @@ Create a Docker network named `nt`: `docker network create nt`
 Create the following directories and files:
 
 `lobby-server/deploy/ntbg/dev/active`
+
 ```
 blue
 ```
 
 `lobby-server/deploy/ntbg/dev/blue`
+
 ```
 BACKEND_PORT=4433
 BACKEND_HOSTNAME=example.com
@@ -180,6 +184,7 @@ BACKEND_IP=127.0.0.1
 ```
 
 `lobby-server/deploy/ntbg/dev/green`
+
 ```
 BACKEND_PORT=4434
 BACKEND_HOSTNAME=example.com
@@ -187,6 +192,7 @@ BACKEND_IP=127.0.0.1
 ```
 
 `lobby-server/deploy/ntbg/dev/config`
+
 ```
 ZONE_ID=na
 RULESET_ID=na
@@ -251,4 +257,3 @@ Location: noita_mod/core
 #### Nemesis
 
 Location: noita_mod/nemesis
-
