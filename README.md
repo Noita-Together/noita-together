@@ -209,7 +209,7 @@ VUE_APP_LOBBY_SERVER_WS_URL_BASE=ws://localhost:4444/ws
 
 Be sure you're using Node.JS version 16.20.0: `nvm use 16.20.0`
 
-To start the companion app in dev mode, run `yarn workspace nt-app next dev`
+To start the companion app in dev mode, run `yarn client`
 
 To build an installer for release, run `yarn buildClient`, and look for the output in `noita-together/dist_electron`
 
