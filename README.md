@@ -39,6 +39,8 @@ In addition, the auth server requires a [Twitch app](https://dev.twitch.tv/conso
 
 #### Configure the auth server
 
+Create an empty file `noita-together/nt-web-app/.uaccess`
+
 Create the file `noita-together/nt-web-app/.env` with the following contents. (Note: Lines beginning with `#` are comments and can be removed.)
 
 ```sh
