@@ -153,6 +153,8 @@ To launch the server locally in dev mode, run `./deploy/dev.sh`
 
 ##### Docker blue/green env config:
 
+Create a Docker network named `nt`: `docker network create nt`
+
 Create the following directories and files:
 
 `lobby-server/deploy/ntbg/dev/active`
