@@ -6,7 +6,7 @@ import {PendingConnection} from "../entity/PendingConnection";
 
 const userDataSource = new DataSource({
     database: process.env.DATABASE_NAME,
-    ssl: { ca: process.env.DATABASE_CA_CERT },
+    ssl: (!process.env.DATABASE_CA_CERT ? false : { ca: process.env.DATABASE_CA_CERT }),
     type: 'postgres',
     host: process.env.DATABASE_HOST,
     password: process.env.DATABASE_SECRET,

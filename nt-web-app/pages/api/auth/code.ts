@@ -85,12 +85,17 @@ export default async function handler(
         else{
             const accessToken = createAccessToken(userData)
             const refreshToken = createRefreshToken(userData)
-            const uaccessDataForUser = fs.readFileSync('.uaccess', 'utf-8')
-                .replace(/[\n\r]/g, '\n').split('\n')
-                .filter(a=>user.display_name === a || `${user.display_name}:dev` === a)
             let e = undefined
-            if(uaccessDataForUser.length === 1){
-                e = uaccessDataForUser[0].endsWith(':dev') ? 3 : 2;
+            try {
+                const uaccessDataForUser = fs.readFileSync('.uaccess', 'utf-8')
+                    .replace(/[\n\r]/g, '\n').split('\n')
+                    .filter(a=>user.display_name === a || `${user.display_name}:dev` === a)
+                if(uaccessDataForUser.length === 1){
+                    e = uaccessDataForUser[0].endsWith(':dev') ? 3 : 2;
+                }
+            } catch (e: any) {
+                // if file doesn't exist, treat as empty
+                if (e?.code !== 'ENOENT') throw e;
             }
             console.log(`Logged in user has uacess of ${e}`)
             const url = `${NOITA_APP_REDIRECT_URI}/?token=${accessToken}&refresh=${refreshToken}&expires_in=28800${e ? `&e=${e}` : ''}`;
