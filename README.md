@@ -28,7 +28,7 @@ In addition, the auth server requires a [Twitch app](https://dev.twitch.tv/conso
 
 #### Gather requirements
 
-- Create a Twitch app to use for logging in. Note down the Client ID and the Client Secret. For redirect URI, use `http://localhost:3000/api/auth/login`. If you have a domain you'd like to use, add that too. Non-localhost redirect URIs must be `https`.
+- Create a Twitch app to use for logging in. Note down the Client ID and the Client Secret. For redirect URI, use `http://localhost:3000/api/auth/code`. If you have a domain you'd like to use, add that too. Non-localhost redirect URIs must be `https`.
 - Create two random passwords to be used for the JWT secrets (dubbed access and refresh). Note them as well.
 - Set up a postgres database. You can use [the official Docker postgres image](https://hub.docker.com/_/postgres) to launch a server easily. Note down the connection information (host, port, username, password, database name)
 - Install [nvm](https://github.com/nvm-sh/nvm) to more easily switch Node versions
