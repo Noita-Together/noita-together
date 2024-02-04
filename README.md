@@ -60,6 +60,14 @@ WEBSERVER_AUTH_URL=http://localhost:3000/api/auth/login
 # Hardcoded in the companion app, use as-is
 NOITA_APP_REDIRECT_URI=http://localhost:25669
 
+# This URL will depend on how you run and configure the lobby server (below)
+# use https if you launch the lobby server with a certificate, http if you don't.
+# use port 4444 if you run the lobby server directly (ts-node or similar), use
+# port 4433 if you use docker and the default blue/green settings and run the
+# "blue" configuration. This only affects the "Server Status" check in the
+# auth server's landing page.
+NEXT_PUBLIC_LOBBY_SERVER_API_URL_BASE=http://localhost:4444/api
+
 DEV_MODE=false
 
 # Database credentials
