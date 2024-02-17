@@ -43,7 +43,7 @@ export default {
   components: { vAppLogo },
   data() {
     return {
-      loginUrl: process.env.VUE_APP_NT_LOGIN_URL,
+      loginUrl: process.env.VUE_APP_NT_LOGIN_URL ? process.env.VUE_APP_NT_LOGIN_URL : `${process.env.VUE_APP_HOSTNAME}/auth/login`,
       remember: false,
       clicked: false
     }
