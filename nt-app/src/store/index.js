@@ -256,7 +256,7 @@ const ipcPlugin = (ipc) => {
 
         ipc.on("CONNECTION_LOST", () => {
             store.dispatch("errDialog", {
-                title: "Disconnected from server",
+                title: "Disconnected from server, attempting to reconnect",
                 body: "",
                 canClose: false
             })

@@ -11315,6 +11315,7 @@ __metadata:
   dependencies:
     "@noita-together/nt-message": ^0.0.1
     axios: ^1.4.0
+    debug: ^4.3.4
     prettier: latest
     ts-node: ^10.9.1
     ts-node-dev: ^2.0.0
@@ -11453,6 +11454,8 @@ __metadata:
     got: ^11.8.1
     jsonwebtoken: ^9.0.2
     keytar: ^7.2.0
+    simple-backoff: ^1.1.0
+    tiny-typed-emitter: ^2.1.0
     uuid: ^9.0.0
     validator: ^13.5.1
     vue: ^2.6.11
@@ -14230,6 +14233,13 @@ prettier@latest:
   languageName: node
   linkType: hard
 
+"simple-backoff@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "simple-backoff@npm:1.1.0"
+  checksum: d256acb611d42dfb135f8391e1029feeb812a25da87d28ff7710f4a419389f6351509e21193b292c1ed718ff0c7e9fd406d5ed9e978b5c15117822e307a63f80
+  languageName: node
+  linkType: hard
+
 "simple-concat@npm:^1.0.0":
   version: 1.0.1
   resolution: "simple-concat@npm:1.0.1"
@@ -15291,6 +15301,13 @@ prettier@latest:
   version: 0.3.0
   resolution: "timsort@npm:0.3.0"
   checksum: 1a66cb897dacabd7dd7c91b7e2301498ca9e224de2edb9e42d19f5b17c4b6dc62a8d4cbc64f28be82aaf1541cb5a78ab49aa818f42a2989ebe049a64af731e2a
+  languageName: node
+  linkType: hard
+
+"tiny-typed-emitter@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "tiny-typed-emitter@npm:2.1.0"
+  checksum: 709bca410054e08df4dc29d5ea0916328bb2900d60245c6a743068ea223887d9fd2c945b6070eb20336275a557a36c2808e5c87d2ed4b60633458632be4a3e10
   languageName: node
   linkType: hard
 

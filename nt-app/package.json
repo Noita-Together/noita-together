@@ -24,6 +24,8 @@
         "got": "^11.8.1",
         "jsonwebtoken": "^9.0.2",
         "keytar": "^7.2.0",
+        "simple-backoff": "^1.1.0",
+        "tiny-typed-emitter": "^2.1.0",
         "uuid": "^9.0.0",
         "validator": "^13.5.1",
         "vue": "^2.6.11",

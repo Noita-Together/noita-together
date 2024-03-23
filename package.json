@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "@noita-together/nt-message": "^0.0.1",
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "debug": "^4.3.4"
   },
   "devDependencies": {
     "prettier": "latest",

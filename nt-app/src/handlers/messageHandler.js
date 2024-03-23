@@ -14,7 +14,7 @@ function decode(buf) {
 
 /**
  * @param {NT.Envelope} obj
- * @returns
+ * @returns {Uint8Array}
  */
 function encode(obj) {
     try {

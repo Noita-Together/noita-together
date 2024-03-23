@@ -1,49 +1,30 @@
 const { v4: uuidv4 } = require("uuid")
 const { ipcMain } = require("electron")
-const ws = require("ws")
-const {
-    encodeLobbyMsg,
-    encodeGameMsg,
-    decode
-} = require("./handlers/messageHandler")
 const appEvent = require("./appEvent")
 const noita = require("./noita")
 const { NT } = require("@noita-together/nt-message")
 const { encodeFrames } = require("./frameCoder")
+const { NTLobbyWebsocket } = require("./ws-ntlobby")
+const Debug = require("debug")
+const debug = Debug("nt:ws")
 
-const { host, sni } = (() => {
-    const prefix =
-        process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE ||
-        `wss://` + (process.env.VUE_APP_HOSTNAME_WS || "noitatogether.com/ws/")
-    const host = prefix.endsWith("/") ? prefix : `${prefix}/`
-    const url = new URL(host)
-    const sni = url.hostname
-
-    return { host, sni }
-})()
-
-const print = true
 module.exports = (data) => {
     const user = { userId: data.id, name: data.display_name }
     noita.setUser({ userId: user.userId, name: user.name, host: false })
     let isHost = false
 
-    console.log(`Connect to lobby server ${host}`)
-    let client = new ws(`${host}${data.token}`, {
-        servername: sni
-    })
+    const lobbySocket = new NTLobbyWebsocket(data.token)
 
     const lobby = {
         sHostStart: (payload) => {
             if (isHost) {
-                const msg = encodeGameMsg("cHostItemBank", {
+                lobbySocket.sendGameMsg("cHostItemBank", {
                     wands: noita.bank.wands,
                     spells: noita.bank.spells,
                     items: noita.bank.flasks,
                     objects: noita.bank.objects,
                     gold: noita.bank.gold
                 })
-                sendMsg(msg)
             }
             noita.sendEvt("StartRun")
         },
@@ -93,14 +74,16 @@ module.exports = (data) => {
         }
     }
 
-    client.on("open", () => {
+    lobbySocket.on("open", () => {
         appEvent("CONNECTED", data)
     })
 
-    client.on("close", () => {
+    lobbySocket.on("close", () => {
         appEvent("CONNECTION_LOST")
-        client.terminate()
-        client = null
+    })
+
+    lobbySocket.on("reconnecting", () => {
+        appEvent("RECONNECTING")
     })
 
     /**
@@ -141,41 +124,33 @@ module.exports = (data) => {
         appEvent(action, payload)
     }
 
-    client.on("message", (data) => {
-        try {
-            const msg = decode(data)
-            if (!msg) return
+    lobbySocket.on("ntmessage", (msg) => {
+        if (!msg) return
 
-            const actionType = msg.kind
-            switch (actionType) {
-                case "gameAction":
-                    handleGameAction(msg.gameAction)
-                    break
-                case "lobbyAction":
-                    handleLobbyAction(msg.lobbyAction)
-                    break
-                default:
-                    console.error(`Unknown actionType=${actionType}`)
-                    break
-            }
-        } catch (error) {
-            console.log(error)
+        const actionType = msg.kind
+        switch (actionType) {
+            case "gameAction":
+                handleGameAction(msg.gameAction)
+                break
+            case "lobbyAction":
+                handleLobbyAction(msg.lobbyAction)
+                break
+            default:
+                console.error(`Unknown actionType=${actionType}`)
+                break
         }
     })
 
     ipcMain.on("CLIENT_MESSAGE", (e, data) => {
-        const msg = encodeLobbyMsg(data.key, data.payload)
-        sendMsg(msg)
+        lobbySocket.sendLobbyMsg(data.key, data.payload)
     })
 
     ipcMain.on("CLIENT_CHAT", (e, data) => {
-        const msg = encodeGameMsg(data.key, data.payload)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg(data.key, data.payload)
     })
 
     noita.on("death_kick", (userId) => {
-        const msg = encodeLobbyMsg("cKickUser", { userId })
-        sendMsg(msg)
+        lobbySocket.sendLobbyMsg("cKickUser", { userId })
     })
 
     noita.on("GAME_OPEN", () => {
@@ -183,14 +158,13 @@ module.exports = (data) => {
         noita.sendEvt("RequestSpellList")
 
         noita.once("GameInfo", (event) => {
-            const msg = encodeLobbyMsg("cReadyState", {
+            lobbySocket.sendLobbyMsg("cReadyState", {
                 ready: true,
                 seed: event.seed,
                 mods: event.mods,
                 version: event.version,
                 beta: event.beta
             })
-            sendMsg(msg)
         })
     })
 
@@ -207,52 +181,43 @@ module.exports = (data) => {
             noita.setLastPosition(x, y)
         }
         const cf = encodeFrames(event.frames)
-        const msg = encodeGameMsg("cPlayerMove", cf)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cPlayerMove", cf)
     })
 
     noita.on("PlayerUpdate", (event) => {
-        const msg = encodeGameMsg("cPlayerUpdate", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cPlayerUpdate", event)
     })
 
     noita.on("PlayerPickup", (event) => {
-        const msg = encodeGameMsg("cPlayerPickup", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cPlayerPickup", event)
     })
 
     noita.on("PlayerDeath", (event) => {
-        const msg = encodeGameMsg("cPlayerDeath", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cPlayerDeath", event)
         unready()
     })
 
     noita.on("RunOver", () => {
         unready()
         if (isHost) {
-            const msg = encodeLobbyMsg("cRunOver", { idk: false })
-            sendMsg(msg)
+            lobbySocket.sendLobbyMsg("cRunOver", { idk: false })
         }
     })
 
     noita.on("SendGold", (event) => {
-        const msg = encodeGameMsg("cPlayerAddGold", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cPlayerAddGold", event)
     })
 
     noita.on("TakeGold", (event) => {
-        const msg = encodeGameMsg("cPlayerTakeGold", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cPlayerTakeGold", event)
     })
 
     noita.on("AngerySteve", (event) => {
-        const msg = encodeGameMsg("cAngerySteve", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cAngerySteve", event)
     })
 
     noita.on("RespawnPenalty", (event) => {
-        const msg = encodeGameMsg("cRespawnPenalty", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cRespawnPenalty", event)
     })
 
     noita.on("SendItems", (event) => {
@@ -268,43 +233,32 @@ module.exports = (data) => {
         } else if (event.objects) {
             msg.objects = { list: event.objects.map(mapObjects) }
         }
-        sendMsg(encodeGameMsg("cPlayerAddItem", msg))
+        lobbySocket.sendMageMsg("cPlayerAddItem", msg)
     })
 
     noita.on("PlayerTake", (event) => {
-        const msg = encodeGameMsg("cPlayerTakeItem", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cPlayerTakeItem", event)
     })
 
     noita.on("HostTake", (event) => {
-        const msg = encodeGameMsg("cHostUserTake", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cHostUserTake", event)
     })
 
     noita.on("HostTakeGold", (event) => {
-        const msg = encodeGameMsg("cHostUserTakeGold", event)
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cHostUserTakeGold", event)
     })
 
     noita.on("CustomModEvent", (event) => {
         const payload = JSON.stringify(event)
-        const msg = encodeGameMsg("cCustomModEvent", { payload })
-        sendMsg(msg)
+        lobbySocket.sendGameMsg("cCustomModEvent", { payload })
     })
 
-    function sendMsg(msg) {
-        if (client != null) {
-            client.send(msg)
-        }
-    }
-
     function unready() {
-        const msg = encodeLobbyMsg("cReadyState", {
+        lobbySocket.sendLobbyMsg("cReadyState", {
             ready: false,
             seed: "",
             mods: []
         })
-        sendMsg(msg)
     }
 
     function mapWands(wand) {
