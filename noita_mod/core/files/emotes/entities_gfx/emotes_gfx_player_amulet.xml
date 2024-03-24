@@ -1,5 +1,5 @@
 <Sprite 
-	filename="mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player_amulet.png" 
+	filename="mods/noita-emotes/files/entities_gfx/emotes_gfx_player_amulet.png" 
 	offset_x="0" 
 	offset_y="0" >
 
@@ -236,4 +236,17 @@
 		has_offset="1"
 		offset_x="0"
 		offset_y="-4" />
+
+	<RectAnimation
+    	name="egyptian"
+		frame_count="32"
+		frame_width="17"
+		frame_height="18"
+		frame_wait=".08"
+		frames_per_row="16"
+		pos_x="0"
+		pos_y="574"
+		has_offset="1"
+		offset_x="-1"
+		offset_y="2" />
 </Sprite>
