@@ -164,7 +164,7 @@ function input_listen()
             end
         end
     end
-    for _, code in pairs(mouse_codes) do
+    for _, code in pairs(joystick_codes) do
         if InputIsJoystickButtonDown(0, code) then
             there_is_input = true
             there_has_been_input = true
