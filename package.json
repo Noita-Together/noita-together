@@ -20,7 +20,7 @@
     "buildClient": "yarn workspace nt-app electron:build"
   },
   "dependencies": {
-    "@noita-together/nt-message": "^0.0.1",
+    "@noita-together/nt-message": "1.0.1",
     "axios": "^1.4.0"
   },
   "devDependencies": {
