@@ -111,7 +111,7 @@ wsEvents = {
     RequestGameInfo = function(data)
         local seed = StatsGetValue("world_seed")
         local mods = ModGetActiveModIDs()
-        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.15.0", beta=GameIsBetaBuild()}})
+        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.16.0", beta=GameIsBetaBuild()}})
         SendWsEvent({event="RequestPlayerList", payload={}})
         PopulateSpellList()
     end,
