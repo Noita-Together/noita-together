@@ -1114,13 +1114,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noita-together/nt-message@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "@noita-together/nt-message@npm:0.0.1"
+"@noita-together/nt-message@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@noita-together/nt-message@npm:1.0.1"
   dependencies:
     long: ^5.2.3
     protobufjs: ^7.2.5
-  checksum: 2438d2ceb10d8ab9a19d73183edc57b87692eb913acaed299a2c5a74b46d494292f52ae8eedba0a64402468bbc3016e4d42f16b40f7ed79079e26d862a645e1f
+  checksum: 13cb42bf60c4048d33cd0f599e67f35946f757b34f64ba3b5b8bc4e50ad98d821d0288f0705790ff6863d45b823832247f82884ad7978b3a93b1b0338d09a593
   languageName: node
   linkType: hard
 
@@ -11313,7 +11313,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "noita-together@workspace:."
   dependencies:
-    "@noita-together/nt-message": ^0.0.1
+    "@noita-together/nt-message": 1.0.1
     axios: ^1.4.0
     prettier: latest
     ts-node: ^10.9.1
