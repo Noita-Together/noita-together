@@ -226,5 +226,17 @@ emote_list = {
         lukki_animation_file = nil,
         custom_cape_hotspot = true,
         spawn_entity = nil
+    },
+    salute = {
+        gui_name = "Salute",
+        gui_icon = "mods/noita-together/files/emotes/ui_gfx/icons/salute.png",
+        frames = 0,
+        player_animation_file = "mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player.xml",
+        crown_animation_file = "mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player_hat2.xml",
+        amulet_animation_file = "mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player_amulet.xml",
+        gem_animation_file = "mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player_amulet_gem.xml",
+        lukki_animation_file = nil,
+        custom_cape_hotspot = true,
+        spawn_entity = nil
     }
 }

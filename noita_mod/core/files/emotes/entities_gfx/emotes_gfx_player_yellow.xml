@@ -1,6 +1,6 @@
 <Sprite 
-	filename="mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player_yellow.png"
-	hotspots_filename="mods/noita-together/files/emotes/entities_gfx/emotes_gfx_player_hotspots.png"
+	filename="mods/noita-emotes/files/entities_gfx/emotes_gfx_player_yellow.png"
+	hotspots_filename="mods/noita-emotes/files/entities_gfx/emotes_gfx_player_hotspots.png"
 	offset_x="0" 
 	offset_y="0" >
 
@@ -251,6 +251,19 @@
 		frames_per_row="16"
 		pos_x="0"
 		pos_y="574"
+		has_offset="1"
+		offset_x="-1"
+		offset_y="2" />
+
+	<RectAnimation
+    	name="salute"
+		frame_count="69"
+		frame_width="17"
+		frame_height="18"
+		frame_wait=".08"
+		frames_per_row="23"
+		pos_x="0"
+		pos_y="610"
 		has_offset="1"
 		offset_x="-1"
 		offset_y="2" />
