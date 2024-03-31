@@ -44,6 +44,7 @@ export const flagInfo = {
         "NT_send_flasks":                 { name: "Send Flasks", tooltip: "Allow players to deposit/take flasks." },
         "NT_send_gold":                   { name: "Send Gold", tooltip: "Allow players to deposit/take gold." },
         "NT_send_items":                  { name: "Send Items", tooltip: "Allow players to deposit/take items." },
+        "NT_unbone_ghosts":               { name: "Unbone Ghosts", tooltip: "Ghosts use random T3 wands instead of bone wands."},
         "NT_world_randomize_loot":        { name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
         "NT_sync_world_seed":             { name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
         "NT_death_penalty": {
@@ -82,6 +83,7 @@ export const defaultFlags = {
         { id: "NT_send_flasks",                type: "boolean", value: true,  },
         { id: "NT_send_gold",                  type: "boolean", value: true,  },
         { id: "NT_send_items",                 type: "boolean", value: true,  },
+        { id: "NT_unbone_ghosts",              type: "boolean", value: false,  },
         { id: "NT_world_randomize_loot",       type: "boolean", value: true,  },
         { id: "NT_sync_world_seed",            type: "number" , value: 0,     },
         { id: "NT_death_penalty",              type: "enum",    value: 'end', choices: ['end', 'weak_respawn', 'full_respawn'], },
