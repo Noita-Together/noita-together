@@ -1,11 +1,11 @@
 import WebSocket from "ws";
-import {PendingConnection} from "../entity/PendingConnection";
-import {UserDatasource} from "./Datasource";
-import {User} from "../entity/User";
-import {createAccessToken, createRefreshToken} from "../utils/jwtUtils";
-import {getUsersById} from "../utils/TwitchUtils";
+import { PendingConnection } from "../entity/PendingConnection";
+import { UserDatasource } from "./Datasource";
+import { User } from "../entity/User";
+import { createAccessToken, createRefreshToken } from "../utils/jwtUtils";
+import { getUsersById } from "../identity/identity";
 
-const SOCKET_TIMEOUT_SECONDS = 5*60
+const SOCKET_TIMEOUT_SECONDS = 5 * 60
 
 class AuthWebsocket {
     server
@@ -15,7 +15,7 @@ class AuthWebsocket {
     timeout
 
     constructor() {
-        this.server = new WebSocket.Server({noServer: true, perMessageDeflate: false})
+        this.server = new WebSocket.Server({ noServer: true, perMessageDeflate: false })
         this.pendingConnections = {}
         UserDatasource()
             .then((db) => {
@@ -48,16 +48,16 @@ class AuthWebsocket {
         this.CheckUsers().then(r => console.log('Booted up Check Users Function!'))
     }
 
-    CheckUsers = async() => {
-        await this.DoCheckUsers().catch((e)=>{
+    CheckUsers = async () => {
+        await this.DoCheckUsers().catch((e) => {
             console.log('DoCheckUsers failed this run :(')
             console.error(e)
         })
-        if(Object.values(this.pendingConnections).length === 0) return
+        if (Object.values(this.pendingConnections).length === 0) return
         this.timeout = setTimeout(this.CheckUsers, 5000)
     }
 
-    DoCheckUsers = async() => {
+    DoCheckUsers = async () => {
         const userIdsToCheck = []
         const pendingData = {}
         const connections = Object.values(this.pendingConnections)
@@ -77,16 +77,16 @@ class AuthWebsocket {
             if (userIdsToCheck.length >= 100) break //stop processing as we have 100+ users this cycle and twitch only allows us to grab 100 at once
         }
 
-        if(userIdsToCheck.length === 0) return
+        if (userIdsToCheck.length === 0) return
         console.log(`GetUsersById: ${userIdsToCheck.length} users`)
         const userDatas = await getUsersById(userIdsToCheck)
-        if (!userDatas){
+        if (!userDatas) {
             console.log(`GetUsersById: Returned null :(`)
             return
         }
         console.log(`GetUsersById: Fetched ${userDatas.length} users`)
         for (const userData of userDatas) {
-            const connection = pendingData[userData.id]
+            const connection = pendingData[userData.sub]
             if (!connection) continue
             const accessToken = createAccessToken(userData)
             const refreshToken = createRefreshToken(userData)
@@ -105,7 +105,7 @@ class AuthWebsocket {
     }
 }
 
-class Connection{
+class Connection {
     ws
     req
     user
@@ -115,7 +115,7 @@ class Connection{
         this.user = user
     }
 
-    send(data){
+    send(data) {
         this.ws.send(data)
     }
 }
