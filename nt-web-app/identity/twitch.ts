@@ -1,3 +1,19 @@
+/* =======
+ *  NOTES
+ * =======
+ *
+ * Scope:
+ *  Interfaces with twitch API to provide identity services and user lookup
+ *
+ * Documentation Referenced In Implementation
+ *  https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#implicit-grant-flow 
+ *
+ * Vars
+ *   TWITCH_API_KEY: OAuth Secret and API key, accessed in twitch developer dashboard
+ *   TWITCH_CLIENT_ID: OAuth Client id, accessed in twitch developer dashboard
+ *
+ */
+
 // =====================
 //  Imports and Globals
 // =====================

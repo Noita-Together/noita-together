@@ -1,3 +1,35 @@
+/* =======
+ *  NOTES
+ * =======
+ *
+ * Scope:
+ *  This implementation should be a pretty cut and dry OIDC
+ *  integration, very little should need to be changed to 
+ *  interface with any other standard oidc provider. It was
+ *  developed against forgejo since it's the oidc provider
+ *  I had available locally.
+ *
+ * Documentation Referenced In Implementation
+ *   https://forgejo.org/docs/v1.19/user/oauth2-provider/
+ *   https://forgejo.org/docs/v1.19/user/api-usage/
+ *
+ * Vars
+ *   FORGEJO_API_KEY: Key for general api, needs access to read users
+ *   FORGEJO_CLIENT_SECRET: OIDC Client Secret, generated in /user/settings/applications
+ *   FORGEJO_CLIENT_ID: OIDC Client id, generated in /user/settings/applications
+ *  
+ *   FORGEJO_GETUSER_ENDPOINT: Forgejo Static API endpoint that uses general API key to get user info by id
+ *                                                                                         
+ *   The following vars are all ripped from https://[YOUR-FORGEJO-URL]/.well-known/openid-configuration
+ *   This likely could be used to automatically grab the appropriate url, it simply isn't in this 
+ *   implementation for convenience.
+ *
+ *   FORGEJO_USERINFO_ENDPOINT 
+ *   FORGEJO_AUTHORIZATION_ENDPOINT 
+ *   FORGEJO_ACCESSTOKEN_ENDPOINT 
+ *
+ */
+
 // =====================
 //  Imports and Globals
 // =====================
@@ -13,10 +45,7 @@ const FORGEJO_AUTHORIZATION_ENDPOINT = process.env.FORGEJO_AUTHORIZATION_ENDPOIN
 const FORGEJO_GETUSER_ENDPOINT = process.env.FORGEJO_GETUSER_ENDPOINT as string
 const FORGEJO_ACCESSTOKEN_ENDPOINT = process.env.FORGEJO_ACCESSTOKEN_ENDPOINT as string
 
-
-// ========================
-//  Interfaces and Helpers
-// ========================
+const provider = "forgejo";
 
 // ====================
 //  Exported Functions
@@ -69,8 +98,6 @@ const handleRedirectResponse = async (code: string, state: string, redirectUri: 
 
   return userData;
 };
-
-const provider = "forgejo";
 
 export {
   getUser,

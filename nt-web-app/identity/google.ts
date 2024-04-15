@@ -1,3 +1,21 @@
+/* =======
+ *  NOTES
+ * =======
+ *
+ * Scope:
+ *  Simple plug and play usage of the google api library to run identity provider functions
+ *  Currently lacks the ability to fetch a user by subscriber identifier, might not be possible
+ *  with the tooling provided.
+ *
+ * Documentation Referenced In Implementation
+ *  https://github.com/googleapis/google-api-nodejs-client?tab=readme-ov-file#oauth2-client 
+ *
+ * Vars
+ *   GOOGLE_CLIENT_SECRET: OIDC Client Secret, accessed in google developer console
+ *   GOOGLE_CLIENT_ID: OIDC Client id, accessed in google developer console
+ *
+ */
+
 // =====================
 //  Imports and Globals
 // =====================
@@ -6,16 +24,13 @@ import { UserData } from "../entity/identity";
 import { google } from 'googleapis';
 import jwt from "jsonwebtoken";
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY as string
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string
 
-const GOOGLE_USERINFO_ENDPOINT = process.env.GOOGLE_USERINFO_ENDPOINT as string
-const GOOGLE_AUTHORIZATION_ENDPOINT = process.env.GOOGLE_AUTHORIZATION_ENDPOINT as string
-const GOOGLE_GETUSER_ENDPOINT = process.env.GOOGLE_GETUSER_ENDPOINT as string
-const GOOGLE_ACCESSTOKEN_ENDPOINT = process.env.GOOGLE_ACCESSTOKEN_ENDPOINT as string
 
 const OAUTH_REDIRECT_URI = process.env.OAUTH_REDIRECT_URI as string;
+
+const provider = "google";
 
 const oauth2Client = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
@@ -28,12 +43,8 @@ const scopes = [
   'profile',
 
 ];
-
-// ========================
-//  Interfaces and Helpers
-// ========================
-
 // ====================
+//
 //  Exported Functions
 // ====================
 
@@ -89,8 +100,6 @@ const handleRedirectResponse = async (code: string, state: string, redirectUri: 
 
   return userData;
 };
-
-const provider = "google";
 
 export {
   getUser,
