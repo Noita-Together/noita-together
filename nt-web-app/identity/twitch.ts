@@ -43,10 +43,6 @@ const toUserData = (twitchUserData: TwitchUserData): UserData => ({
   email: twitchUserData.email,
 });
 
-// ====================
-//  Exported Functions
-// ====================
-
 const getServerAccessToken = async (): Promise<TwitchAppAccessToken | null> => {
   if (serverAccessToken) {
     let expiration = serverAccessToken.acquired_at!! + serverAccessToken.expires_in * 1000
@@ -84,6 +80,9 @@ const getServerAccessToken = async (): Promise<TwitchAppAccessToken | null> => {
   return serverAccessToken!!
 }
 
+// ====================
+//  Exported Functions
+// ====================
 
 const getUser = async (accessToken: string): Promise<UserData> => {
   return axios.get("https://api.twitch.tv/helix/users", {
@@ -146,11 +145,11 @@ let serverAccessToken: TwitchAppAccessToken | undefined = undefined
 const provider = "twitch";
 
 export {
-  getServerAccessToken,
   getUser,
   getUsersById,
   getRedirectURL,
   handleRedirectResponse,
-  provider,
   validateAuthServer,
+
+  provider,
 }
