@@ -1,4 +1,4 @@
-import { getUser, getUsersById, getRedirectURL, handleRedirectResponse, validateAuthServer, provider } from './twitch'
+import { getUser, getUsersById, getRedirectURL, handleRedirectResponse, validateAuthServer, provider } from './twitch';
 
 export {
   getUser,

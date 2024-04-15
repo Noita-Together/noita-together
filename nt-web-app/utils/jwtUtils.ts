@@ -9,7 +9,7 @@ const SECRET_REFRESH = process.env.SECRET_JWT_REFRESH as string
 function createAccessToken(userData: UserData) {
     return jwt.sign({
         sub: userData.sub,
-        preferred_username: userData.preferred_name,
+        preferred_username: userData.preferred_username,
         profile_image_url: userData.picture,
         provider: provider
     }, SECRET_ACCESS, {

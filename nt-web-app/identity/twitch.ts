@@ -38,7 +38,7 @@ interface TwitchUserData {
 
 const toUserData = (twitchUserData: TwitchUserData): UserData => ({
   sub: twitchUserData.id,
-  preferred_name: twitchUserData.display_name,
+  preferred_username: twitchUserData.display_name,
   picture: twitchUserData.profile_image_url,
   email: twitchUserData.email,
 });
@@ -116,7 +116,8 @@ const getUsersById = async (userIds: string[]): Promise<UserData[] | null> => {
 }
 
 const validateAuthServer = async (): Promise<Boolean> => {
-  return new Promise(() => true);
+  const token = getServerAccessToken();
+  return !!token;
 }
 
 const getRedirectURL = (redirectURL: string, scope: string, state: string): string =>

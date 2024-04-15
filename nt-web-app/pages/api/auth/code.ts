@@ -44,15 +44,15 @@ export default async function handler(
             id: userData.sub,
             provider: provider
         }).then(user => {
-            if (!user) return new User(userData.sub, userData.preferred_name, defaultRoles, provider)
+            if (!user) return new User(userData.sub, userData.preferred_username, defaultRoles, provider)
             return user
         })
 
-        user.display_name = userData.preferred_name
+        user.display_name = userData.preferred_username
 
         repo.save(user)
 
-        if (state.length === 8) {
+        if (state?.length === 8) {
 
             const pendingConnection = await repoPendingConnection.findOneBy({
                 userCode: state
