@@ -29,8 +29,24 @@ module.exports = (data) => {
     let isHost = false
 
     console.log(`Connect to lobby server ${host}`)
+    /** @type {ws} */
     let client = new ws(`${host}${data.token}`, {
         servername: sni
+    })
+
+    const heartbeat = NT.Envelope.encode({}).finish()
+    let timer = setInterval(() => {
+        if (client && client.readyState === ws.OPEN) {
+            // uWS does not appear to be reliable with its "auto-ping" functionality,
+            // and does not appear to respect websocket-level pings for keeping connections
+            // alive. Send an empty envelope (will be ignored by the lobby server) to
+            // keep the connection active.
+            client.send(heartbeat)
+        }
+    }, 10000)
+    client.on("close", () => {
+        clearInterval(timer)
+        timer = undefined
     })
 
     const lobby = {
