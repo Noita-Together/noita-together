@@ -93,6 +93,13 @@ export default {
         addProfile() {
             // input check
             if (!this.newProfile.name || !this.newProfile.webApp || !this.newProfile.lobbyServer) return;
+            if (
+                this.tempSettings.profiles.some((profile) => {
+                    return profile.name === this.newProfile.name;
+                })
+            ) {
+                return;
+            }
 
             // hide inputs
             this.showAddProfile = false;
@@ -120,19 +127,14 @@ export default {
         // remove the currently selected profile, unless the selected profile is the default
         removeProfile() {
             // do nothing if trying to delete the default profile
-            if (this.tempSettings.selectedProfile === "Default") return;
+            if (this.tempSettings.selectedProfile === 0) return;
 
             // otherwise, find and remove the current profile from the profiles array
-            this.tempSettings.profiles.splice(
-                this.tempSettings.profiles.findIndex((profile) => {
-                    return profile.name === this.tempSettings.selectedProfile;
-                }), 
-                1
-            );
+            this.tempSettings.profiles.splice(this.tempSettings.selectedProfile, 1);
 
             // if there is one profile left after deletion (the default), select it
             if (this.tempSettings.profiles.length === 1) {
-                this.tempSettings.selectedProfile = this.tempSettings.profiles[0].name;
+                this.tempSettings.selectedProfile = 0;
             }
         }
     }
