@@ -93,13 +93,6 @@ export default {
         addProfile() {
             // input check
             if (!this.newProfile.name || !this.newProfile.webApp || !this.newProfile.lobbyServer) return;
-            if (
-                this.tempSettings.profiles.some((profile) => {
-                    return profile.name === this.newProfile.name;
-                })
-            ) {
-                return;
-            }
 
             // hide inputs
             this.showAddProfile = false;
