@@ -436,6 +436,16 @@ export default new Vuex.Store({
         protoFlags: (state) => {
             return flagsToProto(state.room.gamemode, state.roomFlags)
         }, 
+        webApp: (state) => {
+            return state.appSettings.profiles.find((profile) => {
+                return profile.name === state.appSettings.selectedProfile;
+            }).webApp;
+        }, 
+        lobbyServer: (state) => {
+            return state.appSettings.profiles.find((profile) => {
+                return profile.name === state.appSettings.selectedProfile;
+            }).lobbyServer;
+        }
     },
     mutations: {
         updateAppSettings: (state, value) => {

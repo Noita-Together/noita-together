@@ -43,7 +43,7 @@ export default {
   components: { vAppLogo },
   data() {
     return {
-      loginUrl: `${this.$store.state.appSettings.webApp}/auth/login`,
+      loginUrl: `${this.$store.getters.webApp}/auth/login`,
       remember: false,
       clicked: false
     }

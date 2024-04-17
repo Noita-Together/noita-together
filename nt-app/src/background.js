@@ -205,10 +205,8 @@ ipcMain.on("LOAD_SETTINGS", async () => {
         }
 
         // if config exists, read and return
-        fs.readFile(filePath, (err, data) => {
-            if (err) return console.log(err);
-            appEvent("SETTINGS_LOADED", JSON.parse(data.toString()));
-        })
+        appEvent("SETTINGS_LOADED", JSON.parse(fs.readFileSync(filePath).toString()));
+        
     } catch (err) {
         console.error("Failed to load settings", err.toString());
     }
@@ -217,7 +215,7 @@ ipcMain.on("LOAD_SETTINGS", async () => {
 // save settings to file
 ipcMain.on("SAVE_SETTINGS", async (event, settings) => {
     try {
-        const filePath = app.getPath("userData") + '';
+        const filePath = app.getPath("userData") + '/config.json';
 
         fs.writeFileSync(filePath, JSON.stringify(settings));
     } catch (err) {
