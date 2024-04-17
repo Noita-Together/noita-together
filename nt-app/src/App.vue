@@ -24,6 +24,7 @@ import vFooter from "@/components/vFooter.vue";
 import vLoading from "@/components/vLoading.vue";
 import vErrDialog from "@/components/vErrDialog.vue";
 import vButton from "@/components/vButton.vue";
+import { ipcRenderer } from "electron";
 export default {
     components: { vHeader, vFooter, vLoading, vErrDialog, vButton },
     data() {
@@ -42,10 +43,19 @@ export default {
             return this.$store.state.errDialog;
         },
     },
+    beforeCreate() {
+        ipcRenderer.on("SETTINGS_LOADED", (event, data) => {
+            this.$store.commit("setAppSettings", data);
+        });
+        ipcRenderer.send("LOAD_SETTINGS");
+    }, 
     methods: {
         closeErrDialog() {
             this.$store.commit("showErrDialog", false);
         },
+        loadSettings() {
+            ipcRenderer.send("LOAD_SETTINGS");
+        }
     },
 };
 </script>
@@ -169,6 +179,7 @@ table th {
 .slot-selector option {
     color: #444;
     font-weight: normal;
+    padding: 1rem 0.75rem 1rem 0.75rem;
 }
 
 .slot-selector:disabled,

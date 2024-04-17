@@ -180,6 +180,51 @@ ipcMain.on("DELETE_USER", async (event, account) => {
     }
 })
 
+// load settings file
+ipcMain.on("LOAD_SETTINGS", async () => {
+    try {
+        // file path to config
+        const filePath = app.getPath("userData") + '/config.json';
+
+        // if config doesn't exist, make one, fill with environment variables
+        if (!fs.existsSync(filePath)) {
+            const settings = {
+                "profiles": [
+                    {
+                        "name": "Default", 
+                        "webApp": process.env.VUE_APP_HOSTNAME, 
+                        "lobbyServer": process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE
+                    }
+                ], 
+                "selectedProfile": "Default"
+            };
+
+            fs.writeFileSync(filePath, JSON.stringify(settings));
+            appEvent("SETTINGS_LOADED", settings);
+            return;
+        }
+
+        // if config exists, read and return
+        fs.readFile(filePath, (err, data) => {
+            if (err) return console.log(err);
+            appEvent("SETTINGS_LOADED", JSON.parse(data.toString()));
+        })
+    } catch (err) {
+        console.error("Failed to load settings", err.toString());
+    }
+})
+
+// save settings to file
+ipcMain.on("SAVE_SETTINGS", async (event, settings) => {
+    try {
+        const filePath = app.getPath("userData") + '';
+
+        fs.writeFileSync(filePath, JSON.stringify(settings));
+    } catch (err) {
+        console.error("Failed to save settings", err.toString());
+    }
+})
+
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
     // On macOS it is common for applications and their menu bar

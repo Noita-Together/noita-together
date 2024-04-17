@@ -390,7 +390,8 @@ export default new Vuex.Store({
             canClose: true
         },
         showErrDialog: false,
-        stats: null
+        stats: null, 
+        appSettings: {}
     },
     getters: {
         isHost: (state) => {
@@ -437,6 +438,9 @@ export default new Vuex.Store({
         }
     },
     mutations: {
+        setAppSettings: (state, value) => {
+            state.appSettings = value;
+        }, 
         setSavedUserName: (state, value) => {
             state.savedUser = !!value
             state.savedUserName = value
