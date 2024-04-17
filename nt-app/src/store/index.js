@@ -435,10 +435,10 @@ export default new Vuex.Store({
         },
         protoFlags: (state) => {
             return flagsToProto(state.room.gamemode, state.roomFlags)
-        }
+        }, 
     },
     mutations: {
-        setAppSettings: (state, value) => {
+        updateAppSettings: (state, value) => {
             state.appSettings = value;
         }, 
         setSavedUserName: (state, value) => {
@@ -603,6 +603,10 @@ export default new Vuex.Store({
         }
     },
     actions: {
+        updateAppSettings: async ({ commit }, settings) => {
+            commit("updateAppSettings", settings);
+            ipcRenderer.send("SAVE_SETTINGS");
+        }, 
         updateTab: async ({ commit }, payload) => {
             commit("setTab", payload)
         },

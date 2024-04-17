@@ -45,7 +45,7 @@ export default {
     },
     beforeCreate() {
         ipcRenderer.on("SETTINGS_LOADED", (event, data) => {
-            this.$store.commit("setAppSettings", data);
+            this.$store.commit("updateAppSettings", data);
         });
         ipcRenderer.send("LOAD_SETTINGS");
     }, 
