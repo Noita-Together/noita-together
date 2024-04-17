@@ -8,9 +8,9 @@
                     v-model="tempSettings.selectedProfile"
                 >
                     <option
-                        v-for="profile in tempSettings.profiles"
+                        v-for="(profile, index) in tempSettings.profiles"
                         :key="profile.name"
-                        :value="profile.name"
+                        :value="index"
                     >
                         {{ profile.name }} : {{ profile.webApp }}
                     </option>

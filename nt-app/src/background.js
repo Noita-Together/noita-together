@@ -2,6 +2,7 @@
 const NT_SCHEME = "noitatogether"
 const path = require("path")
 const fs = require("fs")
+const { loadSettings, saveSettings } = require('./config.js');
 import { autoUpdater } from "electron-updater"
 import { app, protocol, BrowserWindow, dialog, ipcMain } from "electron"
 import jwt from "jsonwebtoken"
@@ -142,9 +143,10 @@ ipcMain.on("remember_user", (event, val) => {
 
 ipcMain.on("TRY_LOGIN", async (event, account) => {
     try {
+        const settings = await loadSettings();
         const refresh = await keytar.getPassword("Noita Together", account)
         const { body } = await got.post(
-            `${process.env.VUE_APP_HOSTNAME}/auth/refresh`,
+            `${settings.profiles[settings.selectedProfile].webApp}/auth/refresh`,
             {
                 headers: {
                     authorization: `Bearer ${refresh}`
@@ -180,47 +182,17 @@ ipcMain.on("DELETE_USER", async (event, account) => {
     }
 })
 
+
+
 // load settings file
 ipcMain.on("LOAD_SETTINGS", async () => {
-    try {
-        // file path to config
-        const filePath = app.getPath("userData") + '/config.json';
-
-        // if config doesn't exist, make one, fill with environment variables
-        if (!fs.existsSync(filePath)) {
-            const settings = {
-                "profiles": [
-                    {
-                        "name": "Default", 
-                        "webApp": process.env.VUE_APP_HOSTNAME, 
-                        "lobbyServer": process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE
-                    }
-                ], 
-                "selectedProfile": "Default"
-            };
-
-            fs.writeFileSync(filePath, JSON.stringify(settings));
-            appEvent("SETTINGS_LOADED", settings);
-            return;
-        }
-
-        // if config exists, read and return
-        appEvent("SETTINGS_LOADED", JSON.parse(fs.readFileSync(filePath).toString()));
-        
-    } catch (err) {
-        console.error("Failed to load settings", err.toString());
-    }
+    const settings = loadSettings();
+    appEvent("SETTINGS_LOADED", settings);
 })
 
 // save settings to file
 ipcMain.on("SAVE_SETTINGS", async (event, settings) => {
-    try {
-        const filePath = app.getPath("userData") + '/config.json';
-
-        fs.writeFileSync(filePath, JSON.stringify(settings));
-    } catch (err) {
-        console.error("Failed to save settings", err.toString());
-    }
+    saveSettings(settings);
 })
 
 // Quit when all windows are closed.

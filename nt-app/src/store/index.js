@@ -437,14 +437,10 @@ export default new Vuex.Store({
             return flagsToProto(state.room.gamemode, state.roomFlags)
         }, 
         webApp: (state) => {
-            return state.appSettings.profiles.find((profile) => {
-                return profile.name === state.appSettings.selectedProfile;
-            }).webApp;
+            return state.appSettings.profiles[state.appSettings.selectedProfile].webApp;
         }, 
         lobbyServer: (state) => {
-            return state.appSettings.profiles.find((profile) => {
-                return profile.name === state.appSettings.selectedProfile;
-            }).lobbyServer;
+            return state.appSettings.profiles[state.appSettings.selectedProfile].lobbyServer;
         }
     },
     mutations: {
@@ -615,7 +611,7 @@ export default new Vuex.Store({
     actions: {
         updateAppSettings: async ({ commit }, settings) => {
             commit("updateAppSettings", settings);
-            ipcRenderer.send("SAVE_SETTINGS");
+            ipcRenderer.send("SAVE_SETTINGS", settings);
         }, 
         updateTab: async ({ commit }, payload) => {
             commit("setTab", payload)

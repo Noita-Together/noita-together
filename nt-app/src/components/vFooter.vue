@@ -5,7 +5,7 @@
         <div class="donate" @click="OpenContributors">
             <span title="Github">Click to see contributors <i slot="icon" class="fas fa-wrench"></i></span>
         </div>
-        <div class="settings" @click="showAppSettings = true">
+        <div v-if="$route.fullPath === '/'" class="settings" @click="showAppSettings = true">
             <i slot="icon" class="fas fa-cog"></i>
         </div>
     </div>

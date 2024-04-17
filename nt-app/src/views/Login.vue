@@ -69,6 +69,7 @@ export default {
   methods: {
     OpenLoginPage() {
       this.clicked = true
+      console.log(this.loginUrl);
       shell.openExternal(this.loginUrl)
     },
     ContinueSavedUser() {
