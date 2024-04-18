@@ -57,10 +57,7 @@ const getUser = async (accessToken: string): Promise<UserData> => {
       'Authorization': `Bearer ${accessToken}`
     }
   })
-    .then((res) => {
-      console.log(res.data);
-      return res.data
-    })
+    .then((res) => res.data);
 }
 
 const getUsersById = async (userIds: string[]): Promise<UserData[] | null> => {

@@ -55,7 +55,7 @@ export default async function handler(
 
     switch (user.provider as LoginProvider) {
         case provider:
-            //get the user from the Twitch API using TWITCH_CLIENT_ID and TWITCH_API_KEY
+            //get the user from the provider if possible, else throw a 502
             const userData = await getUsersById([userSub])
             if (!userData || userData.length === 0) {
                 res.status(502).end("502 Failed to get user data from identity provider");
