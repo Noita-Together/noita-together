@@ -17,7 +17,6 @@ const { host, sni } = (() => {
     console.log(activeProfile);
 
     const prefix = activeProfile.lobbyUrl
-        activeProfile.lobbyUrl ||
     const host = prefix.endsWith("/") ? prefix : `${prefix}/`
     const url = new URL(host)
     const sni = url.hostname
