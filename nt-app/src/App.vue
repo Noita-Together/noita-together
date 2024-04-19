@@ -24,7 +24,6 @@ import vFooter from "@/components/vFooter.vue";
 import vLoading from "@/components/vLoading.vue";
 import vErrDialog from "@/components/vErrDialog.vue";
 import vButton from "@/components/vButton.vue";
-import { ipcRenderer } from "electron";
 export default {
     components: { vHeader, vFooter, vLoading, vErrDialog, vButton },
     data() {
@@ -43,19 +42,10 @@ export default {
             return this.$store.state.errDialog;
         },
     },
-    beforeCreate() {
-        ipcRenderer.on("SETTINGS_LOADED", (event, data) => {
-            this.$store.commit("updateAppSettings", data);
-        });
-        ipcRenderer.send("LOAD_SETTINGS");
-    }, 
     methods: {
         closeErrDialog() {
             this.$store.commit("showErrDialog", false);
         },
-        loadSettings() {
-            ipcRenderer.send("LOAD_SETTINGS");
-        }
     },
 };
 </script>

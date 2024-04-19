@@ -391,7 +391,6 @@ export default new Vuex.Store({
         },
         showErrDialog: false,
         stats: null, 
-        appSettings: {}
     },
     getters: {
         isHost: (state) => {
@@ -436,17 +435,8 @@ export default new Vuex.Store({
         protoFlags: (state) => {
             return flagsToProto(state.room.gamemode, state.roomFlags)
         }, 
-        webApp: (state) => {
-            return state.appSettings.profiles[state.appSettings.selectedProfile].webApp;
-        }, 
-        lobbyServer: (state) => {
-            return state.appSettings.profiles[state.appSettings.selectedProfile].lobbyServer;
-        }
     },
     mutations: {
-        updateAppSettings: (state, value) => {
-            state.appSettings = value;
-        }, 
         setSavedUserName: (state, value) => {
             state.savedUser = !!value
             state.savedUserName = value
@@ -609,10 +599,6 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        updateAppSettings: async ({ commit }, settings) => {
-            commit("updateAppSettings", settings);
-            ipcRenderer.send("SAVE_SETTINGS", settings);
-        }, 
         updateTab: async ({ commit }, payload) => {
             commit("setTab", payload)
         },

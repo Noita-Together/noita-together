@@ -5,14 +5,14 @@
             <div class="profile-selector-container">
                 <select
                     class="slot-selector"
-                    v-model="tempSettings.selectedProfile"
+                    v-model="tempSettings.selected"
                 >
                     <option
                         v-for="(profile, index) in tempSettings.profiles"
                         :key="profile.name"
                         :value="index"
                     >
-                        {{ profile.name }} : {{ profile.webApp }}
+                        {{ profile.name }} : {{ profile.authUrl }}
                     </option>
                 </select>
                 <vButton class="btn btn-normal" @click="showAddProfile = true">
@@ -24,8 +24,8 @@
             </div>
             <div v-if="showAddProfile" class="new-profile">
                 <vInput v-model="newProfile.name" label="name" />
-                <vInput v-model="newProfile.webApp" label="Web App URL" />
-                <vInput v-model="newProfile.lobbyServer" label="Lobby WS Server URL" />
+                <vInput v-model="newProfile.authUrl" label="Web App URL" />
+                <vInput v-model="newProfile.lobbyUrl" label="Lobby WS Server URL" />
                 <div>
                     <vButton class="btn btn-normal" @click="addProfile">Add</vButton>
                     <vButton class="btn btn-normal" @click="addProfileCancel">Cancel</vButton>
@@ -45,6 +45,7 @@ import vModal from "../components/vModal.vue"
 import vButton from "../components/vButton.vue"
 // import vTooltip from "../components/vTooltip.vue"
 import vInput from "../components/vInput.vue"
+import { ipcRenderer } from "electron";
 
 export default {
     //braincells where'd ya go
@@ -56,23 +57,23 @@ export default {
         // vSwitch,
         // vTooltip
     },
-    beforeMount() {
-        // create a "working copy" of the flags - so that we can cancel without
-        // affecting the store
-        // const obj = {}
-        // for (const flag of this.$store.getters.flags) {
-        //     obj[flag.id] = Object.assign({}, flag)
-        // }
-        this.tempSettings = this.$store.state.appSettings;
+    beforeCreate() {
+        ipcRenderer.send("GET_SETTINGS");
+        ipcRenderer.on("SETTINGS", (event, settings) => {
+            this.tempSettings = settings;
+        });
+    },
+    mounted() {
+
     },
     data() {
         return {
-            tempSettings: null, 
+            tempSettings: {}, 
             showAddProfile: false, 
             newProfile: {
                 name: "", 
-                webApp: "", 
-                lobbyServer: ""
+                authUrl: "", 
+                lobbyUrl: ""
             }
         }
     },
@@ -81,27 +82,28 @@ export default {
             return this.$store.getters.isHost
         },
     },
+    watch: {
+        tempSettings() {
+            console.log("temp setting watcher", this.tempSettings);
+        }
+    },
     methods: {
         applySettings() {
-            this.$store.dispatch("updateAppSettings", this.tempSettings);
+            ipcRenderer.send("SET_ACTIVE_PROFILE", this.tempSettings.selected);
             this.close();
         },
         close() {
-            this.$emit("close")
+            this.$emit("close");
         }, 
         // add the new profile, all inputs must have content
         addProfile() {
-            // input check
-            if (!this.newProfile.name || !this.newProfile.webApp || !this.newProfile.lobbyServer) return;
-
-            // hide inputs
-            this.showAddProfile = false;
-            // push new profile
-            this.tempSettings.profiles.push(this.newProfile);
-            // reset inputs
-            this.newProfileReset();
-            // update settings
-            this.$store.dispatch("updateAppSettings", this.tempSettings);
+            ipcRenderer.send("ADD_PROFILE", this.newProfile);
+            ipcRenderer.send("GET_SETTINGS");
+        }, 
+        // remove the currently selected profile, unless the selected profile is the default
+        removeProfile() {
+            ipcRenderer.send("REMOVE_PROFILE", this.tempSettings.selected);
+            ipcRenderer.send("GET_SETTINGS");
         }, 
         // cancel the adding of a new profile
         addProfileCancel() {
@@ -113,23 +115,10 @@ export default {
         newProfileReset() {
             this.newProfile = {
                 name: "", 
-                webApp: "", 
-                lobbyServer: ""
+                authUrl: "", 
+                lobbyUrl: ""
             };
         }, 
-        // remove the currently selected profile, unless the selected profile is the default
-        removeProfile() {
-            // do nothing if trying to delete the default profile
-            if (this.tempSettings.selectedProfile === 0) return;
-
-            // otherwise, find and remove the current profile from the profiles array
-            this.tempSettings.profiles.splice(this.tempSettings.selectedProfile, 1);
-
-            // if there is one profile left after deletion (the default), select it
-            if (this.tempSettings.profiles.length === 1) {
-                this.tempSettings.selectedProfile = 0;
-            }
-        }
     }
 }
 </script>
@@ -150,19 +139,5 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-
-.switches {
-    display: flex;
-    flex-flow: row wrap;
-}
-
-.switches > div {
-    padding: 0.2em;
-    min-width: 180px;
-}
-
-span + .tooltip-wrapper {
-    margin-left: 0.5em;
 }
 </style>

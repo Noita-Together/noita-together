@@ -2,7 +2,7 @@
 const NT_SCHEME = "noitatogether"
 const path = require("path")
 const fs = require("fs")
-const { loadSettings, saveSettings } = require('./config.js');
+const { loadSettings, getSettings, addProfile, getDefaultProfile, removeProfile, getActiveProfile, setActiveProfile } = require('./settings.js')
 import { autoUpdater } from "electron-updater"
 import { app, protocol, BrowserWindow, dialog, ipcMain } from "electron"
 import jwt from "jsonwebtoken"
@@ -19,6 +19,9 @@ let rememberUser = false
 const isDevelopment = process.env.NODE_ENV !== "production"
 const primaryInstance = app.requestSingleInstanceLock()
 let mainWindow = null
+
+loadSettings();
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
     { scheme: "app", privileges: { secure: true, standard: true } }
@@ -182,17 +185,28 @@ ipcMain.on("DELETE_USER", async (event, account) => {
     }
 })
 
+ipcMain.on("GET_SETTINGS", async () => {
+    appEvent("SETTINGS", getSettings())
+});
 
-
-// load settings file
-ipcMain.on("LOAD_SETTINGS", async () => {
-    const settings = loadSettings();
-    appEvent("SETTINGS_LOADED", settings);
+ipcMain.on("ADD_PROFILE", async (event, profile) => {
+    if (addProfile(profile)) appEvent("PROFILE_ADDED")
 })
 
-// save settings to file
-ipcMain.on("SAVE_SETTINGS", async (event, settings) => {
-    saveSettings(settings);
+ipcMain.on("REMOVE_PROFILE", async (event, profileName) => {
+    removeProfile(profileName)
+})
+
+ipcMain.on("GET_DEFAULT_PROFILE", async () => {
+    appEvent("DEFAULT_PROFILE", getDefaultProfile())
+})
+
+ipcMain.on("GET_ACTIVE_PROFILE", async () => {
+    appEvent("ACTIVE_PROFILE", getActiveProfile())
+})
+
+ipcMain.on("SET_ACTIVE_PROFILE", async (event, name) => {
+    if (setActiveProfile(name)) appEvent("ACTIVE_PROFILE_SET")
 })
 
 // Quit when all windows are closed.
