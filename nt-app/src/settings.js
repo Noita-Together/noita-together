@@ -10,9 +10,9 @@ const DEFAULT_PROFILE = {
     lobbyUrl: process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || "wss://lobby.noitatogether.com/ws"
 }
 
-let settings = {
+const settings = {
     selected: DEFAULT_PROFILE.name.toLowerCase(), 
-    profiles: {}
+    profiles: Object.create(null) // avoid prototype pollution bugs
 }
 
 function loadSettings() {
