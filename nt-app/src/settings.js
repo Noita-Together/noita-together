@@ -33,8 +33,9 @@ function loadSettings() {
 }
 
 function saveSettings() {
-    if (settings.profiles.hasOwnProperty(DEFAULT_PROFILE.name.toLowerCase())) {
-        delete settings[DEFAULT_PROFILE.name.toLowerCase()];
+    const defaultProfile = DEFAULT_PROFILE.name.toLowerCase();
+    if (defaultProfile in settings.profiles) {
+      delete settings.profiles[defaultProfile];
     }
 
     try {
