@@ -18,7 +18,14 @@ const settings = {
 function loadSettings() {
     try {
         const loadedSettings = JSON.parse(fs.readFileSync(CONFIG_PATH, "utf-8"))
-        if (loadedSettings) settings = loadedSettings 
+        if (loadedSettings) {
+          if (loadedSettings.profiles) {
+            settings.profiles = Object.assign(Object.create(null), loadedSettings.profiles);
+          }
+          if (loadedSettings.selected && (loadedSettings.selected in settings.profiles)) {
+            settings.selected = loadedSettings.selected;
+          }
+        }
     } catch (err) {
         // json was invalid or file wasn't present
         console.error("Failed to load settings", err.toString())
