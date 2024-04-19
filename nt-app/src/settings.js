@@ -80,8 +80,9 @@ module.exports = {
         return profile
     },
     setActiveProfile(name) {
-        if (!settings.profiles.hasOwnProperty(name)) return false;
-        settings.selected = name;
+        const lcName = name.toLowerCase();
+        if (!(lcName in settings.profiles)) return false;
+        settings.selected = lcName;
         saveSettings();
         return true;
     }
