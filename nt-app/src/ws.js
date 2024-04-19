@@ -14,7 +14,6 @@ const { getActiveProfile } = require('./settings.js');
 
 const { host, sni } = (() => {
     let activeProfile = getActiveProfile();
-    console.log(activeProfile);
 
     const prefix = activeProfile.lobbyUrl
     const host = prefix.endsWith("/") ? prefix : `${prefix}/`
