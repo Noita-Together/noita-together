@@ -65,7 +65,7 @@ module.exports = {
         return DEFAULT_PROFILE;
     },
     removeProfile(name) {
-        delete settings[name]
+        delete settings[name.toLowerCase()]
         saveSettings();
     },
     getActiveProfile() {
