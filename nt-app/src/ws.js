@@ -16,7 +16,7 @@ const { host, sni } = (() => {
     let activeProfile = getActiveProfile();
     console.log(activeProfile);
 
-    const prefix =
+    const prefix = activeProfile.lobbyUrl
         activeProfile.lobbyUrl ||
         `wss://` + (process.env.VUE_APP_HOSTNAME_WS || "noitatogether.com/ws/")
     const host = prefix.endsWith("/") ? prefix : `${prefix}/`
