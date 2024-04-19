@@ -99,6 +99,7 @@ export default {
         addProfile() {
             ipcRenderer.send("ADD_PROFILE", this.newProfile);
             ipcRenderer.send("GET_SETTINGS");
+            this.showAddProfile = false;
         }, 
         // remove the currently selected profile, unless the selected profile is the default
         removeProfile() {
