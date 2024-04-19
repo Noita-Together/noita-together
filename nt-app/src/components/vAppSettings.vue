@@ -24,7 +24,7 @@
             </div>
             <div v-if="showAddProfile" class="new-profile">
                 <vInput v-model="newProfile.name" label="name" />
-                <vInput v-model="newProfile.authUrl" label="Web App URL" />
+                <vInput v-model="newProfile.authUrl" label="Auth URL" />
                 <vInput v-model="newProfile.lobbyUrl" label="Lobby WS Server URL" />
                 <div>
                     <vButton class="btn btn-normal" @click="addProfile">Add</vButton>
