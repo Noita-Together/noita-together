@@ -38,7 +38,7 @@ function saveSettings() {
     }
 
     try {
-        fs.writeFileSync(CONFIG_PATH, JSON.stringify(settings))
+        fs.writeFileSync(CONFIG_PATH, JSON.stringify(settings, null, 2))
     } catch (err) {
         console.error("Failed to save settings", err.toString())
     }
