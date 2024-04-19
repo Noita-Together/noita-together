@@ -6,8 +6,8 @@ const CONFIG_PATH = path.resolve(app.getPath("userData"), "config.json")
 
 const DEFAULT_PROFILE = {
     name: "Default",
-    authUrl: process.env.VUE_APP_NT_LOGIN_URL || "ENTER THE DEFAULT LOGIN URL",
-    lobbyUrl: process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || "ENTER THE DEFAULT LOBBY SERVER URL"
+    authUrl: process.env.VUE_APP_NT_LOGIN_URL || "https://noitatogether.com/api/auth/login",
+    lobbyUrl: process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE || "wss://lobby.noitatogether.com/ws"
 }
 
 let settings = {
