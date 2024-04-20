@@ -190,11 +190,13 @@ ipcMain.on("GET_SETTINGS", async () => {
 });
 
 ipcMain.on("ADD_PROFILE", async (event, profile) => {
-    if (addProfile(profile)) appEvent("PROFILE_ADDED")
+    addProfile(profile)
+    appEvent("SETTINGS", getSettings())
 })
 
 ipcMain.on("REMOVE_PROFILE", async (event, profileName) => {
     removeProfile(profileName)
+    appEvent("SETTINGS", getSettings())
 })
 
 ipcMain.on("GET_DEFAULT_PROFILE", async () => {
@@ -206,7 +208,8 @@ ipcMain.on("GET_ACTIVE_PROFILE", async () => {
 })
 
 ipcMain.on("SET_ACTIVE_PROFILE", async (event, name) => {
-    if (setActiveProfile(name)) appEvent("ACTIVE_PROFILE_SET")
+    setActiveProfile(name)
+    appEvent("SETTINGS", getSettings())
 })
 
 // Quit when all windows are closed.

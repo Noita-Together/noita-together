@@ -8,11 +8,11 @@
                     v-model="tempSettings.selected"
                 >
                     <option
-                        v-for="(profile, index) in tempSettings.profiles"
-                        :key="profile.name"
-                        :value="index"
+                        v-for="profile in tempSettings.profiles"
+                        :key="profile.name.toLowerCase()"
+                        :value="profile.name.toLowerCase()"
                     >
-                        {{ profile.name }} : {{ profile.authUrl }}
+                        {{ profile.name.toLowerCase() }} : {{ profile.authUrl }}
                     </option>
                 </select>
                 <vButton class="btn btn-normal" @click="showAddProfile = true">
@@ -58,13 +58,10 @@ export default {
         // vTooltip
     },
     beforeCreate() {
-        ipcRenderer.send("GET_SETTINGS");
         ipcRenderer.on("SETTINGS", (event, settings) => {
             this.tempSettings = settings;
         });
-    },
-    mounted() {
-
+        ipcRenderer.send("GET_SETTINGS");
     },
     data() {
         return {
@@ -98,13 +95,12 @@ export default {
         // add the new profile, all inputs must have content
         addProfile() {
             ipcRenderer.send("ADD_PROFILE", this.newProfile);
-            ipcRenderer.send("GET_SETTINGS");
             this.showAddProfile = false;
+            this.newProfileReset();
         }, 
         // remove the currently selected profile, unless the selected profile is the default
         removeProfile() {
             ipcRenderer.send("REMOVE_PROFILE", this.tempSettings.selected);
-            ipcRenderer.send("GET_SETTINGS");
         }, 
         // cancel the adding of a new profile
         addProfileCancel() {

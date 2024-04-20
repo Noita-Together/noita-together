@@ -57,7 +57,7 @@ module.exports = {
         };
     },
     addProfile(profile) {
-        if (profile.name.toLowerCase() === 'default') return false;
+        if (profile.name.toLowerCase() === DEFAULT_PROFILE.name.toLowerCase()) return false;
         settings.profiles[profile.name.toLowerCase()] = profile;
         saveSettings();
         return true;
@@ -66,7 +66,7 @@ module.exports = {
         return DEFAULT_PROFILE;
     },
     removeProfile(name) {
-        delete settings[name.toLowerCase()]
+        delete settings.profiles[name.toLowerCase()]
         saveSettings();
     },
     getActiveProfile() {
@@ -81,6 +81,8 @@ module.exports = {
         return profile
     },
     setActiveProfile(name) {
+        if (name.toLowerCase() === DEFAULT_PROFILE.name.toLowerCase()) settings.selected = DEFAULT_PROFILE.name.toLowerCase();
+
         const lcName = name.toLowerCase();
         if (!(lcName in settings.profiles)) return false;
         settings.selected = lcName;
