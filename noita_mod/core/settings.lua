@@ -19,6 +19,12 @@ mod_settings =
  		scope=MOD_SETTING_SCOPE_RUNTIME
 	},
 	{
+		id = "NT_FOLLOW_DEFAULT",
+		ui_name = "Player ghost enabled by default",
+		value_default = false,
+		scope=MOD_SETTING_SCOPE_RUNTIME
+	},
+	{
 		id = "NT_GHOST_OPACITY",
 		ui_name = "Player ghost opacity",
 		value_default = 1.0,
