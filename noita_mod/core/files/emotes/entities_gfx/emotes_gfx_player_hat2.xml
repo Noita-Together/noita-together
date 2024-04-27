@@ -262,4 +262,17 @@
 		has_offset="1"
 		offset_x="-1"
 		offset_y="2" />
+
+	<RectAnimation
+    	name="salute"
+		frame_count="69"
+		frame_width="17"
+		frame_height="18"
+		frame_wait=".08"
+		frames_per_row="23"
+		pos_x="0"
+		pos_y="610"
+		has_offset="1"
+		offset_x="-1"
+		offset_y="2" />
 </Sprite>
