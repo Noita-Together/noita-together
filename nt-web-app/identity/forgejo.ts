@@ -69,8 +69,8 @@ const getUsersById = async (userIds: string[]): Promise<UserData[] | null> => {
   return Promise.all(userDataPromises);
 }
 
-const validateAuthServer = async (): Promise<Boolean> => {
-  return new Promise(() => true);
+const validateAuthServer = (): Promise<Boolean> => {
+  return Promise.resolve(true);
 }
 
 const getRedirectURL = (redirectURL: string, scope: string, state: string): string =>
