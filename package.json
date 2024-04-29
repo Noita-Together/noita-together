@@ -24,6 +24,7 @@
     "axios": "^1.4.0"
   },
   "devDependencies": {
+    "jest": "^29.6.0",
     "prettier": "latest",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0"

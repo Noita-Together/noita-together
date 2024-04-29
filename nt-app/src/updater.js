@@ -73,7 +73,10 @@ function FindGameFolder() {
     })
 }
 // Constants
-const AutoUpdateServers = ['https://raw.githubusercontent.com/Noita-Together/noita-together/'];
+const AutoUpdateServers = [
+    'github://Noita-Together/mod-core/',
+    'github://Noita-Together/mod-nemesis/'
+];
 
 // Implementation
 function forcedirSync(dir) {
@@ -86,6 +89,17 @@ function forcedirSync(dir) {
 
 function hash(data) {
     return crypto.createHash('sha256').update(data).digest().toString('hex').toUpperCase();
+}
+
+function buildURL(serverIndex) {
+    let serverUrl = AutoUpdateServers[serverIndex]
+    let url = ''
+    if (serverUrl.startsWith('github://')){
+        let parts = serverUrl.substring('github://'.length).split('/')
+        url = `https://api.github.com/repos/${parts[0]}/${parts[1]}/releases/latest`
+    }
+    else url = undefined //TODO not handled
+    return url
 }
 
 class Updater extends EventEmitter {
@@ -101,16 +115,14 @@ class Updater extends EventEmitter {
         const p = path.join(this.gamePath, relpath)
         return p;
     }
-    buildURL(serverIndex, relpath) {
-        return `${AutoUpdateServers[serverIndex]}main/${this.branch}/${relpath}`;
-    }
+
     async downloadRaw(serverIndex, relpath) {
-        const url = this.buildURL(serverIndex, relpath)
+        const url = buildURL(serverIndex, relpath)
         return await got(url).buffer();
     }
     async downloadJSON(serverIndex, relpath) {
-        const url = this.buildURL(serverIndex, relpath)
-        return await got(url).json();
+        const url = buildURL(serverIndex, relpath)
+        return got(url).json();
     }
 
     async check(serverIndex = 0) {
@@ -118,6 +130,8 @@ class Updater extends EventEmitter {
 
         try {
             const manifest = await this.downloadJSON(serverIndex, 'manifest.json');
+            //TODO this manifest is now our github releases API call
+            //TODO check the latest info, and compare it to the local files, then download and unpack the zip if needed
 
             let operations = [];
             Object.keys(manifest.files).forEach(relpath => {
@@ -173,7 +187,7 @@ class Updater extends EventEmitter {
         }
         if (fs.existsSync(path.join(this.gamePath, "/noita.exe"))) {
             let folder = "noita-together"
-            if (this.branch == "noita_mod/nemesis") { folder = "noita-nemesis" }
+            if (this.branch === "noita_mod/nemesis") { folder = "noita-nemesis" }
             this.gamePath = path.join(this.gamePath, "/mods/" + folder + "/")
             return true
         }
@@ -258,4 +272,5 @@ class Updater extends EventEmitter {
     }
 }
 
-module.exports = Updater;
+module.exports.buildURL = buildURL
+module.exports.Updater = Updater

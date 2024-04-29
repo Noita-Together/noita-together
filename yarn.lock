@@ -11315,6 +11315,7 @@ __metadata:
   dependencies:
     "@noita-together/nt-message": 1.0.1
     axios: ^1.4.0
+    jest: ^29.6.0
     prettier: latest
     ts-node: ^10.9.1
     ts-node-dev: ^2.0.0

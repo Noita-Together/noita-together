@@ -8,7 +8,7 @@ function updateLog(data) {
 
 function updaterSetup(branch, gamePath) {
     delete require.cache[require.resolve('./updater')]
-    const Updater = require('./updater')
+    const Updater = require('./updater').Updater
 
     let error = false //eeee
 
