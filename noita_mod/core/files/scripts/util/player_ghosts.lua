@@ -43,6 +43,10 @@ function SpawnPlayerGhost(player, userId)
     SetPlayerGhostCosmetics(userId, ghost)
     --refresh inventory
     SetPlayerGhostInventory(userId, ghost)
+    --toggle ghost based on settings
+    if ModSettingGet("noita-together.NT_FOLLOW_DEFAULT") then
+        EntityAddTag(ghost, "nt_follow")
+    end
     --return reference to created ghost
     return ghost
 end

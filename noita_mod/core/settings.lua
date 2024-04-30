@@ -19,6 +19,12 @@ mod_settings =
  		scope=MOD_SETTING_SCOPE_RUNTIME
 	},
 	{
+		id = "NT_FOLLOW_DEFAULT",
+		ui_name = "Player ghost enabled by default",
+		value_default = false,
+		scope=MOD_SETTING_SCOPE_RUNTIME
+	},
+	{
 		id = "NT_GHOST_OPACITY",
 		ui_name = "Player ghost opacity",
 		value_default = 1.0,
@@ -164,7 +170,7 @@ function input_listen()
             end
         end
     end
-    for _, code in pairs(mouse_codes) do
+    for _, code in pairs(joystick_codes) do
         if InputIsJoystickButtonDown(0, code) then
             there_is_input = true
             there_has_been_input = true
