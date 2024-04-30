@@ -177,7 +177,7 @@
     "files/scripts/start_run_hint.lua": "42fd4653a6486d7aabd1c5f55aa3b3aa9c373647aef6e99db229b51cc1a6a955",
     "files/scripts/ui.lua": "a65a8c31434ef4e6da5b711e2805050ee7666e5d9a83d58554b3ef551300fbcb",
     "files/scripts/util/coop_boss_fight.lua": "ce987b457ed4f44cceecd868fb5ddd2608cff1bded7d0b139ed4170d5d0d6588",
-    "files/scripts/util/player_ghosts.lua": "86796033307b3001bd2c426d840cc166e646e26279f251c763d02c7b42d86de9",
+    "files/scripts/util/player_ghosts.lua": "44d1c4f53dc15694c2cfb0b313a9ad05d710b889d430b0e7f775c6e1862704ec",
     "files/scripts/utils.lua": "16f03aaf43061f5c2034db47a45abdeca71831166f41b98085ae16e193634cd1",
     "files/store.lua": "d100921b562330b2082e29243151cf038a7a224800294cebfd93b262edeceec7",
     "files/stringstore/noitaglobalstore.lua": "df6663bed01bc62a918f994d2a9ec0ad2847e799366c9ce9a371973226d1299a",
@@ -283,12 +283,12 @@
     "files/ui/_hpbar_full.png": "c4efa2ad19b0dd2f4fda9582a9a13403ceaeec96b5bede248905be98bbb52b85",
     "files/ui_gfx/status_indicators/nt_hourglass_protection_half.png": "6f6a937fbf7de0cad46a5d2f5c024026188f28ab536037e921514c9b027f31c0",
     "files/ui_gfx/status_indicators/nt_hourglass_speed_levitation.png": "50e3c351577cff9e200d6d2ced92d7603c68b1190e9b417e8eebd052454aa3f7",
-    "files/ws/events.lua": "43bbde2e7b906c80f011a3a88de0868f8caaec23a37601099310aa052dacb0cd",
+    "files/ws/events.lua": "d91d49ea5b1e44b3a6a965b7dd732e00bd7335008411ad251e35332470004bfc",
     "files/ws/host.lua": "3e7067808fb85f6398dd42249cc06c06c95c0af4f294590ab67224e31d218aa7",
     "files/ws/ws.lua": "5848c4d646bd33d57e7598c92eb0c59a57bba03ed794b9612adba21666ab7e8d",
     "init.lua": "3e73200cd7b9439d37551651385895b5fda54d628346d982c3fdc6962be61ac5",
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
-    "settings.lua": "2a4af4ee136ce77b7ae5007570511e01019d868aa42a3fa02df2071c48e9f5eb"
+    "settings.lua": "e252515270281449017e46547b15665944d0af1550b4496d4be1537113bf31b0"
   },
-  "buildDate": "2024-04-27T21:53:54.854Z"
+  "buildDate": "2024-04-30T23:56:23.579Z"
 }
