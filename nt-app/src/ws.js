@@ -10,11 +10,12 @@ const appEvent = require("./appEvent")
 const noita = require("./noita")
 const { NT } = require("@noita-together/nt-message")
 const { encodeFrames } = require("./frameCoder")
+const { getActiveProfile } = require('./settings.js');
 
 const { host, sni } = (() => {
-    const prefix =
-        process.env.VUE_APP_LOBBY_SERVER_WS_URL_BASE ||
-        `wss://` + (process.env.VUE_APP_HOSTNAME_WS || "noitatogether.com/ws/")
+    let activeProfile = getActiveProfile();
+
+    const prefix = activeProfile.lobbyUrl
     const host = prefix.endsWith("/") ? prefix : `${prefix}/`
     const url = new URL(host)
     const sni = url.hostname

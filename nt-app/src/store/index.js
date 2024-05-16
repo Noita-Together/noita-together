@@ -390,7 +390,7 @@ export default new Vuex.Store({
             canClose: true
         },
         showErrDialog: false,
-        stats: null
+        stats: null, 
     },
     getters: {
         isHost: (state) => {
@@ -434,7 +434,7 @@ export default new Vuex.Store({
         },
         protoFlags: (state) => {
             return flagsToProto(state.room.gamemode, state.roomFlags)
-        }
+        }, 
     },
     mutations: {
         setSavedUserName: (state, value) => {
