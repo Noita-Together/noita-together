@@ -9,6 +9,8 @@ end
 dofile("mods/noita-together/files/scripts/util/player_ghosts.lua") --TODO make this a dofile_once ???
 dofile_once("mods/noita-together/files/scripts/util/coop_boss_fight.lua")
 
+local bit = require("bit")
+
 function GetPlayer()
     local player = EntityGetWithTag("player_unit") or nil
     if player ~= nil then
@@ -198,6 +200,28 @@ function PlayerHeartPickup(perk, userId)
         GamePrint(description)
     end
 end
+local orbIdToName = {
+    [0] = "$noitatogether_mountain",
+    [1] = "$biome_pyramid",
+    [2] = "$biome_vault_frozen",
+    [3] = "$noitatogether_location_lavalake",
+    [4] = "$biome_sandcave",
+    [5] = "$biome_wandcave",
+    [6] = "$biome_rainforest_dark",
+    [7] = "$noitatogether_location_abbc",
+    [8] = "$noitatogether_location_hell",
+    [9] = "$biome_winter_caves",
+    [10] = "$biome_wizardcave",
+    [11] = "$item_chest_treasure_super"
+}
+
+local function getOrbName(id)
+    if bit.band(id,384) ~= 0 then
+        local dir_key = ( bit.band(id,128) ~= 0 and "$biome_west" ) or "$biome_east"
+        return GameTextGet(dir_key, getOrbName(bit.band(id,127)))
+    end
+    return GameTextGet(orbIdToName[bit.band(id,127)] or "$noitatogether_orb_unknownid", id)
+end
 
 function PlayerOrbPickup(id, userId)
     async(
@@ -205,10 +229,10 @@ function PlayerOrbPickup(id, userId)
             local player = PlayerList[userId].name
             local already_picked = GameGetOrbCollectedThisRun(id)
             if (already_picked) then
-                GamePrint(GameTextGet("$noitatogether_player_got_orb_had", player))
+                GamePrint(GameTextGet("$noitatogether_player_got_orb_had", player, getOrbName(id)))
                 return nil
             end
-            GamePrint(GameTextGet("$noitatogether_player_got_orb", player))
+            GamePrint(GameTextGet("$noitatogether_player_got_orb", player, getOrbName(id)))
             local orb = EntityLoad("mods/noita-together/files/entities/forced_orb.xml", GetPlayerPos())
             local orbcomp = EntityGetFirstComponent(orb, "OrbComponent")
             ComponentSetValue2(orbcomp, "orb_id", id)

@@ -51,8 +51,12 @@ noitatogether_teamperk_received_subtitle,Enjoy!,,,,,,,,,,,,subtitle of message w
 noitatogether_angered_gods_title,$0 angered the Gods,,,,,,,,,,,,title of message when a player angers the gods with sync steve,
 noitatogether_angered_gods_subtitle,Good luck,,,,,,,,,,,,subtitle of message when a player angers the gods with sync steve,
 noitatogether_player_got_heart,$0 picked up a heart,,,,,,,,,,,,message when player picks up a heart,
-noitatogether_player_got_orb_had,$0 found an orb of knowledge you had already found,,,,,,,,,,,,message when player picks up an orb you already found,
-noitatogether_player_got_orb,$0 found an orb of knowledge,,,,,,,,,,,,message when player picks up an orb,
+noitatogether_player_got_orb_had,$0 found an orb of knowledge you had already found ($1),,,,,,,,,,,,message when player picks up an orb you already found,
+noitatogether_player_got_orb,$0 found an orb of knowledge ($1),,,,,,,,,,,,message when player picks up an orb,
+noitatogether_location_lavalake,Lava Lake,,,,,,,,,,,,name of the lava lake (orb2 location)
+noitatogether_location_abbc,Bridge Boss,,,,,,,,,,,,name of the abbc (orb7 location)
+noitatogether_location_hell,Hell,,,,,,,,,,,,name of the work (hell) (orb8 location)
+noitatogether_orb_unknownid,BUG: UNKNOWN ORB ID $0?,,,,,,,,,,,,message when unknown orb id is picked
 noitatogether_heart_blocked_playercount,Unable to calculate proper health increase. Gave the min hp increase (bug),,,,,,,,,,,,message when player can't benefit from hearts,
 noitatogether_player_died,$0 died,,,,,,,,,,,,message when player died generically,
 noitatogether_run_end_lowhp_title,Not enough life force,,,,,,,,,,,,title of message when run ends due to respawn penalty dropping hp too low,
