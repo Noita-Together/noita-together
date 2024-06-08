@@ -100,6 +100,26 @@ function ConvertStrToTable(data)
     return ret
 end
 
+function EntityGetNamedChild(entity,name)
+    local childs = EntityGetAllChildren(entity)
+    if childs ~= nil then
+        for _,child in ipairs(childs) do
+            if EntityGetName(child) == name then
+                return child
+            end
+        end
+    end
+    return nil
+end
+
+function GetPlayerInventoryQuick()
+    local player = GetPlayer()
+    if player then
+        return EntityGetNamedChild(player,"inventory_quick")
+    end
+    return nil
+end
+
 function GetPlayerWands()
     local player = GetPlayer()
     if (player == nil) then return {} end
@@ -125,18 +145,15 @@ function GetPlayerWands()
     return wands or nil
 end
 
-function GetPlayerInventory()
-    local childs = EntityGetAllChildren(GetPlayer())
-    local inven = nil
-    if childs ~= nil then
-        for _, child in ipairs(childs) do
-            if EntityGetName(child) == "inventory_full" then
-                inven = child
-            end
-        end
+function GetPlayerInventory() --full
+    local player = GetPlayer()
+    if player then
+        return EntityGetNamedChild(player,"inventory_full")
     end
-    return inven or nil
+    return nil
+
 end
+
 
 function AngerSteve(userId)
     if (NT.sent_steve or GlobalsGetValue("TEMPLE_SPAWN_GUARDIAN") == "1") then return nil end
@@ -198,6 +215,28 @@ function PlayerHeartPickup(perk, userId)
         GamePrint(description)
     end
 end
+local orbIdToName = {
+    [0] = "$noitatogether_mountain",
+    [1] = "$biome_pyramid",
+    [2] = "$biome_vault_frozen",
+    [3] = "$noitatogether_location_lavalake",
+    [4] = "$biome_sandcave",
+    [5] = "$biome_wandcave",
+    [6] = "$biome_rainforest_dark",
+    [7] = "$noitatogether_location_abbc",
+    [8] = "$noitatogether_location_hell",
+    [9] = "$biome_winter_caves",
+    [10] = "$biome_wizardcave",
+    [11] = "$item_chest_treasure_super"
+}
+
+local function getOrbName(id)
+    if bit.band(id,384) ~= 0 then
+        local dir_key = ( bit.band(id,128) ~= 0 and "$biome_west" ) or "$biome_east"
+        return GameTextGet(dir_key, getOrbName(bit.band(id,127)))
+    end
+    return GameTextGet(orbIdToName[bit.band(id,127)] or "$noitatogether_orb_unknownid", id)
+end
 
 function PlayerOrbPickup(id, userId)
     async(
@@ -205,10 +244,10 @@ function PlayerOrbPickup(id, userId)
             local player = PlayerList[userId].name
             local already_picked = GameGetOrbCollectedThisRun(id)
             if (already_picked) then
-                GamePrint(GameTextGet("$noitatogether_player_got_orb_had", player))
+                GamePrint(GameTextGet("$noitatogether_player_got_orb_had", player, getOrbName(id)))
                 return nil
             end
-            GamePrint(GameTextGet("$noitatogether_player_got_orb", player))
+            GamePrint(GameTextGet("$noitatogether_player_got_orb", player, getOrbName(id)))
             local orb = EntityLoad("mods/noita-together/files/entities/forced_orb.xml", GetPlayerPos())
             local orbcomp = EntityGetFirstComponent(orb, "OrbComponent")
             ComponentSetValue2(orbcomp, "orb_id", id)
@@ -719,6 +758,9 @@ function StartRun()
                 EntityRemoveTag(player, "polymorphable_NOT")
             end
             GameRemoveFlagRun("NT_added_poly_immune_prerun")
+
+            --Re-enable the starter potion now, too
+            SetStarterPotionDrinkable(true)
         end
 
         local cosmetics = CosmeticFlags()
@@ -726,6 +768,19 @@ function StartRun()
         GameAddFlagRun("NT_unlocked_controls")
         _start_run = false
         _started = true
+    end
+end
+
+function SetStarterPotionDrinkable(state)
+    local inven_quick = GetPlayerInventoryQuick()
+    if inven_quick then
+        local children = EntityGetAllChildren(inven_quick,"potion")
+        if children and #children > 0 then
+            local item_comp = EntityGetFirstComponentIncludingDisabled(children[1],"ItemComponent")
+            if item_comp then
+                ComponentSetValue2(item_comp,"drinkable",state and true or false)
+            end
+        end
     end
 end
 
