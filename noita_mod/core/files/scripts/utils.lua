@@ -9,8 +9,6 @@ end
 dofile("mods/noita-together/files/scripts/util/player_ghosts.lua") --TODO make this a dofile_once ???
 dofile_once("mods/noita-together/files/scripts/util/coop_boss_fight.lua")
 
-local bit = require("bit")
-
 function GetPlayer()
     local player = EntityGetWithTag("player_unit") or nil
     if player ~= nil then
