@@ -245,6 +245,10 @@ function OnPlayerSpawned(player_entity)
     if (not EntityHasTag(player_entity, "polymorphable_NOT")) then
         EntityAddTag(player_entity, "polymorphable_NOT")
         GameAddFlagRun("NT_added_poly_immune_prerun")
+
+        --also disable drinking the starting potion
+        --we will reenable this later ( utils.lua:StartRun() )
+        SetStarterPotionDrinkable(false)
     end
 
     if (ModSettingGet("noita-together.NT_HINTS")) then
