@@ -1,12 +1,12 @@
-import {Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn} from "typeorm"
+import { Entity, PrimaryColumn, Column, UpdateDateColumn, CreateDateColumn } from "typeorm"
 
-export type LoginProvider = 'local'|'twitch'
+export type LoginProvider = string
 
 /**
  * @module DBUser
  */
-@Entity({name: "user", synchronize: true})
-export class User{
+@Entity({ name: "user", synchronize: true })
+export class User {
     @PrimaryColumn()
     id: string
 
@@ -16,7 +16,7 @@ export class User{
     @Column()
     display_name: string
 
-    private _access: Role|null = null;
+    private _access: Role | null = null;
 
     @Column({ type: "text", nullable: false })
     get access(): string {
@@ -30,8 +30,8 @@ export class User{
         return '';
     }
 
-    set access(value: string|null) {
-        if(!value){
+    set access(value: string | null) {
+        if (!value) {
             this._access = new RoleImpl()
             return
         }
@@ -51,9 +51,9 @@ export class User{
 
     uaccess?: number
 
-    constructor(id: string, twitch_user_name: string, access: Role, provider: LoginProvider) {
+    constructor(id: string, user_name: string, access: Role, provider: LoginProvider) {
         this._access = access
-        this.display_name = twitch_user_name
+        this.display_name = user_name
         this.id = id
         this.provider = provider
         this.uaccess = 0
