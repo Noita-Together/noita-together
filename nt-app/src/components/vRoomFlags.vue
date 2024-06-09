@@ -37,22 +37,48 @@
                 </vSwitch>
             </div>
 
-            <h2>
-                <span>World seed</span>
-                <vTooltip>
+            <div class="value-inputs">
+              <!--If !tempFlags.NT_sync_orbs.value, add a disabled flag-->
+              <div
+                  class="orb-count-sync-group"
+                  v-if="tempFlags.NT_sync_orbs.value"
+              >
+                <h2>
+                  <span>Orb Sync Count</span>
+                  <vTooltip>
+                    <span>{{ tooltip("NT_sync_orb_count", false) }}</span>
+                  </vTooltip>
+                </h2>
+                <div class="orb-input">
+                  <vInput
+                      :disabled="!isHost || !tempFlags.NT_sync_orbs.value"
+                      min="0"
+                      type="number"
+                      v-model.number="tempFlags.NT_sync_orb_count.value"
+                      ref="orbInput"
+                  ></vInput>
+                </div>
+              </div>
+              <div class="world-seed-sync-group">
+                <h2>
+                  <span>World seed</span>
+                  <vTooltip>
                     <span>{{ tooltip("NT_sync_world_seed", false) }}</span>
-                </vTooltip>
-            </h2>
-            <div class="world-seed">
-                <vInput
-                    :disabled="!isHost"
-                    type="number"
-                    v-model.number="tempFlags.NT_sync_world_seed.value"
-                    ref="seedInput"
-                ></vInput>
-                <vButton :disabled="!isHost" @click="randomizeSeed"
-                    >Random</vButton
-                >
+                  </vTooltip>
+                </h2>
+                <div class="world-seed">
+                  <vInput
+                      :disabled="!isHost"
+                      min="0"
+                      type="number"
+                      v-model.number="tempFlags.NT_sync_world_seed.value"
+                      ref="seedInput"
+                  ></vInput>
+                  <vButton :disabled="!isHost" @click="randomizeSeed"
+                  >Random</vButton
+                  >
+                </div>
+              </div>
             </div>
         </template>
         <div slot="footer" class="centered">
@@ -152,7 +178,11 @@ export default {
             return this.flagInfo(id, enumValue).tooltip
         },
         applyFlags() {
-            this.$emit("applyFlags", Object.values(this.tempFlags))
+          //if tempFlags.NT_sync_orbs.value is false, set the orb count to 0
+          if (!this.tempFlags.NT_sync_orbs.value) {
+            this.tempFlags.NT_sync_orb_count.value = 0
+          }
+          this.$emit("applyFlags", Object.values(this.tempFlags))
         },
         randomizeSeed() {
             const seed = Math.floor(Math.random() * 4294967295) + 1
@@ -182,6 +212,30 @@ export default {
 .switches > div {
     padding: 0.2em;
     min-width: 180px;
+}
+
+.value-inputs{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.orb-count-sync-group{
+
+}
+
+//if the sync orbs flag is not enabled, disable the group
+.orb-count-sync-group[aria-disabled="true"]{
+  display: none;
+}
+
+.world-seed-sync-group{
+
+}
+
+.orb-count{
+  display: flex;
+  width: 100%;
 }
 
 .world-seed {
