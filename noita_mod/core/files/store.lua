@@ -17,8 +17,6 @@ if (NT.initialized ~= true) then
     NT.sent_steve = false
     NT.end_msg = ""
 
-    NT.skip_heart = 0
-
     NT.initialized = true
     NT.wsQueue = "[]"
     NT.queuedItems = "[]"
