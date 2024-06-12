@@ -247,7 +247,7 @@ wsEvents = {
                 end
             elseif (entry.flag == "NT_sync_orb_count") then
                 ModSettingSet( "noita_together.orb_count_max", entry.uIntVal )
-                GamePrint("Max orb count was changed to "..entry.uIntVal)
+                --nt print_error("Max orb count was changed to "..entry.uIntVal)
             else
                 GameAddFlagRun(entry.flag)
             end
