@@ -22,6 +22,14 @@ export default {
             type: Function,
             required: false,
         },
+        min: {
+            type: Number,
+            required: false,
+        },
+        max: {
+            type: Number,
+            required: false,
+        },
         label: {
             type: String,
             required: false,
@@ -45,6 +53,15 @@ export default {
     methods: {
         handleInput() {
             this.content = this.$refs.input.value
+            //bound to the max and min if they exist, and if the input is a number
+            if (this.inputType === "number") {
+                if (this.min && this.content < this.min) {
+                    this.content = this.min;
+                }
+                if (this.max && this.content > this.max) {
+                    this.content = this.max;
+                }
+            }
             if (typeof this.validate == "function") {
                 const validated = this.validate(this.content);
                 if (typeof validated == "string") {
