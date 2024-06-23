@@ -111,7 +111,7 @@ wsEvents = {
     RequestGameInfo = function(data)
         local seed = StatsGetValue("world_seed")
         local mods = ModGetActiveModIDs()
-        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.18.0", beta=GameIsBetaBuild()}})
+        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.19.0", beta=GameIsBetaBuild()}})
         SendWsEvent({event="RequestPlayerList", payload={}})
         PopulateSpellList()
     end,
@@ -245,6 +245,9 @@ wsEvents = {
                 --elseif (entry.intVal == seed) then messes up random perks/items sadge
                     --ModSettingSet( "noita_together.seed", 0 )
                 end
+            elseif (entry.flag == "NT_sync_orb_count") then
+                ModSettingSet( "noita_together.orb_count_max", entry.uIntVal )
+                --nt print_error("Max orb count was changed to "..entry.uIntVal)
             else
                 GameAddFlagRun(entry.flag)
             end

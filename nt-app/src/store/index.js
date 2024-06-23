@@ -39,6 +39,8 @@ export const flagInfo = {
         "NT_sync_steve":                  { name: "Sync Steve", tooltip: "Angers the gods for everyone." },
         "NT_sync_hearts":                 { name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too." },
         "NT_sync_orbs":                   { name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+        "NT_sync_orbs_no_curse":          { name: "Friendly PW Orbs", tooltip: "Parallel World orbs won't send cursed hearts to other players. No effect without \"Sync Orbs\"" },
+        "NT_sync_orb_count":              { name: "Sync Orb Until", tooltip: "Everyone gets an orb until this number is hit. If 0, then there is no limit" },
         "NT_sync_shift":                  { name: "Sync Shifts", tooltip: "When someone fungal shifts everyone also gets the same shift, cooldown also applies." },
         "NT_send_wands":                  { name: "Send Wands", tooltip: "Allow players to deposit/take wands." },
         "NT_send_flasks":                 { name: "Send Flasks", tooltip: "Allow players to deposit/take flasks." },
@@ -77,6 +79,8 @@ export const defaultFlags = {
         { id: "NT_sync_steve",                 type: "boolean", value: true,  },
         { id: "NT_sync_hearts",                type: "boolean", value: true,  },
         { id: "NT_sync_orbs",                  type: "boolean", value: true,  },
+        { id: "NT_sync_orbs_no_curse",         type: "boolean", value: false, requires: [{"NT_sync_orbs": true}] }, //TODO actually check requires :)
+        { id: "NT_sync_orb_count",             type: "number" , value: 0,     },
         { id: "NT_sync_shift",                 type: "boolean", value: true,  },
         { id: "NT_send_wands",                 type: "boolean", value: true,  },
         { id: "NT_send_flasks",                type: "boolean", value: true,  },

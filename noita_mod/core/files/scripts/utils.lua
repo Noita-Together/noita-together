@@ -238,9 +238,28 @@ local function getOrbName(id)
     return GameTextGet(orbIdToName[bit.band(id,127)] or "$noitatogether_orb_unknownid", id)
 end
 
+--type-check mod setting before returning...
+function ModSettingGetTyped(setting,expect_type,fallback)
+    local ret = ModSettingGet(setting)
+    if type(ret) == expect_type then return ret end
+    return fallback
+end
+
+
+function ShouldSyncOrbs()
+    --What is the performance impact of checking mod setting here? probably not too bad if its just on orbs
+    local limit = ModSettingGetTyped("noita_together.orb_count_max","number",0)
+    --nt print_error("called ShouldSyncOrbs, limit = " .. limit .. " , count = " .. GameGetOrbCountThisRun() .. " , flag = " .. (GameHasFlagRun("NT_sync_orbs") and "true" or "false"))
+    --0 means no limit, any negative value prevents orb sync altogether (but also covered by NT_sync_orbs for now)
+    return GameHasFlagRun("NT_sync_orbs") and (limit == 0 or GameGetOrbCountThisRun() < limit)
+end
+
 function PlayerOrbPickup(id, userId)
     async(
         function()
+            --do nothing if orb syncing is over
+            if not ShouldSyncOrbs() then return end
+
             local player = PlayerList[userId].name
             local already_picked = GameGetOrbCollectedThisRun(id)
             if (already_picked) then

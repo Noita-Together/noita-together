@@ -56,9 +56,7 @@ end
 function item_pickup(entity_item, entity_who_picked, name)
     if (GameHasFlagRun("NT_GAMEMODE_CO_OP") and GameHasFlagRun("NT_sync_hearts")) then
         shared_heart(entity_item, entity_who_picked, name)
-        if (NT.skip_heart > 0) then
-            NT.skip_heart = NT.skip_heart - 1
-        else
+        if not EntityHasTag(entity_item,"fake_orb") then --reuse fake_orb tag because there is a tag limit :) 
             local queue = json.decode(NT.wsQueue)
             table.insert(queue, {event="PlayerPickup", payload={heart={hpPerk=false}}})
             NT.wsQueue = json.encode(queue)
