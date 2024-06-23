@@ -319,11 +319,12 @@ if not initialized then
                     if value.usesRemaining and value.usesRemaining >= 0 then
                         GuiText(gui, nx + nox + 1, ny + nyx - 8, value.usesRemaining)
                     end
-                    nox = nox + 15
-                    if (index % 10 == 0) then
-                        nyx = nyx + 20
-                        nox = 5
-                    end
+                end
+
+                nox = nox + 15
+                if (index % 10 == 0) then
+                    nyx = nyx + 20
+                    nox = 5
                 end
             end
 
@@ -1044,3 +1045,4 @@ if not initialized then
         GuiIdPop(gui)
     end
 end
+
