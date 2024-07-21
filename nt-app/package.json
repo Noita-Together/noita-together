@@ -19,7 +19,7 @@
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@popperjs/core": "^2.6.0",
         "electron": "^11.5.0",
-        "electron-updater": "6.2.1",
+        "electron-updater": "6.3.0",
         "fs-extra": "^11.2.0",
         "got": "^11.8.6",
         "jsonwebtoken": "^9.0.2",
