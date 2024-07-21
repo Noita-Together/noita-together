@@ -15,21 +15,13 @@ jobs:
         with:
           node-version: 16
       - run: yarn install
-      - name: Get version from tag
-        id: get_tag_version
-        run: echo ::set-output name=version::${{ github.ref }}
-      - name: Set package.json version
-        run: |
-          npm version ${{ steps.get_tag_version.outputs.version }}#app-
-        working-directory: ./nt-app
-      - run: yarn install
       - run: yarn workspace nt-app electron:build --publish never
       - run: ls ${{ github.workspace }}/nt-app/dist_electron/
       - run: |
           mkdir ${{ github.workspace }}/build
           cp "${{ github.workspace }}/nt-app/dist_electron/latest.yml" ${{ github.workspace }}/build/latest.yml
-          cp "${{ github.workspace }}/nt-app/dist_electron/Noita Together Setup ${{ steps.get_tag_version.outputs.version }}.exe" ${{ github.workspace }}/build/Noita-Together-Setup-${{ steps.get_tag_version.outputs.version }}.exe
-          cp "${{ github.workspace }}/nt-app/dist_electron/Noita Together Setup ${{ steps.get_tag_version.outputs.version }}.exe.blockmap" ${{ github.workspace }}/build/Noita-Together-Setup-${{ steps.get_tag_version.outputs.version }}.exe.blockmap
+          cp "${{ github.workspace }}/nt-app/dist_electron/Noita-Together-Setup-*.exe" ${{ github.workspace }}/build/
+          cp "${{ github.workspace }}/nt-app/dist_electron/Noita-Together-Setup-*.exe.blockmap" ${{ github.workspace }}/build/
       - name: Upload files to release
         uses: svenstaro/upload-release-action@v2
         with:
