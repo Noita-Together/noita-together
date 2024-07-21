@@ -5,6 +5,10 @@ on:
     tags:
       - 'app-*'
 
+#for uploading release exe
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
