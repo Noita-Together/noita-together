@@ -1,0 +1,45 @@
+name: Deploy Linux Production
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+#for uploading release exe
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: 'Create env file'
+        working-directory: ${{ github.workspace }}/nt-app/
+        run: |
+          touch .env
+          echo VUE_APP_HOSTNAME=${{ vars.VUE_APP_HOSTNAME }} >> .env
+          echo VUE_APP_NT_LOGIN_URL=${{ vars.VUE_APP_NT_LOGIN_URL }} >> .env
+          echo VUE_APP_LOBBY_SERVER_WS_URL_BASE=${{ vars.VUE_APP_LOBBY_SERVER_WS_URL_BASE }} >> .env
+          cat .env
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: yarn install
+      - run: yarn workspace nt-app electron:build --publish never
+      - run: ls ${{ github.workspace }}/nt-app/dist_electron/
+      - run: |
+          mkdir ${{ github.workspace }}/build
+          cp "${{ github.workspace }}/nt-app/dist_electron/latest-linux.yml" ${{ github.workspace }}/build/latest.yml
+          cp "${{ github.workspace }}/nt-app/dist_electron/Noita-Together-Setup-*.AppImage ${{ github.workspace }}/build/
+          cp "${{ github.workspace }}/nt-app/dist_electron/Noita-Together-Setup-*.snap" ${{ github.workspace }}/build/
+      - name: Upload files to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/build/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
