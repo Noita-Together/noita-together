@@ -34,8 +34,6 @@ jobs:
         run: |
           mkdir ${{ github.workspace }}/build
           cp ./latest-linux.yml ${{ github.workspace }}/build/latest-linux.yml
-          cp ./*.AppImage ${{ github.workspace }}/build/
-          cp ./*.snap ${{ github.workspace }}/build/
       - name: Upload files to release
         uses: svenstaro/upload-release-action@v2
         with:
