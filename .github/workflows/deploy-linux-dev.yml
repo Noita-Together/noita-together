@@ -33,7 +33,7 @@ jobs:
       - working-directory: "${{ github.workspace }}/nt-app/dist_electron/"
         run: |
           mkdir ${{ github.workspace }}/build
-          cp ./latest-linux.yml ${{ github.workspace }}/build/latest.yml
+          cp ./latest-linux.yml ${{ github.workspace }}/build/latest-linux.yml
           cp ./*.AppImage ${{ github.workspace }}/build/
           cp ./*.snap ${{ github.workspace }}/build/
       - name: Upload files to release
