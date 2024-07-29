@@ -3,7 +3,7 @@ name: Deploy Linux Dev
 on:
   push:
     tags:
-      - 'v*'
+      - 'dev-*'
 
 #for uploading release exe
 permissions:
@@ -12,7 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: prod
+    environment: dev
 
     steps:
       - uses: actions/checkout@v3
