@@ -16,6 +16,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: 'Create env file'
+        working-directory: ${{ github.workspace }}/nt-app/
+        run: |
+          touch .env
+          echo VUE_APP_HOSTNAME=${{ secrets.VUE_APP_HOSTNAME }} >> .env
+          echo VUE_APP_NT_LOGIN_URL=${{ secrets.VUE_APP_NT_LOGIN_URL }} >> .env
+          echo VUE_APP_LOBBY_SERVER_WS_URL_BASE=${{ secrets.VUE_APP_LOBBY_SERVER_WS_URL_BASE }} >> .env
+          cat .env
       - uses: actions/setup-node@v3
         with:
           node-version: 16
