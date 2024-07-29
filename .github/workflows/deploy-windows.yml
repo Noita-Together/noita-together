@@ -20,9 +20,9 @@ jobs:
         working-directory: ${{ github.workspace }}/nt-app/
         run: |
           touch .env
-          echo VUE_APP_HOSTNAME=$VUE_APP_HOSTNAME >> .env
-          echo VUE_APP_NT_LOGIN_URL=$VUE_APP_NT_LOGIN_URL >> .env
-          echo VUE_APP_LOBBY_SERVER_WS_URL_BASE=$VUE_APP_LOBBY_SERVER_WS_URL_BASE >> .env
+          echo VUE_APP_HOSTNAME=${{ vars.VUE_APP_HOSTNAME }} >> .env
+          echo VUE_APP_NT_LOGIN_URL=${{ vars.VUE_APP_NT_LOGIN_URL }} >> .env
+          echo VUE_APP_LOBBY_SERVER_WS_URL_BASE=${{ vars.VUE_APP_LOBBY_SERVER_WS_URL_BASE }} >> .env
           cat .env
       - uses: actions/setup-node@v3
         with:
