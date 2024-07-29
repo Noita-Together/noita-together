@@ -1,9 +1,9 @@
-name: Deploy Windows
+name: Deploy Windows Dev
 
 on:
   push:
     tags:
-      - 'app-*'
+      - 'dev-*'
 
 #for uploading release exe
 permissions:
@@ -12,6 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    environment: dev
 
     steps:
       - uses: actions/checkout@v3
