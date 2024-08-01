@@ -36,6 +36,7 @@ export const flagInfo = {
     0: {
         "NT_sync_perks":                  { name: "Share all perks", tooltip: "When grabbing perks the whole team will also get them." },
         "NT_team_perks":                  { name: "Team Perks", tooltip: "When grabbing certain perks (not all) the whole team will also get them." },
+        "NT_ban_perks":                   { name: "Ban Glass Cannon", tooltip: "Remove glass cannon from perk pool (Gamble is safe). Recommended for large lobbies when using Respawn Penalty."},
         "NT_sync_steve":                  { name: "Sync Steve", tooltip: "Angers the gods for everyone." },
         "NT_sync_hearts":                 { name: "Sync Hearts", tooltip: "When someone picks up a heart everyone else gets it too." },
         "NT_sync_orbs":                   { name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
@@ -76,6 +77,7 @@ export const defaultFlags = {
     0: [
         { id: "NT_sync_perks",                 type: "boolean", value: false, },
         { id: "NT_team_perks",                 type: "boolean", value: true,  },
+        { id: "NT_ban_perks",                  type: "boolean", value: false,  },
         { id: "NT_sync_steve",                 type: "boolean", value: true,  },
         { id: "NT_sync_hearts",                type: "boolean", value: true,  },
         { id: "NT_sync_orbs",                  type: "boolean", value: true,  },
