@@ -8,12 +8,12 @@ if (!fs.existsSync(uaccess_file)) {
     fs.writeFileSync(uaccess_file, '', 'utf-8')
 }
 
-if(process.env.DEV_MODE === 'true') console.log('!!!Server is in DEV mode. Only developers can create rooms!!!')
+if (process.env.DEV_MODE === 'true') console.log('!!!Server is in DEV mode. Only developers can create rooms!!!')
 
 import * as http from 'http';
 import next from "next";
 import { parse } from "url";
-import { getServerAccessToken } from "./utils/TwitchUtils";
+import { validateAuthServer } from "./identity/identity.ts";
 import path from 'path';
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -21,13 +21,13 @@ const hostname = 'localhost';
 const port = 3000;
 
 // when using middleware `hostname` and `port` must be provided below
-let tokensPromise = getServerAccessToken()
+let authValidPromise = validateAuthServer()
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 app.prepare().then(async () => {
-    const tokens = await tokensPromise
-    if(!tokens?.access_token) throw new Error("Unable to authenticate with twitch!")
+    const authValid = await authValidPromise
+    if (!authValid) throw new Error("Unable to access auth server!")
     http.createServer(async (req, res) => {
         try {
             if (!req.url) return

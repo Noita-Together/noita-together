@@ -1,8 +1,8 @@
-import type {NextApiRequest, NextApiResponse} from 'next'
-import {getUsersById} from "../../../utils/TwitchUtils";
-import {createAccessToken, verifyToken} from "../../../utils/jwtUtils";
-import {UserDatasource} from "../../../websocket/Datasource";
-import {LoginProvider, User} from "../../../entity/User";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { getUsersById, provider } from "../../../identity/identity";
+import { createAccessToken, verifyToken } from "../../../utils/jwtUtils";
+import { UserDatasource } from "../../../websocket/Datasource";
+import { LoginProvider, User } from "../../../entity/User";
 import * as jwt from "jsonwebtoken";
 
 const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
@@ -54,11 +54,11 @@ export default async function handler(
     let accessKey: string
 
     switch (user.provider as LoginProvider) {
-        case 'twitch':
-            //get the user from the Twitch API using TWITCH_CLIENT_ID and TWITCH_API_KEY
+        case provider:
+            //get the user from the provider if possible, else throw a 502
             const userData = await getUsersById([userSub])
             if (!userData || userData.length === 0) {
-                res.status(502).end("502 Failed to get twitch user data");
+                res.status(502).end("502 Failed to get user data from identity provider");
                 return
             }
             //create the access token and give it to the user :)
@@ -75,6 +75,9 @@ export default async function handler(
                 expiresIn: '8h'
             })
             break
+        default:
+            accessKey = "";
+            return res.status(401).end("401 Unauthorized. Identity Provider is incorrect.");
     }
     res.status(200).json({
         token: accessKey,
