@@ -51,7 +51,7 @@ export default async function handler(
         return
     }
 
-    const expiresIn = ms(ACCESS_TOKEN_DURATION)*1000 //ms to seconds, using the vercel ms library, as JWT lib does
+    const expiresIn = ms(ACCESS_TOKEN_DURATION)/1000 //ms to seconds, using the vercel ms library, as JWT lib does
     let accessKey: string
 
     switch (user.provider as LoginProvider) {
