@@ -1,9 +1,10 @@
 import type {NextApiRequest, NextApiResponse} from 'next'
 import {getUsersById} from "../../../utils/TwitchUtils";
-import {createAccessToken, verifyToken} from "../../../utils/jwtUtils";
+import {createAccessToken, verifyToken, ACCESS_TOKEN_DURATION} from "../../../utils/jwtUtils";
 import {UserDatasource} from "../../../websocket/Datasource";
 import {LoginProvider, User} from "../../../entity/User";
 import * as jwt from "jsonwebtoken";
+import ms from 'ms'
 
 const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
 const SECRET_REFRESH = process.env.SECRET_JWT_REFRESH as string
@@ -50,7 +51,7 @@ export default async function handler(
         return
     }
 
-    const expiresIn = '28800'
+    const expiresIn = ms(ACCESS_TOKEN_DURATION)*1000 //ms to seconds, using the vercel ms library, as JWT lib does
     let accessKey: string
 
     switch (user.provider as LoginProvider) {
@@ -72,12 +73,12 @@ export default async function handler(
                 profile_image_url: '',
                 provider: 'local'
             }, SECRET_ACCESS, {
-                expiresIn: '8h'
+                expiresIn: ACCESS_TOKEN_DURATION
             })
             break
     }
     res.status(200).json({
         token: accessKey,
-        expires_in: expiresIn
+        expires_in: expiresIn.toString()
     });
 }
