@@ -25,6 +25,7 @@ for _,entry in pairs( pregen_wand_biomes ) do
     ModLuaFileAppend( entry, "mods/noita-together/files/append/preset_wands_random.lua" );
 end
 ModLuaFileAppend("data/scripts/biome_scripts.lua", "mods/noita-together/files/append/biome_scripts.lua")
+ModLuaFileAppend("data/scripts/biome_scripts.lua", "mods/noita-together/files/append/unbone_ghosts.lua")
 ModLuaFileAppend("data/scripts/items/generate_shop_item.lua", "mods/noita-together/files/append/generate_shop_item.lua")
 ModLuaFileAppend("data/scripts/gun/procedural/gun_procedural.lua", "mods/noita-together/files/append/gun_procedural.lua")
 ModLuaFileAppend("data/scripts/items/chest_random.lua", "mods/noita-together/files/append/chest_random.lua")
@@ -45,6 +46,11 @@ ModLuaFileAppend("data/scripts/perks/perk_pickup.lua", "mods/noita-together/file
 ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/files/append/perk_reroll.lua")
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
+
+-- due to the relevant code being in the global scope, we have to prepend this instead of appending
+local unbone_ghosts_text = ModTextFileGetContent("mods/noita-together/files/append/unbone_ghosts.lua")
+local boss_sky_text = ModTextFileGetContent("data/entities/animals/boss_sky/boss_sky.lua")
+ModTextFileSetContent("data/entities/animals/boss_sky/boss_sky.lua", unbone_ghosts_text .. boss_sky_text)
 
 --emote system mnee support
 if ModIsEnabled("mnee") then
