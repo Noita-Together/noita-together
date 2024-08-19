@@ -204,6 +204,17 @@ module.exports = (data) => {
                         appEvent('sUserJoinedRoom', payload)
                         lobby.sUserJoinedRoom(payload)
                         return
+                    case '/bulkusergen':
+                        console.log(`Sending bulk fake sUserJoinedRoom with payload to self`, payload)
+                        for(let i = 0; i < parseInt(msgSplit[1]); i++){
+                            payload = {
+                                userId: uuidv4(),
+                                name: uuidv4()
+                            }
+                            appEvent('sUserJoinedRoom', payload)
+                            lobby.sUserJoinedRoom(payload)
+                        }
+                        return
                     case '/userdel':
                         payload = {
                             userId: msgSplit[1]
