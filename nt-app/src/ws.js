@@ -180,11 +180,53 @@ module.exports = (data) => {
     })
 
     ipcMain.on("CLIENT_MESSAGE", (e, data) => {
+        console.log('CLIENT_MESSAGE', e, data)
         const msg = encodeLobbyMsg(data.key, data.payload)
         sendMsg(msg)
     })
 
     ipcMain.on("CLIENT_CHAT", (e, data) => {
+        if(process.env.ALLOW_DEBUG_CHAT_COMMANDS){
+            let chatMsg = data.payload.message
+            console.log('CLIENT_CHAT', chatMsg)
+            //check
+            if(chatMsg.startsWith('/') && chatMsg.split(' ').length > 1){
+                console.log('We got a potential client command. Check it before we try sending it to the backend')
+                let msgSplit = chatMsg.split(' ')
+                let payload
+                switch (msgSplit[0]){
+                    case '/useradd':
+                        payload = {
+                            userId: msgSplit[1],
+                            name: msgSplit[1]
+                        }
+                        console.log(`Sending fake sUserJoinedRoom with payload to self`, payload)
+                        appEvent('sUserJoinedRoom', payload)
+                        lobby.sUserJoinedRoom(payload)
+                        return
+                    case '/bulkusergen':
+                        console.log(`Sending bulk fake sUserJoinedRoom with payload to self`, payload)
+                        for(let i = 0; i < parseInt(msgSplit[1]); i++){
+                            payload = {
+                                userId: uuidv4(),
+                                name: uuidv4()
+                            }
+                            appEvent('sUserJoinedRoom', payload)
+                            lobby.sUserJoinedRoom(payload)
+                        }
+                        return
+                    case '/userdel':
+                        payload = {
+                            userId: msgSplit[1]
+                        }
+                        console.log(`Sending fake sUserLeftRoom with payload to self`, payload)
+                        lobby.sUserLeftRoom(payload)
+                        appEvent('sUserLeftRoom', payload)
+                        return
+                }
+            }
+        }
+
         const msg = encodeGameMsg(data.key, data.payload)
         sendMsg(msg)
     })
