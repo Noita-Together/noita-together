@@ -523,7 +523,7 @@ export default new Vuex.Store({
             state.roomChat = []
         },
         userJoinedRoom: (state, payload) => {
-            //assume that connected user is already are a user, unless we don't find them
+            //assume that connected user is already a user, unless we don't find them
             let existingUser = state.room.users.find((user => user.userId === payload.userId))
             let user = existingUser
             if(!user){
