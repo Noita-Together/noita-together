@@ -525,22 +525,31 @@ export default new Vuex.Store({
             state.roomChat = []
         },
         userJoinedRoom: (state, payload) => {
-            state.room.users.push({
-                userId: payload.userId,
-                name: payload.name,
-                owner: false,
-                color: randomColor(payload.name),
-                readyState: {
-                    ready: false,
+            //assume that connected user is already a user, unless we don't find them
+            let existingUser = state.room.users.find((user => user.userId === payload.userId))
+            let user = existingUser
+            if(!user){
+                //user does not exist yet. create an object to hold their data
+                user = {
+                    userId: payload.userId,
+                        name: payload.name,
+                        owner: false,
+                        color: randomColor(payload.name),
+                }
+            }
+            user.readyState =  {
+                ready: false,
                     seed: "",
                     mods: []
-                }
-            })
+            }
+            if(existingUser) return
+            //user does not exist yet. push the user to the users table
+            state.room.users.push(user)
         },
         userLeftRoom: (state, payload) => {
             const users = state.room.users
             for (const [i, user] of users.entries()) {
-                if (user.userId == payload.userId) {
+                if (user.userId === payload.userId) {
                     users.splice(i, 1)
                 }
             }
@@ -561,7 +570,7 @@ export default new Vuex.Store({
                 ":" +
                 ("0" + time.getMinutes()).slice(-2)
             const found = state.room.users.find(
-                (user) => user.userId == payload.userId
+                (user) => user.userId === payload.userId
             )
             let userColor = randomColor(payload.name)
             userColor = (found && found.color) || userColor
@@ -569,7 +578,6 @@ export default new Vuex.Store({
             let messageClass = userRegex.test(payload.message)
                 ? "mention"
                 : "chat-entry"
-            console.log(payload.name)
             let messageSpans = payload.message
                 .split(userRegex)
                 .filter(String)

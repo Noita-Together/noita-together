@@ -52,7 +52,7 @@
                 <div class="orb-input">
                   <vInput
                       :disabled="!isHost || !tempFlags.NT_sync_orbs.value"
-                      min="0"
+                      :min=0
                       type="number"
                       v-model.number="tempFlags.NT_sync_orb_count.value"
                       ref="orbInput"
@@ -69,7 +69,7 @@
                 <div class="world-seed">
                   <vInput
                       :disabled="!isHost"
-                      min="0"
+                      :min=0
                       type="number"
                       v-model.number="tempFlags.NT_sync_world_seed.value"
                       ref="seedInput"

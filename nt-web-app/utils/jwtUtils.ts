@@ -4,6 +4,8 @@ import {TwitchUserData} from "../entity/TwitchGetUsersResponse";
 
 const SECRET_ACCESS = process.env.SECRET_JWT_ACCESS as string
 const SECRET_REFRESH = process.env.SECRET_JWT_REFRESH as string
+const REFRESH_TOKEN_DURATION = process.env.REFRESH_TOKEN_DURATION ?? '30d' //see https://github.com/vercel/ms for valid formats
+const ACCESS_TOKEN_DURATION = process.env.REFRESH_TOKEN_DURATION ?? '1d' //see https://github.com/vercel/ms for valid formats
 
 function createAccessToken(userData: TwitchUserData){
     return jwt.sign({
@@ -12,7 +14,7 @@ function createAccessToken(userData: TwitchUserData){
         profile_image_url: userData.profile_image_url,
         provider: 'twitch'
     }, SECRET_ACCESS, {
-        expiresIn: '8h'
+        expiresIn: ACCESS_TOKEN_DURATION
     })
 // Creating refresh token not that expiry of refresh
 //token is greater than the access token
@@ -21,7 +23,7 @@ function createAccessToken(userData: TwitchUserData){
 function createRefreshToken(userData: TwitchUserData){
     return jwt.sign({
         sub: userData.id,
-    }, SECRET_REFRESH, {expiresIn: '5d'})
+    }, SECRET_REFRESH, {expiresIn: REFRESH_TOKEN_DURATION})
 }
 
 const verifyToken = (jwtToken: string, tokenSecret: string): any => {
@@ -42,5 +44,7 @@ const verifyToken = (jwtToken: string, tokenSecret: string): any => {
 export {
     createAccessToken,
     createRefreshToken,
-    verifyToken
+    verifyToken,
+    REFRESH_TOKEN_DURATION,
+    ACCESS_TOKEN_DURATION
 }
