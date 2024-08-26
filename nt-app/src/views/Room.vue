@@ -155,9 +155,11 @@
             <div class="room-chat" ref="chat" @scroll="handleScroll()">
                 <template v-if="chat.length > 0">
                     <div v-for="(entry, index) in chat" :key="index" :class="entry.class">
-                        <span class="chat-time" :style="{ color: entry.userId === '-1' ? entry.color : '#fff'}">[{{ entry.time }}]</span>
-                        <span class="chat-name" :style="{ color: entry.color }">{{ entry.name }}</span>
-                        <span class="chat-message" v-for="(span,j) in entry.spans" :key="j" :style="span.style">{{ span.message }}</span>
+                        <div class="chat-text-block">
+                            <span class="chat-time" :style="{ color: entry.userId === '-1' ? entry.color : '#fff'}">[{{ entry.time }}]</span>
+                            <span class="chat-name" :style="{ color: entry.color }">{{ entry.name }}</span>
+                            <span class="chat-message" v-for="(span,j) in entry.spans" :key="j" :style="span.style">{{ span.message }}</span>
+                        </div>
                     </div>
                 </template>
             </div>
@@ -531,8 +533,10 @@ export default {
 
 .chat-entry {
     padding: 0.25em 0.1em;
+}
+
+.chat-text-block {
     overflow-y: hidden;
-    min-height: fit-content;
 }
 
 .chat-entry:hover {
@@ -543,8 +547,6 @@ export default {
     padding: 0.2em 0.1em;
     border: 0.1em solid gold;
     box-sizing: border-box;
-    overflow-y: hidden;
-    min-height: fit-content;
 }
 
 .mention:hover {
