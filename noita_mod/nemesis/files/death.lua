@@ -57,7 +57,7 @@ function death( dmg_type, dmg_msg, entity_thats_responsible, drop_items )
 
     -- polyorb's entity_name is $projectile_default, and dosn's got a animal icon
     if (entity_file == "data/entities/projectiles/polyorb.xml") then
-        icon = "mods/nemesis-fix/files/polyorb.png"
+        icon = "mods/noita-nemesis/files/entities/kill_icon/polyorb.png"
     end
 
     local icon_entity = EntityLoad("mods/noita-nemesis/files/entities/kill_icon/entity.xml")
