@@ -199,7 +199,8 @@ if not initialized then
         end
     end
 
-    local function wand_tooltip(wand)
+    local function wand_tooltip(item)
+        local wand = item.stats
         local ret = {
             wand.shuffleDeckWhenEmpty and "$menu_yes" or "$menu_no",
             tostring(wand.actionsPerRound),
@@ -207,7 +208,7 @@ if not initialized then
             string.format("%.2f",wand.reloadTime / 60),
             string.format("%.0f",wand.manaMax),
             string.format("%.0f",wand.manaChargeSpeed),
-            tostring(wand.deckCapacity),
+            tostring(wand.deckCapacity - #(item.alwaysCast or {})),
             GameTextGet("$inventory_degrees", string.format("%.2f",wand.spreadDegrees))
         }
         return ret
@@ -281,7 +282,7 @@ if not initialized then
             end
             nyx = nyx + 15
             
-            for key, value in ipairs(wand_tooltip(item.stats))do
+            for key, value in ipairs(wand_tooltip(item)) do
                 GuiZSetForNextWidget(gui, 5)
                 GuiText(gui, nx + nox, ny + nyx, _wand_tooltip[key])
                 GuiZSetForNextWidget(gui, 5)
@@ -319,11 +320,12 @@ if not initialized then
                     if value.usesRemaining and value.usesRemaining >= 0 then
                         GuiText(gui, nx + nox + 1, ny + nyx - 8, value.usesRemaining)
                     end
-                    nox = nox + 15
-                    if (index % 10 == 0) then
-                        nyx = nyx + 20
-                        nox = 5
-                    end
+                end
+
+                nox = nox + 15
+                if (index % 10 == 0) then
+                    nyx = nyx + 20
+                    nox = 5
                 end
             end
 
@@ -1044,3 +1046,4 @@ if not initialized then
         GuiIdPop(gui)
     end
 end
+

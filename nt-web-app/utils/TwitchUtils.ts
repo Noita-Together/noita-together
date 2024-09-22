@@ -46,7 +46,7 @@ const getServerAccessToken = async(): Promise<TwitchAppAccessToken|null> => {
     if(serverAccessToken){
         let expiration = serverAccessToken.acquired_at!! + serverAccessToken.expires_in*1000
         if(Date.now() - expiration <= 120000){ //if the expiration is within 2 minutes, lets refresh the token
-            console.log('Tokens expired!')
+            console.log('Twitch API Token expired!')
             serverAccessToken = undefined
         }
         else return serverAccessToken
@@ -66,14 +66,13 @@ const getServerAccessToken = async(): Promise<TwitchAppAccessToken|null> => {
                 console.log(e)
                 return null
             })
-        console.log('Fetched?')
         if(access){
             access.acquired_at = Date.now()
             serverAccessToken = access
-            console.log('Yes!')
+            console.log('Fetched Twitch API Token')
         }
         else{
-            console.log('Nope!')
+            console.log('Failed to fetch Twitch API Token')
         }
     }
     return serverAccessToken!!

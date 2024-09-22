@@ -1,5 +1,6 @@
-dofile( "data/scripts/perks/perk.lua" )
-dofile( "mods/noita-together/files/scripts/hourglass_events.lua")
+dofile("data/scripts/perks/perk.lua")
+dofile("mods/noita-together/files/scripts/hourglass_events.lua")
+dofile_once("mods/noita-together/files/scripts/ban_perks_events.lua")
 
 customEvents = {
     PlayerPOI = function(data)
@@ -10,20 +11,21 @@ customEvents = {
         SpawnPoi(user.name .. "'s message", data.message, data.x, data.y)
     end,
     FungalShift = function(data)
-        if(GameHasFlagRun("NT_GAMEMODE_CO_OP") and GameHasFlagRun("NT_sync_shift")) then
+        if (GameHasFlagRun("NT_GAMEMODE_CO_OP") and GameHasFlagRun("NT_sync_shift")) then
             DoFungalShift(data.from, data.to)
         end
     end,
     TeamPerk = function(data)
         local list = dofile("mods/noita-together/files/scripts/perks.lua")
-        if (not GameHasFlagRun("NT_GAMEMODE_CO_OP") or (not GameHasFlagRun("NT_sync_perks") and not GameHasFlagRun("NT_team_perks"))) then 
+        if (not GameHasFlagRun("NT_GAMEMODE_CO_OP") or (not GameHasFlagRun("NT_sync_perks") and not GameHasFlagRun("NT_team_perks"))) then
             return nil
         elseif (GameHasFlagRun("NT_team_perks") and not GameHasFlagRun("NT_sync_perks") and (list[data.id] == false or list[data.id] == nil)) then
             return nil
         end
         local user = PlayerList[data.userId]
         if (user ~= nil) then
-            GamePrintImportant(GameTextGet("$noitatogether_teamperk_received_title", user.name), "$noitatogether_teamperk_received_subtitle")
+            GamePrintImportant(GameTextGet("$noitatogether_teamperk_received_title", user.name),
+                "$noitatogether_teamperk_received_subtitle")
         end
         local player = GetPlayer()
         local x, y = GetPlayerPos()
@@ -61,17 +63,17 @@ customEvents = {
     end
 }
 wsEvents = {
-    AngerySteve = function (data)
+    AngerySteve = function(data)
         if (GameHasFlagRun("NT_sync_steve")) then
             AngerSteve(data.userId)
         end
     end,
-    RespawnPenalty = function (data)
+    RespawnPenalty = function(data)
         if (GameHasFlagRun("NT_death_penalty_weak_respawn")) then
             RespawnPenalty(data.userId)
         end
     end,
-    StartRun = function ()
+    StartRun = function()
         last_wands = ""
         _start_run = true
     end,
@@ -95,7 +97,8 @@ wsEvents = {
     UserAddGold = function(data)
         BankGold = BankGold + data.amount
         if (PlayerList[data.userId] ~= nil) then
-            GamePrint(GameTextGet("$noitatogether_bank_player_deposited_gold", PlayerList[data.userId].name, tostring(data.amount)))
+            GamePrint(GameTextGet("$noitatogether_bank_player_deposited_gold", PlayerList[data.userId].name,
+                tostring(data.amount)))
         end
     end,
     UserTakeGoldSuccess = function(data)
@@ -111,12 +114,12 @@ wsEvents = {
     RequestGameInfo = function(data)
         local seed = StatsGetValue("world_seed")
         local mods = ModGetActiveModIDs()
-        SendWsEvent({event="GameInfo", payload={seed=seed, mods=mods, version="v0.19.0", beta=GameIsBetaBuild()}})
-        SendWsEvent({event="RequestPlayerList", payload={}})
+        SendWsEvent({ event = "GameInfo", payload = { seed = seed, mods = mods, version = "v0.19.0", beta = GameIsBetaBuild() } })
+        SendWsEvent({ event = "RequestPlayerList", payload = {} })
         PopulateSpellList()
     end,
     PlayerMove = function(data)
-        local last = data.frames[math.floor(#data.frames/2)]
+        local last = data.frames[math.floor(#data.frames / 2)]
         PlayerList[data.userId].x = last.x
         PlayerList[data.userId].y = last.y
         PlayerList[data.userId].scale_x = last.scaleX
@@ -151,7 +154,8 @@ wsEvents = {
             table.insert(BankItems, item)
         end
         if (PlayerList[data.userId] ~= nil) then
-            GamePrint(GameTextGet("$noitatogether_bank_player_deposited_items", PlayerList[data.userId].name, tostring(#data.items)))
+            GamePrint(GameTextGet("$noitatogether_bank_player_deposited_items", PlayerList[data.userId].name,
+                tostring(#data.items)))
         end
     end,
     AddPlayer = function(data)
@@ -181,10 +185,10 @@ wsEvents = {
         --worry about perf later
         _Players = {}
         for k, v in pairs(PlayerList) do
-            table.insert(_Players,{k,string.upper(v.name)})
+            table.insert(_Players, { k, string.upper(v.name) })
         end
-        
-        table.sort(_Players, function(a,b) return a[2] < b[2] end)
+
+        table.sort(_Players, function(a, b) return a[2] < b[2] end)
     end,
     RemovePlayer = function(data)
         DespawnPlayerGhost(data.userId)
@@ -238,16 +242,19 @@ wsEvents = {
         dofile("mods/noita-together/files/scripts/remove_flags.lua")
         for _, entry in ipairs(data) do
             if (entry.flag == "NT_sync_world_seed") then
-                ModSettingSet( "noita_together.seed", entry.uIntVal )
+                ModSettingSet("noita_together.seed", entry.uIntVal)
                 local seed = tonumber(StatsGetValue("world_seed"))
                 if (entry.uIntVal > 0 and seed ~= entry.uIntVal) then
                     GameTriggerGameOver()
-                --elseif (entry.intVal == seed) then messes up random perks/items sadge
+                    --elseif (entry.intVal == seed) then messes up random perks/items sadge
                     --ModSettingSet( "noita_together.seed", 0 )
                 end
             elseif (entry.flag == "NT_sync_orb_count") then
-                ModSettingSet( "noita_together.orb_count_max", entry.uIntVal )
+                ModSettingSet("noita_together.orb_count_max", entry.uIntVal)
                 --nt print_error("Max orb count was changed to "..entry.uIntVal)
+            elseif (entry.flag == "NT_ban_perks") then
+                GameAddFlagRun(entry.flag)
+                HandleBannedPerksEvent()
             else
                 GameAddFlagRun(entry.flag)
             end
