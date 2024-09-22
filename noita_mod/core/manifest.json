@@ -157,7 +157,7 @@
     "files/lib/pollnet.lua": "96de55f0aabc05eb8e6e1d79b176e35a26c739482f05be7bf3090eb6fe4e11fa",
     "files/magic_numbers/enable_logger.xml": "e650ba37f974fba381d7af8d54040a0827b78a033d70715717ea0b464d2d440f",
     "files/pixel_scenes/co_op_mail.png": "18bdc56cacd4c1ae28af81c0b968756dde6412873854e298d8bda28ed285dcf9",
-    "files/scripts/bannable_perk_check.lua": "7078fd50d59f9dd3ff744f03bdc844699dc42135dd4ac509cf90087ca9adda37",
+    "files/scripts/bannable_perk_check.lua": "0de1a2b202289a5c52577278df61ed8e0111ab9c883ec19c2834994273632eca",
     "files/scripts/ban_perks.lua": "ea37a69520939078ed6cc7d359ed496239a39e3cfb236f4b8416217a2b87b6ac",
     "files/scripts/ban_perks_events.lua": "cdc38fb67b2c05b1b28a3b2f0a909034c71b381660397ced6305ccc2208ca887",
     "files/scripts/checkpoint.lua": "b20c581e6837c9f5fe9d6f24177225a4c6efed6021a5e3794d34a3a0ffad917d",
@@ -174,6 +174,7 @@
     "files/scripts/playerghost.lua": "aff5b80d7e8c30f884c2b1b444b7b309dcb8abb6e328bab0569871c9e098a534",
     "files/scripts/playerghostbackup.lua": "51f471e393abbca2698baf0a8ece411b3140dfa68abb7768e384524e11776686",
     "files/scripts/playermovement.lua": "7fa31f5d321cf8741f6f72e3c5307a48e498c9eb17917f1f746ea7a0be44f14f",
+    "files/scripts/remove_flags.lua": "e768bbac8b696dd0cb489b0bbe0709243a8d2b920e88f8730559e670016cee6e",
     "files/scripts/sampo/sampo_aura.lua": "f95d142c80b8b13340d672f7510c6434c2c00dd3ea0ad8a838b832ffb37fd3c5",
     "files/scripts/sampo/sampo_aura_attractor_fix.lua": "d04404d47abbfbf3ed85b2329260520ca53ce20fa98b8bd8acc7ccae913d45a1",
     "files/scripts/spell_eater.lua": "11aaae0213ffabc8effd51e803af8656b52c91c318c0cd19761d121892b6a85c",
@@ -181,13 +182,14 @@
     "files/scripts/spell_spitter.lua": "cd9a25701a4f37772aa0c480ae4061127746af71600f23685b842eba51e8bb6e",
     "files/scripts/spell_spitter_glow.lua": "4dc1a7112bfe16208e8f61185c29e4d6db0a0f8c8c29ad0ee8f8a4121630dfee",
     "files/scripts/start_run_hint.lua": "42fd4653a6486d7aabd1c5f55aa3b3aa9c373647aef6e99db229b51cc1a6a955",
-    "files/scripts/ui.lua": "a65a8c31434ef4e6da5b711e2805050ee7666e5d9a83d58554b3ef551300fbcb",
+    "files/scripts/ui.lua": "ed2a4e53aa00c27c4ae67e0dcd62b9a13bda4522ca748ec8767b06a4be7a808c",
     "files/scripts/util/coop_boss_fight.lua": "ce987b457ed4f44cceecd868fb5ddd2608cff1bded7d0b139ed4170d5d0d6588",
     "files/scripts/util/player_ghosts.lua": "44d1c4f53dc15694c2cfb0b313a9ad05d710b889d430b0e7f775c6e1862704ec",
     "files/scripts/utils.lua": "fd7476b5241ed905c157dab609a596dc24135b3131fcbe441b45a63e5247a7b6",
     "files/store.lua": "804a45a3109e3b27a036496514a694c3b087924f8df48d487c563fb051c4a440",
     "files/stringstore/noitaglobalstore.lua": "df6663bed01bc62a918f994d2a9ec0ad2847e799366c9ce9a371973226d1299a",
     "files/stringstore/stringstore.lua": "7934f19bd537a87b1b9476cb30fa506f7d48b37953011980630a9eb37df4060f",
+    "files/translations/translations.csv": "d4c5558f9a9b8226f0b37987e5f1e2ebf3144449a0668fb5864f96845c253133",
     "files/ui/all.png": "f29721c891aeebbe72feebfa094aff50bc6c120402c322936907a7e2ff1a0596",
     "files/ui/arrows/arrow 10.png": "c7aa5cecaee36ff1ba87fb069278c10b0a670cbae17db2d0085687806537d41e",
     "files/ui/arrows/arrow back 10.png": "7da59b3072b4dbb586652a724707f49ef716b9e5ba640c993896f6f822edd9db",
@@ -294,5 +296,6 @@
     "init.lua": "694d5c6add821eb58fb796802c9043fb143afbfc69f2bbd1c5706a7be778b5e5",
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "e252515270281449017e46547b15665944d0af1550b4496d4be1537113bf31b0"
-  }
+  },
+  "buildDate": "2024-09-22T02:43:28.992Z"
 }

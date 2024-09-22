@@ -5,7 +5,7 @@
     "files/append/disable_mail.lua": "37ada7e9cb3365fc882e5fca8145c13f66f2e0a0cd38d89e97da64d69266e83a",
     "files/append/flags.lua": "b0c647c22f551eb1aa6c230e614990efeb17efcc578dd57a8a57dd683993efd5",
     "files/append/perk.lua": "5ec708ce742fbc04a9bb94d49d5b50aeb8489ef1a7b4f7e785201fb0c3128924",
-    "files/append/ui.lua": "0a703d844a6841da9edc4239f158bad48cbf6da21f7d14f667ef8f9d3e3f6666",
+    "files/append/ui.lua": "f5ef974a1ffd87fa601b6449838152b5800a85fe30aa4eb40cc7967f6eea86c0",
     "files/append/utils.lua": "c50a854a32a8e38783e7cdcf4d724a41664cd4856a98f68b4b6593cc7ca94dae",
     "files/append/workshop_exit.lua": "b5bbfe0b6d0483e3827ee2db741ce95a741cc9a31f442253018c5a78b3183d21",
     "files/badges/acid.png": "dabe7dcbe69e8cc270ca36d0be39b72f2a5e446b253c976f3b24c454f0540cb1",
@@ -39,7 +39,7 @@
     "files/badges/twitchy.png": "2ae81a612a44796607f18cfb8a2e1b1e95a2ad9c7a6a9b5632e0fa7505997bd0",
     "files/badges/ukko.png": "b0f0c52cde08e678e24e15b092f12a2246e8fd199082c35d9097561427d1dbb7",
     "files/badges/weakened.png": "75a0a0b2fcec54c3fb2bcd1881380c437b08843afbe23f146cddb0acfcbac08c",
-    "files/death.lua": "0898c21766b870525faced833acb54476f0054a580441e05389881a913399bbf",
+    "files/death.lua": "2e2a14271443d18fbe1315851d8290352dd14a8b2814b9965a64d99fd06919de",
     "files/effects/confusion/effect.xml": "4da63f1be77326989a1930e944a8018ed400c5650fd90f3f5e799200496ab273",
     "files/effects/enemyrandomizer/effect.lua": "15f66272c1d41b0db030c5e78b79d4321b36d7a915718e1bb5fd13028bac3400",
     "files/effects/enemyrandomizer/effect.xml": "2205e4e6326221108f3f62d1a7a421ccafd642fa20604182dd4b9523727d285d",
@@ -78,6 +78,7 @@
     "files/entities/items/pickup/sanic/sprite.png": "afd7a9debf17428dbd3482af166359018f217a1c0cefcbcad28cdb95678a956f",
     "files/entities/items/pickup/sanic/sprite.xml": "2eda8d255331ca1253f0662873a4b090750de0712bb9203a5b856ed63b42ff14",
     "files/entities/kill_icon/entity.xml": "9a9766ab2abb3c580c25a644db2a852fe10b6f94be24912804b51e910d053ffc",
+    "files/entities/kill_icon/polyorb.png": "4835a0d5fc6076b54f5960a5bf4c54de6b8c7c09805ec8da9e61339716bc4350",
     "files/entities/kill_icon/script.lua": "7868786717c9223dbdfd410b13e85252de9c35a307c00f2b7a9307f2e4a2aff3",
     "files/entities/removewand/entity.xml": "a475bb14abd3c4c5bd358eeb5db1ddfc0dab9d708f7759ffc6f3ec3aab5f5a0d",
     "files/entities/removewand/start.lua": "4cbe9ff18ce84bb601cfb4db0c92ca2dccdb4715f7fb0a6079dce1e6da31131a",
@@ -91,5 +92,5 @@
     "init.lua": "efe15538be22d24bb08fb7676a38025b7c36e3895a33e1126eb9a64142758786",
     "mod.xml": "956efe2de1282cc694b4df390222f1cc705cd10814b86db6b421cfac49a18d1b"
   },
-  "buildDate": "2024-08-08T13:21:44.423Z"
+  "buildDate": "2024-09-22T02:43:29.972Z"
 }
