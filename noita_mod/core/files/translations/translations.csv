@@ -94,4 +94,5 @@ noitatogether_hourglass_buff_hastium_name,Haste,,,,,,,,,,,,name of speed hourgla
 noitatogether_hourglass_buff_hastium_desc,$0 thinks you are too slow,,,,,,,,,,,,description of speed hourglass effect,
 noitatogether_spawncamp_buff_name,Respawn Protection,,,,,,,,,,,,name of invulnerability buff applied after respawning,
 noitatogether_spawncamp_buff_desc,You are being protected against campers,,,,,,,,,,,,name of invulnerability buff applied after respawning,
+noitatogether_statusdesc_alt_hearty,Your health is temporarily halved.,Ваше здоровье временно уменьшено вдвое.,A sua vida cai pela metade temporariamente.,Tu salud se reduce temporalmente a la mitad.,Deine Gesundheit wird vorübergehend halbiert.,Votre santé est diminuée de moitié,La tua salute viene dimezzata temporaneamente.,Twoje zdrowie spada tymczasowo o połowę.,生命值暂时性减半。,HPが一時的に半分になります。,체력이 일시적으로 절반으로 감소합니다.,,'description for alternate heartache which affects HP instead of max HP',,,,,,,,,,,
 noitatogether_x,x,,,,,,,,,,,,notes,

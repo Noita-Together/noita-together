@@ -46,6 +46,9 @@ ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/file
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
 
+ModTextFileSetContent("data/scripts/status_effects/hearty_end.lua",ModTextFileGetContent("mods/noita-together/files/append/status_effects/hearty_end.lua"))
+ModTextFileSetContent("data/scripts/status_effects/hearty_start.lua",ModTextFileGetContent("mods/noita-together/files/append/status_effects/hearty_start.lua"))
+
 --emote system mnee support
 if ModIsEnabled("mnee") then
 	ModLuaFileAppend("mods/mnee/bindings.lua", "mods/noita-together/files/emotes/scripts/mnee.lua")

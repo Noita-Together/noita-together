@@ -25,6 +25,8 @@
     "files/append/preset_wands_random.lua": "a662ee2149a5fad87aa76c2738fa95f2799cea1886878a05e6a997ae73f766bc",
     "files/append/sampo_append.lua": "64671600b80da266207646ddeb37c1b01765853dda45b0731778583f9757da23",
     "files/append/snowcastle_cavern.lua": "1bb0a184f2a4e1e0c126966fb94516d231ea79b91cf96e96cfc0ffc9a7e59108",
+    "files/append/status_effects/hearty_end.lua": "d321ebef6486495fdb42423400ecfdddee75a16ca60e537c66d5b9a703ac3e05",
+    "files/append/status_effects/hearty_start.lua": "e6cf285b606bc1931e76d6f293a53993c07401a70bb48d0b03089780426daeb3",
     "files/effects/hourglass_hastium.xml": "262c2ede68dc982a3070fc56049adeb163a12d28d4ad97de2ce9cf6347297a36",
     "files/effects/weak_ambrosia.xml": "d6d4e4a65a896f75231da088d0d93b91f1e91f1f9457b77bfdfdfeb545a6e991",
     "files/effects/weak_ambrosia_end.lua": "a3a06c9e987e0270d2ea4968bb0d34ffff85db49e2c2e05080f463b26154c633",
@@ -172,7 +174,6 @@
     "files/scripts/playerghost.lua": "aff5b80d7e8c30f884c2b1b444b7b309dcb8abb6e328bab0569871c9e098a534",
     "files/scripts/playerghostbackup.lua": "51f471e393abbca2698baf0a8ece411b3140dfa68abb7768e384524e11776686",
     "files/scripts/playermovement.lua": "7fa31f5d321cf8741f6f72e3c5307a48e498c9eb17917f1f746ea7a0be44f14f",
-    "files/scripts/remove_flags.lua": "0551f2879a4a373ad716c91cb755f7dbdf8d1e71108449cf12b8348d7c8a6439",
     "files/scripts/sampo/sampo_aura.lua": "f95d142c80b8b13340d672f7510c6434c2c00dd3ea0ad8a838b832ffb37fd3c5",
     "files/scripts/sampo/sampo_aura_attractor_fix.lua": "d04404d47abbfbf3ed85b2329260520ca53ce20fa98b8bd8acc7ccae913d45a1",
     "files/scripts/spell_eater.lua": "11aaae0213ffabc8effd51e803af8656b52c91c318c0cd19761d121892b6a85c",
@@ -187,7 +188,6 @@
     "files/store.lua": "804a45a3109e3b27a036496514a694c3b087924f8df48d487c563fb051c4a440",
     "files/stringstore/noitaglobalstore.lua": "df6663bed01bc62a918f994d2a9ec0ad2847e799366c9ce9a371973226d1299a",
     "files/stringstore/stringstore.lua": "7934f19bd537a87b1b9476cb30fa506f7d48b37953011980630a9eb37df4060f",
-    "files/translations/translations.csv": "ad5ea676c5d0fafa509b6677e1e692d1669b75124fea748134c9297749bb1eec",
     "files/ui/all.png": "f29721c891aeebbe72feebfa094aff50bc6c120402c322936907a7e2ff1a0596",
     "files/ui/arrows/arrow 10.png": "c7aa5cecaee36ff1ba87fb069278c10b0a670cbae17db2d0085687806537d41e",
     "files/ui/arrows/arrow back 10.png": "7da59b3072b4dbb586652a724707f49ef716b9e5ba640c993896f6f822edd9db",
@@ -291,9 +291,8 @@
     "files/ws/events.lua": "70551061fa761a2c088ec206d594b2b388d2b12ee394d303c501e694052ba0b1",
     "files/ws/host.lua": "3e7067808fb85f6398dd42249cc06c06c95c0af4f294590ab67224e31d218aa7",
     "files/ws/ws.lua": "5848c4d646bd33d57e7598c92eb0c59a57bba03ed794b9612adba21666ab7e8d",
-    "init.lua": "b3e8a1336811de4e59677bba9a603cf4a6d5a1df52cdc3a0877ddbc1c7e8eb39",
+    "init.lua": "694d5c6add821eb58fb796802c9043fb143afbfc69f2bbd1c5706a7be778b5e5",
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "e252515270281449017e46547b15665944d0af1550b4496d4be1537113bf31b0"
-  },
-  "buildDate": "2024-08-08T13:21:44.246Z"
+  }
 }
