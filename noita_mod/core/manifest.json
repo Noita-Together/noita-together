@@ -189,7 +189,7 @@
     "files/store.lua": "804a45a3109e3b27a036496514a694c3b087924f8df48d487c563fb051c4a440",
     "files/stringstore/noitaglobalstore.lua": "df6663bed01bc62a918f994d2a9ec0ad2847e799366c9ce9a371973226d1299a",
     "files/stringstore/stringstore.lua": "7934f19bd537a87b1b9476cb30fa506f7d48b37953011980630a9eb37df4060f",
-    "files/translations/translations.csv": "d4c5558f9a9b8226f0b37987e5f1e2ebf3144449a0668fb5864f96845c253133",
+    "files/translations/translations.csv": "48a767322543ce448961740019a04218bc704c78ef76630371e1146dc15b8894",
     "files/ui/all.png": "f29721c891aeebbe72feebfa094aff50bc6c120402c322936907a7e2ff1a0596",
     "files/ui/arrows/arrow 10.png": "c7aa5cecaee36ff1ba87fb069278c10b0a670cbae17db2d0085687806537d41e",
     "files/ui/arrows/arrow back 10.png": "7da59b3072b4dbb586652a724707f49ef716b9e5ba640c993896f6f822edd9db",
@@ -290,12 +290,12 @@
     "files/ui/_hpbar_full.png": "c4efa2ad19b0dd2f4fda9582a9a13403ceaeec96b5bede248905be98bbb52b85",
     "files/ui_gfx/status_indicators/nt_hourglass_protection_half.png": "6f6a937fbf7de0cad46a5d2f5c024026188f28ab536037e921514c9b027f31c0",
     "files/ui_gfx/status_indicators/nt_hourglass_speed_levitation.png": "50e3c351577cff9e200d6d2ced92d7603c68b1190e9b417e8eebd052454aa3f7",
-    "files/ws/events.lua": "70551061fa761a2c088ec206d594b2b388d2b12ee394d303c501e694052ba0b1",
+    "files/ws/events.lua": "17245719a01b410538411de33d6da7e1c27e71c9235f3ac332c0fb293493a04c",
     "files/ws/host.lua": "3e7067808fb85f6398dd42249cc06c06c95c0af4f294590ab67224e31d218aa7",
     "files/ws/ws.lua": "5848c4d646bd33d57e7598c92eb0c59a57bba03ed794b9612adba21666ab7e8d",
     "init.lua": "694d5c6add821eb58fb796802c9043fb143afbfc69f2bbd1c5706a7be778b5e5",
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "e252515270281449017e46547b15665944d0af1550b4496d4be1537113bf31b0"
   },
-  "buildDate": "2024-09-22T02:43:28.992Z"
+  "buildDate": "2024-09-22T03:15:13.916Z"
 }
