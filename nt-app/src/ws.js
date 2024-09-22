@@ -180,7 +180,6 @@ module.exports = (data) => {
     })
 
     ipcMain.on("CLIENT_MESSAGE", (e, data) => {
-        console.log('CLIENT_MESSAGE', e, data)
         const msg = encodeLobbyMsg(data.key, data.payload)
         sendMsg(msg)
     })
@@ -188,7 +187,6 @@ module.exports = (data) => {
     ipcMain.on("CLIENT_CHAT", (e, data) => {
         if(process.env.ALLOW_DEBUG_CHAT_COMMANDS){
             let chatMsg = data.payload.message
-            console.log('CLIENT_CHAT', chatMsg)
             //check
             if(chatMsg.startsWith('/') && chatMsg.split(' ').length > 1){
                 console.log('We got a potential client command. Check it before we try sending it to the backend')
