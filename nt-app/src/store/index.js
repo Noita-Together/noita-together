@@ -63,6 +63,8 @@ export const flagInfo = {
         "NT_NEMESIS_nemesis_abilities":   { name: "Nemesis abilities", tooltip: "Abilities will appear in each holy mountain with an NP cost." },
         "NT_sync_steve":                  { name: "Sync Steve", tooltip: "Angers the gods for everyone." },
         "NT_sync_orbs":                   { name: "Sync Orbs", tooltip: "When someone picks up an orb everyone else gets it too." },
+        "NT_sync_orbs_no_curse":          { name: "Friendly PW Orbs", tooltip: "Parallel World orbs won't send cursed hearts to other players. No effect without \"Sync Orbs\"" },
+        "NT_sync_orb_count":              { name: "Sync Orb Until", tooltip: "Everyone gets an orb until this number is hit. If 0, then there is no limit" },
         "NT_world_randomize_loot":        { name: "Randomize loot", tooltip: "Only applies when playing on the same seed, makes it so everyone gets different loot." },
         "NT_sync_world_seed":             { name: "Sync Seed", tooltip: "All players play in the same world seed (requires everyone to start a new game) 0 means random seed." },
         "NT_death_penalty": {
@@ -102,6 +104,8 @@ export const defaultFlags = {
         { id: "NT_NEMESIS_nemesis_abilities",  type: "boolean", value: true,  },
         { id: "NT_sync_steve",                 type: "boolean", value: false, },
         { id: "NT_sync_orbs",                  type: "boolean", value: false, },
+        { id: "NT_sync_orbs_no_curse",         type: "boolean", value: false, requires: [{"NT_sync_orbs": true}] }, //TODO actually check requires :)
+        { id: "NT_sync_orb_count",             type: "number" , value: 0,     },
         { id: "NT_world_randomize_loot",       type: "boolean", value: true,  },
         { id: "NT_sync_world_seed",            type: "number" , value: 0,     },
         { id: "NT_death_penalty",              type: "boolean", value: 'weak_respawn', choices: ['weak_respawn'], },
