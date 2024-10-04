@@ -70,7 +70,7 @@ export const flagInfo = {
         "NT_death_penalty": {
             "weak_respawn":  { name: "Last noita standing.", tooltip: "Run ends when there's only one player left." },
         },
-        "NT_ondeath_kick":                { name: "Kick on death (do not disable)", tooltip: "Kicks whoever dies, more customisable soon™. "}
+        "NT_ondeath_kick":                { name: "Kick on death", tooltip: "Kicks whoever dies, more customisable soon™. "}
     },
 };
 
@@ -108,7 +108,7 @@ export const defaultFlags = {
         { id: "NT_sync_orb_count",             type: "number" , value: 0,     },
         { id: "NT_world_randomize_loot",       type: "boolean", value: true,  },
         { id: "NT_sync_world_seed",            type: "number" , value: 0,     },
-        { id: "NT_death_penalty",              type: "boolean", value: 'weak_respawn', choices: ['weak_respawn'], },
+        { id: "NT_death_penalty",              type: "enum", value: 'weak_respawn', choices: ['weak_respawn'], },
         { id: "NT_ondeath_kick",               type: "boolean", value: true,  }
     ]
 };
