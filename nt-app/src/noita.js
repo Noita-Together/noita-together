@@ -78,6 +78,11 @@ class NoitaGame extends EventEmitter {
         )
     }
 
+    clientDisconnected(){
+        console.log('client disconnected')
+        this.sendEvt('ClientDisconnected')
+    }
+
     gameListen() {
         if (!this.server) {
             this.server = new ws.Server({ port: this.port })
@@ -247,8 +252,9 @@ class NoitaGame extends EventEmitter {
         this.sendEvt("AddPlayer", data)
     }
 
-    removePlayer(data) {
+    removePlayer(data, reason) {
         delete this.players[data.userId]
+        data['reason'] = reason
         this.sendEvt("RemovePlayer", data)
     }
 

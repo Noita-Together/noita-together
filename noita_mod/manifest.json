@@ -1,0 +1,12 @@
+{
+  "mods": {
+    "noita-together": {
+      "path": "core",
+      "required": true
+    },
+    "nemesis": {
+      "path": "nemesis",
+      "required": false
+    }
+  }
+}
