@@ -290,12 +290,12 @@
     "files/ui/_hpbar_full.png": "c4efa2ad19b0dd2f4fda9582a9a13403ceaeec96b5bede248905be98bbb52b85",
     "files/ui_gfx/status_indicators/nt_hourglass_protection_half.png": "6f6a937fbf7de0cad46a5d2f5c024026188f28ab536037e921514c9b027f31c0",
     "files/ui_gfx/status_indicators/nt_hourglass_speed_levitation.png": "50e3c351577cff9e200d6d2ced92d7603c68b1190e9b417e8eebd052454aa3f7",
-    "files/ws/events.lua": "17245719a01b410538411de33d6da7e1c27e71c9235f3ac332c0fb293493a04c",
+    "files/ws/events.lua": "5246b83b52e5a27df84648fa28a9c783275bcc4858bf730e2a32bd75bda22eb7",
     "files/ws/host.lua": "3e7067808fb85f6398dd42249cc06c06c95c0af4f294590ab67224e31d218aa7",
     "files/ws/ws.lua": "5848c4d646bd33d57e7598c92eb0c59a57bba03ed794b9612adba21666ab7e8d",
     "init.lua": "694d5c6add821eb58fb796802c9043fb143afbfc69f2bbd1c5706a7be778b5e5",
     "mod.xml": "bb32c00f2074ccf690547230e833fe5963bcc4bee0a7628991811e51b9e92693",
     "settings.lua": "e252515270281449017e46547b15665944d0af1550b4496d4be1537113bf31b0"
   },
-  "buildDate": "2024-11-21T19:32:55.475Z"
+  "buildDate": "2024-11-21T19:44:43.605Z"
 }
