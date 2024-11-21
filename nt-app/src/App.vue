@@ -169,6 +169,7 @@ table th {
 .slot-selector option {
     color: #444;
     font-weight: normal;
+    padding: 1rem 0.75rem 1rem 0.75rem;
 }
 
 .slot-selector:disabled,
