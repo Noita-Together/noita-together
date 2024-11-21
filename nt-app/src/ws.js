@@ -67,21 +67,22 @@ module.exports = (data) => {
             if (payload.userId == user.userId) {
                 noita.reset()
             } else {
-                noita.removePlayer(payload)
+                noita.removePlayer(payload, 'banned')
             }
         },
         sUserKicked: (payload) => {
             if (payload.userId == user.userId) {
                 noita.reset()
             } else {
-                noita.removePlayer(payload)
+                noita.removePlayer(payload, 'kicked')
             }
         },
         sUserLeftRoom: (payload) => {
             if (payload.userId == user.userId) {
+                noita.sendEvt('clientLeftRoom')
                 noita.reset()
             } else {
-                noita.removePlayer(payload)
+                noita.removePlayer(payload, 'left/disconnected')
             }
         },
         sUserJoinedRoom: (payload) => {
@@ -114,6 +115,7 @@ module.exports = (data) => {
     })
 
     client.on("close", () => {
+        noita.clientDisconnected()
         appEvent("CONNECTION_LOST")
         client.terminate()
         client = null
@@ -221,6 +223,9 @@ module.exports = (data) => {
                         lobby.sUserLeftRoom(payload)
                         appEvent('sUserLeftRoom', payload)
                         return
+                    case '/fakedc':
+                        noita.clientDisconnected()
+                        return;
                 }
             }
         }

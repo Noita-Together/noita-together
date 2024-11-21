@@ -194,6 +194,7 @@ wsEvents = {
         DespawnPlayerGhost(data.userId)
         PlayerList[data.userId] = nil
         PlayerCount = PlayerCount - 1
+        GamePrint(data.userId.. " left the lobby (" .. data.reason .. ")")
     end,
     PlayerPickup = function(data)
         if (data.heart ~= nil) then
@@ -259,5 +260,10 @@ wsEvents = {
                 GameAddFlagRun(entry.flag)
             end
         end
+    end,
+    ClientDisconnected = function(data)
+        print("received a disconnect message from NT client")
+        GamePrint("Disconnected from lobby. Check NT client for information")
+        GamePrintImportant("Disconnected from lobby", "check client for information", "")
     end
 }

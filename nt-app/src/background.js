@@ -152,12 +152,9 @@ ipcMain.on("TRY_LOGIN", async (event, account) => {
                 responseType: "json"
             }
         )
-        console.log(body)
         const { token } = body
-        console.log(token)
         appEvent("USER_EXTRA", undefined)
         let decoded = jwt.decode(token)
-        console.log(decoded)
         let { sub, preferred_username } = decoded
         wsClient({
             display_name: preferred_username,
