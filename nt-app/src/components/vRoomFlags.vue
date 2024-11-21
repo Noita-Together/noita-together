@@ -1,7 +1,12 @@
 <template>
-    <vModal>
+    <vModal ref="vFlagsModal">
         <h1 slot="header">Game Options</h1>
         <template slot="body" class="flags-body">
+            <div class="presetContainer">
+              (Beta)
+              <v-button @click="loadPresets" :disabled="!isHost">Load Preset</v-button>
+              <v-button @click="savePresets">Save as Preset</v-button>
+            </div>
             <h2>
                 <span>Death Penalty</span>
                 <vTooltip>
@@ -21,7 +26,6 @@
                     {{ value.name }}
                 </option>
             </select>
-
             <h2>Run Options</h2>
             <div class="switches">
                 <vSwitch
@@ -95,6 +99,9 @@ import vButton from "../components/vButton.vue"
 import vTooltip from "../components/vTooltip.vue"
 import vInput from "../components/vInput.vue"
 import { flagInfo } from "../store/index.js"
+import { remote } from 'electron'
+import fs from "fs";
+const dialog = remote.dialog
 
 export default {
     //braincells where'd ya go
@@ -184,6 +191,58 @@ export default {
           }
           this.$emit("applyFlags", Object.values(this.tempFlags))
         },
+        loadPresets(){
+          dialog.showOpenDialog({
+            properties: ['openFile'],
+            title: "Load NT Lobby Preset",
+            filters: ["json"],
+            buttonLabel: "Load"
+          })
+              .then((dialogReturn)=>{
+                if(dialogReturn.canceled) return;
+                // fileNames is an array that contains all the selected
+                if(dialogReturn.filePaths === undefined || dialogReturn.filePaths.length === 0){
+                  console.log("No file selected");
+                  return;
+                }
+                const filePath = dialogReturn.filePaths[0]
+
+                fs.readFile(filePath, 'utf-8', (err, data) => {
+                  if(err){
+                    alert("An error ocurred reading the file :" + err.message);
+                    return;
+                  }
+
+                  // Change how to handle the file content
+                  console.log("The file content is : " + data);
+                  const oldSeed = this.tempFlags.NT_sync_world_seed.value
+                  //TODO potential security issue? Validate this input
+                  this.tempFlags = JSON.parse(data)
+                  this.tempFlags.NT_sync_world_seed.value = oldSeed
+                  this.$refs.orbInput.$refs.input.dispatchEvent(new Event("input"))
+                  this.$refs.seedInput.$refs.input.dispatchEvent(new Event("input"))
+                });
+              });
+        },
+        savePresets(){
+          dialog.showSaveDialog({
+            properties: ['showOverwriteConfirmation'],
+            title: "Save NT Lobby Preset",
+            defaultPath: "nt-lobby-preset.json",
+            buttonLabel: "Save"
+          }).then((dialogReturn) => {
+            if(dialogReturn.canceled) return;
+            // fileNames is an array that contains all the selected
+            if(dialogReturn.filePath === undefined || dialogReturn.filePath.length === 0){
+              console.log("No file selected");
+              return;
+            }
+            const filePath = dialogReturn.filePath
+            fs.writeFile(filePath, JSON.stringify(this.tempFlags), {}, (err)=>{
+              if(err) alert(err)
+            })
+          })
+        },
         randomizeSeed() {
             const seed = Math.floor(Math.random() * 4294967295) + 1
             // not an amazing way to do it
@@ -202,6 +261,14 @@ export default {
     display: flex;
     flex-flow: row wrap;
     width: 100%;
+}
+
+.presetContainer{
+  width: 100%;
+  display: flex;
+  flex-flow: row-reverse;
+  justify-content: end;
+  gap: 8px;
 }
 
 .switches {
