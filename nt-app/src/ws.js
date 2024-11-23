@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require("uuid")
-const { ipcMain } = require("electron")
+const { ipcMain, net } = require("electron")
 const ws = require("ws")
 const {
     encodeLobbyMsg,
@@ -29,7 +29,7 @@ module.exports = (data) => {
     let isHost = false
 
     console.log(`Connect to lobby server ${host}`)
-    /** @type {ws} */
+    /** @type {WebSocket} */
     let client = new ws(`${host}${data.token}`, {
         servername: sni
     })
@@ -44,10 +44,6 @@ module.exports = (data) => {
             client.send(heartbeat)
         }
     }, 10000)
-    client.on("close", () => {
-        clearInterval(timer)
-        timer = undefined
-    })
 
     const lobby = {
         sHostStart: (payload) => {
@@ -114,9 +110,29 @@ module.exports = (data) => {
         appEvent("CONNECTED", data)
     })
 
-    client.on("close", () => {
+    client.on("close", (code) => {
+        clearInterval(timer)
+        timer = undefined
+        //codes https://github.com/Luka967/websocket-close-codes
+        console.log(`CONNECTION_LOST with a code of ${code}. Send a message to https://stat.moistmob.com/disconnected/${code}`)
+        const req = net.request({
+            url: `https://stat.moistmob.com/disconnected/${code}`,
+            method: 'GET'
+        })
+        req.on('response', (response)=> {
+            console.log(`STATUS: ${response.statusCode}`);
+            console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
+
+            response.on('data', (chunk) => {
+                console.log(`BODY: ${chunk}`)
+            });
+        })
+        req.on('error', (error) => {
+            console.log(error)
+        })
+        req.end()
         noita.clientDisconnected()
-        appEvent("CONNECTION_LOST")
+        appEvent("CONNECTION_LOST", code)
         client.terminate()
         client = null
     })
@@ -225,7 +241,10 @@ module.exports = (data) => {
                         return
                     case '/fakedc':
                         noita.clientDisconnected()
-                        return;
+                        return
+                    case '/dcthesocket':
+                        client.close()
+                        return
                 }
             }
         }
