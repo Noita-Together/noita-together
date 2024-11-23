@@ -266,10 +266,10 @@ const ipcPlugin = (ipc) => {
             })
         })
 
-        ipc.on("CONNECTION_LOST", () => {
+        ipc.on("CONNECTION_LOST", (event, data) => {
             store.dispatch("errDialog", {
                 title: "Disconnected from server",
-                body: "",
+                body: `Received status code of ${data} when disconnected`,
                 canClose: false
             })
         })
