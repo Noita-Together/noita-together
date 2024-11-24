@@ -29,6 +29,11 @@ export const templateHtml = `
         /**/
     }
 
+    thead {
+        position: sticky;
+        top: 0;
+    }
+
     th {
         background-color: rgb(55, 39, 36);
         color: rgba(255, 255, 255, 0.66);
