@@ -15,6 +15,7 @@
                 label="room name"
                 :validate="validateLength"
                 @valid="isValid"
+                placeholder="(generate automatically)"
             />
             <vInput v-model="toCreate.password" label="room password" />
         </template>
@@ -40,7 +41,7 @@ export default {
         return {
             canCreate: true,
             toCreate: {
-                name: `${this.$store.state.user.name}'s Room`,
+                name: '',
                 gamemode: "Co-op",
                 password: "",
                 maxUsers: "5 slots",
