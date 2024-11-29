@@ -43,12 +43,17 @@ export default {
   components: { vAppLogo },
   data() {
     return {
-      loginUrl: process.env.VUE_APP_NT_LOGIN_URL ? process.env.VUE_APP_NT_LOGIN_URL : `${process.env.VUE_APP_HOSTNAME}/auth/login`,
+        activeProfile: {}, 
       remember: false,
       clicked: false
     }
   },
   beforeCreate() {
+    ipcRenderer.send("GET_ACTIVE_PROFILE");
+    ipcRenderer.on("ACTIVE_PROFILE", (event, profile) => {
+        this.activeProfile = profile;
+    });
+
     const unsub = this.$store.subscribe((mutation, state) => {
       if (mutation.type == "setUser" && state.user.id > 0) {
         unsub()
@@ -69,7 +74,7 @@ export default {
   methods: {
     OpenLoginPage() {
       this.clicked = true
-      shell.openExternal(this.loginUrl)
+      shell.openExternal(this.activeProfile.authUrl)
     },
     ContinueSavedUser() {
       this.$store.dispatch("continueSavedUser")

@@ -2,6 +2,7 @@
 const NT_SCHEME = "noitatogether"
 const path = require("path")
 const fs = require("fs")
+const { loadSettings, getSettings, addProfile, getDefaultProfile, removeProfile, getActiveProfile, setActiveProfile } = require('./settings.js')
 import { autoUpdater } from "electron-updater"
 import { app, protocol, BrowserWindow, dialog, ipcMain } from "electron"
 import jwt from "jsonwebtoken"
@@ -18,6 +19,9 @@ let rememberUser = false
 const isDevelopment = process.env.NODE_ENV !== "production"
 const primaryInstance = app.requestSingleInstanceLock()
 let mainWindow = null
+
+loadSettings();
+
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
     { scheme: "app", privileges: { secure: true, standard: true } }
@@ -142,9 +146,10 @@ ipcMain.on("remember_user", (event, val) => {
 
 ipcMain.on("TRY_LOGIN", async (event, account) => {
     try {
+        const settings = await loadSettings();
         const refresh = await keytar.getPassword("Noita Together", account)
         const { body } = await got.post(
-            `${process.env.VUE_APP_HOSTNAME}/auth/refresh`,
+            `${settings.profiles[settings.selectedProfile].webApp}/auth/refresh`,
             {
                 headers: {
                     authorization: `Bearer ${refresh}`
@@ -175,6 +180,33 @@ ipcMain.on("DELETE_USER", async (event, account) => {
         console.error(error)
         appEvent("DELETE_USER_FAILED", "")
     }
+})
+
+ipcMain.on("GET_SETTINGS", async () => {
+    appEvent("SETTINGS", getSettings())
+});
+
+ipcMain.on("ADD_PROFILE", async (event, profile) => {
+    addProfile(profile)
+    appEvent("SETTINGS", getSettings())
+})
+
+ipcMain.on("REMOVE_PROFILE", async (event, profileName) => {
+    removeProfile(profileName)
+    appEvent("SETTINGS", getSettings())
+})
+
+ipcMain.on("GET_DEFAULT_PROFILE", async () => {
+    appEvent("DEFAULT_PROFILE", getDefaultProfile())
+})
+
+ipcMain.on("GET_ACTIVE_PROFILE", async () => {
+    appEvent("ACTIVE_PROFILE", getActiveProfile())
+})
+
+ipcMain.on("SET_ACTIVE_PROFILE", async (event, name) => {
+    setActiveProfile(name)
+    appEvent("SETTINGS", getSettings())
 })
 
 // Quit when all windows are closed.
