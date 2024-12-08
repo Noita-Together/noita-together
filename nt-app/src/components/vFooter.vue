@@ -1,6 +1,9 @@
 <template>
     <div class="footer">
         <span id="app-version">v{{version}}</span>
+        <span class="donate" @click="ShowHelpInBrowser">
+          <span>FAQ <i slot="icon" class="fas fa-link"></i></span>
+        </span>
         <div class="donate" @click="OpenContributors">
             <span title="Github">Click to see contributors <i slot="icon" class="fas fa-wrench"></i></span>
         </div>
@@ -17,12 +20,16 @@ export default {
     data() {
         return {
             contributorUrl: "https://github.com/Noita-Together/noita-together/",
+            faqUrl: "https://github.com/Noita-Together/noita-together/wiki/FAQ",
             version: "0"
         }
     },
     methods: {
         OpenContributors() {
             shell.openExternal(this.contributorUrl);
+        },
+        ShowHelpInBrowser() {
+            shell.openExternal(this.faqUrl);
         },
     }
 };
