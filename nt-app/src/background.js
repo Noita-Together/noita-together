@@ -68,8 +68,10 @@ const loginserv = http.createServer(function (req, res) {
     }
 
     res.writeHead(200, { "Content-Type": "text/html" })
-    res.end("You can close this.")
-    //loginserv.close()
+    res.end("You can close this. " +
+        "<br/><a href='https://noitatogether.com/'>Noita Together Website</a>" +
+        "<br/><a href='https://github.com/Noita-Together/noita-together/wiki/FAQ'>FAQ</a>")
+    loginserv.close()
 })
 
 autoUpdater.on("update-downloaded", (info) => {

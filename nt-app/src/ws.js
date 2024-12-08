@@ -110,13 +110,17 @@ module.exports = (data) => {
         appEvent("CONNECTED", data)
     })
 
-    client.on("close", (code) => {
+    client.addEventListener("close", (event) => {
         clearInterval(timer)
         timer = undefined
+        const reason = event.reason ? event.reason : "no_reason_supplied"
         //codes https://github.com/Luka967/websocket-close-codes
-        console.log(`CONNECTION_LOST with a code of ${code}. Send a message to https://stat.moistmob.com/disconnected/${code}`)
+        console.log('addEventListener: WS had an error :(')
+        console.log(event)
+        const url = `https://stat.moistmob.com/disconnected/${event.code}/${encodeURI(reason.toString().slice(0, 200))}`
+        console.log(`CONNECTION_LOST with a code of ${event.code}. Send a message to ${url}`)
         const req = net.request({
-            url: `https://stat.moistmob.com/disconnected/${code}`,
+            url: url,
             method: 'GET'
         })
         req.on('response', (response)=> {
@@ -128,13 +132,19 @@ module.exports = (data) => {
             });
         })
         req.on('error', (error) => {
+            console.log('failed to send status. probably an internet issue')
             console.log(error)
         })
         req.end()
+        appEvent("CONNECTION_LOST", {code: event.code, reason: reason})
         noita.clientDisconnected()
-        appEvent("CONNECTION_LOST", code)
         client.terminate()
         client = null
+    });
+
+    client.on('error', (err) => {
+        console.log('WS had an error :(')
+        console.log(err)
     })
 
     /**
