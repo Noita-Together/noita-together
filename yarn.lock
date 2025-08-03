@@ -1647,10 +1647,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ms@npm:*, @types/ms@npm:^0.7.34":
+"@types/ms@npm:*":
   version: 0.7.34
   resolution: "@types/ms@npm:0.7.34"
   checksum: f38d36e7b6edecd9badc9cf50474159e9da5fa6965a75186cceaf883278611b9df6669dc3a3cc122b7938d317b68a9e3d573d316fcb35d1be47ec9e468c6bd8a
+  languageName: node
+  linkType: hard
+
+"@types/ms@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@types/ms@npm:2.1.0"
+  checksum: 532d2ebb91937ccc4a89389715e5b47d4c66e708d15942fe6cc25add6dc37b2be058230a327dd50f43f89b8b6d5d52b74685a9e8f70516edfc9bdd6be910eff4
   languageName: node
   linkType: hard
 
@@ -11470,7 +11477,7 @@ __metadata:
     "@popperjs/core": ^2.6.0
     "@types/jsonwebtoken": ^9.0.2
     "@types/jwk-to-pem": ^2.0.1
-    "@types/ms": ^0.7.34
+    "@types/ms": ^2.1.0
     "@types/node": 20.2.5
     "@types/react": 18.2.8
     "@types/react-dom": 18.2.4
