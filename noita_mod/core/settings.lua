@@ -5,6 +5,24 @@ local mod_id = "noita-together"
 mod_settings_version = 2
 mod_settings = 
 {
+    {
+        --Should actually define the seed setting here instead of just blindly using it places, eh
+        id = "NT_WORLD_SEED",
+        ui_name = "(hidden) NT world seed from client",
+        value_default = 0,
+        hidden = true,
+        scope=MOD_SETTING_SCOPE_RUNTIME,
+    },
+    {
+        --Use as an offset for deterministic rng with 'randomize loot' function instead of frame number ...
+        id = "NT_RNGLOOT_SEED",
+        ui_name = "(hidden) offset for rng in randomized loot",
+        value_default = 0,
+        value_min = -2e6,
+        value_max = 2e6,
+        hidden = true,
+        scope=MOD_SETTING_SCOPE_RUNTIME,
+    },
 	{
 		id = "NT_HINTS",
 		ui_name = "Show hints",

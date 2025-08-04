@@ -36,20 +36,6 @@ function spawn_all_shopitems(x, y)
     end 
 end
 
-function spawn_all_perks(x, y)
-    local seed = ModSettingGet( "noita_together.seed" )
-    if (seed ~= nil and seed > 0 and GameHasFlagRun("NT_world_randomize_loot")) then
-        local _SetRandomSeed = SetRandomSeed;
-        SetRandomSeed = function( x, y )
-            return _SetRandomSeed( x + GameGetFrameNum(), y );
-        end
-        _spawn_all_perks(x, y);
-        SetRandomSeed = _SetRandomSeed;
-    else
-        _spawn_all_perks(x, y);
-    end 
-end
-
 function spawn_spell_eater(x, y)
     EntityLoad("mods/noita-together/files/entities/spell_eater.xml", x, y)
 end

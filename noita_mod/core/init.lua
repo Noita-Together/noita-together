@@ -42,7 +42,6 @@ ModLuaFileAppend("data/scripts/items/heart_better.lua", "mods/noita-together/fil
 ModLuaFileAppend("data/scripts/items/orb_init.lua", "mods/noita-together/files/append/orb_init.lua")
 ModLuaFileAppend("data/scripts/items/orb_pickup.lua", "mods/noita-together/files/append/orb_pickup.lua")
 ModLuaFileAppend("data/scripts/perks/perk_pickup.lua", "mods/noita-together/files/append/perk_pickup.lua")
-ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/files/append/perk_reroll.lua")
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
 
@@ -295,6 +294,20 @@ function OnModPreInit()
 
     if (seed > 0) then
         SetWorldSeed(seed)
+    end
+
+    --prepare rng offset for randomized loot setting
+    local rngseed = ModSettingGet("noita-together.NT_RNGLOOT_SEED")
+    if not rngseed or rngseed == 0 then
+        --generate a rngseed sorta-true-random?
+        local offset = 0
+        --want to avoid duplicate offsets: https://en.wikipedia.org/wiki/Birthday_problem#Approximations
+        while offset == 0 do
+            offset = math.random(-1e9,1e9) --TODO gives same value every launch for me, use something more random, or get it from host, or? 
+        end
+        ModSettingSet("noita-together.NT_RNGLOOT_SEED", offset)
+        ModSettingSetNextValue("noita-together.NT_RNGLOOT_SEED", offset, false)
+        --nt print_error("set RNGSeed first time " .. ModSettingGet("noita-together.NT_RNGLOOT_SEED"))
     end
 end
 
