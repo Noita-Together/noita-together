@@ -45,7 +45,7 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2",
     "@types/jwk-to-pem": "^2.0.1",
-    "@types/ms": "^0.7.34",
+    "@types/ms": "^2.1.0",
     "@types/node": "20.2.5",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
