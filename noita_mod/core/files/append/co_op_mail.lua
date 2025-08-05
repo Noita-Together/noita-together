@@ -26,14 +26,14 @@ function spawn_hp(x, y)
 end
 
 function spawn_all_shopitems(x, y)
-    local seed = ModSettingGet( "noita_together.seed" )
-    if (seed ~= nil and seed > 0 and GameHasFlagRun("NT_world_randomize_loot")) then
-        SetRandomSeed(GameGetFrameNum(), 69420 + deaths)
-        local rx, ry = Random(0,3), Random(0,5)
-        _spawn_all_shopitems(x-rx, y-ry);
-    else
-        _spawn_all_shopitems(x, y);
-    end 
+    local _SetRandomSeed = SetRandomSeed
+    SetRandomSeed = function(x,y)
+        local offset = GameHasFlagRun("NT_world_randomize_loot") and ModSettingGet("noita-together.NT_RNGLOOT_SEED") or 0
+        _SetRandomSeed(x + offset, y + offset)
+        --nt print_error("spawn_all_shopitems " .. x .. "," .. y)
+    end
+    _spawn_all_shopitems(x,y)
+    SetRandomSeed = _SetRandomSeed
 end
 
 function spawn_spell_eater(x, y)

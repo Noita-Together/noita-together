@@ -28,7 +28,8 @@ ModLuaFileAppend("data/scripts/biome_scripts.lua", "mods/noita-together/files/ap
 ModLuaFileAppend("data/scripts/items/generate_shop_item.lua", "mods/noita-together/files/append/generate_shop_item.lua")
 ModLuaFileAppend("data/scripts/gun/procedural/gun_procedural.lua", "mods/noita-together/files/append/gun_procedural.lua")
 ModLuaFileAppend("data/scripts/items/chest_random.lua", "mods/noita-together/files/append/chest_random.lua")
-ModLuaFileAppend("data/scripts/items/chest_random_super.lua", "mods/noita-together/files/append/chest_random_super.lua")
+ModLuaFileAppend("data/scripts/items/chest_random_super.lua", "mods/noita-together/files/append/chest_random.lua")
+ModLuaFileAppend("data/scripts/items/utility_box.lua", "mods/noita-together/files/append/chest_random.lua")
 
 ModLuaFileAppend("data/scripts/biomes/temple_altar.lua", "mods/noita-together/files/append/co_op_mail.lua")
 ModLuaFileAppend("data/scripts/biomes/boss_arena.lua", "mods/noita-together/files/append/co_op_mail.lua")
