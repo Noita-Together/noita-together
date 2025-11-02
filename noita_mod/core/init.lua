@@ -13,6 +13,8 @@ end
 dofile_once("mods/noita-together/files/scripts/utils.lua")
 dofile_once("mods/noita-together/files/scripts/ui.lua")
 
+dofile_once("mods/noita-together/files/lib/w32_rand_s.lua")
+
 -----------------
 -- lua appends --
 -----------------
@@ -28,7 +30,8 @@ ModLuaFileAppend("data/scripts/biome_scripts.lua", "mods/noita-together/files/ap
 ModLuaFileAppend("data/scripts/items/generate_shop_item.lua", "mods/noita-together/files/append/generate_shop_item.lua")
 ModLuaFileAppend("data/scripts/gun/procedural/gun_procedural.lua", "mods/noita-together/files/append/gun_procedural.lua")
 ModLuaFileAppend("data/scripts/items/chest_random.lua", "mods/noita-together/files/append/chest_random.lua")
-ModLuaFileAppend("data/scripts/items/chest_random_super.lua", "mods/noita-together/files/append/chest_random_super.lua")
+ModLuaFileAppend("data/scripts/items/chest_random_super.lua", "mods/noita-together/files/append/chest_random.lua")
+ModLuaFileAppend("data/scripts/items/utility_box.lua", "mods/noita-together/files/append/chest_random.lua")
 
 ModLuaFileAppend("data/scripts/biomes/temple_altar.lua", "mods/noita-together/files/append/co_op_mail.lua")
 ModLuaFileAppend("data/scripts/biomes/boss_arena.lua", "mods/noita-together/files/append/co_op_mail.lua")
@@ -42,7 +45,6 @@ ModLuaFileAppend("data/scripts/items/heart_better.lua", "mods/noita-together/fil
 ModLuaFileAppend("data/scripts/items/orb_init.lua", "mods/noita-together/files/append/orb_init.lua")
 ModLuaFileAppend("data/scripts/items/orb_pickup.lua", "mods/noita-together/files/append/orb_pickup.lua")
 ModLuaFileAppend("data/scripts/perks/perk_pickup.lua", "mods/noita-together/files/append/perk_pickup.lua")
-ModLuaFileAppend("data/scripts/perks/perk_reroll.lua", "mods/noita-together/files/append/perk_reroll.lua")
 ModLuaFileAppend("data/scripts/perks/perk.lua", "mods/noita-together/files/append/perk.lua")
 ModLuaFileAppend("data/scripts/magic/fungal_shift.lua", "mods/noita-together/files/append/fungal_shift.lua")
 
@@ -301,6 +303,30 @@ end
 function OnWorldInitialized()
     --Moved this into OnWorldInitialized, it is inconsistent when included directly in init.lua 
     dofile("mods/noita-together/files/ws/ws.lua")
+
+    --GameHasFlagRun returns false before OnWorldInitialized
+    --prepare rng offset for randomized loot setting
+    --generate a new seed once per run (not once per lobby, result should change if we 'new game' !
+    if not GameHasFlagRun("NT_did_rngseed") then
+        --generate a rngseed sorta-true-random?
+        local offset = 0
+        --want to avoid duplicate offsets: https://en.wikipedia.org/wiki/Birthday_problem#Approximations
+        while offset == 0 do
+            --range of +- 1 million should be sufficient, dont know if we expect weird behavior at very large values
+            offset = w32_rand_s()
+            if not offset then
+                --fall back to something idk
+                --TODO seed lua math random
+                offset = math.random(1,2e6)
+            end
+            offset = offset % 2e6 - 1e6
+        end
+        ModSettingSet("noita-together.NT_RNGLOOT_SEED", offset)
+        ModSettingSetNextValue("noita-together.NT_RNGLOOT_SEED", offset, false)
+        print_error("set RNGSeed first time " .. ModSettingGet("noita-together.NT_RNGLOOT_SEED"))
+        GameAddFlagRun("NT_did_rngseed")
+    end
+
 end
 
 --used to detect settings changes

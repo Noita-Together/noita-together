@@ -30,7 +30,17 @@ function perk_get_spawn_order(ignore_these_)
             table.insert(ignore_these, _perk_id)
         end
     end
-    return _perk_get_spawn_order(ignore_these)
+    
+    local _SetRandomSeed = SetRandomSeed
+    SetRandomSeed = function(x,y)
+        local offset = GameHasFlagRun("NT_world_randomize_loot") and ModSettingGet("noita-together.NT_RNGLOOT_SEED") or 0
+        _SetRandomSeed(x + offset, y + offset)
+    end
+
+    local ret = _perk_get_spawn_order(ignore_these)
+    SetRandomSeed = _SetRandomSeed
+
+    return ret
 end
 
 -- NT_ban_perks - Overwrite the base game perk_spawn to handle spawning different xml entities and adding LuaComponent items for switching between entities.
